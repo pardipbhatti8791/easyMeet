@@ -6,6 +6,8 @@ import Modal from 'react-bootstrap/Modal';
 import { updateAvailability } from '~/redux/boarding/action';
 import { checkAvailability } from '~/redux/boarding/action';
 import { closeModal, openModal } from '../../../../../redux/global_modal/actions';
+import noPhoto from '~/assets/images/photo.png';
+import { accessFromObject } from '../../../../../utils/accessFromObject';
 
 function UserInfo() {
     const dispatch = useDispatch();
@@ -63,11 +65,7 @@ function UserInfo() {
                                 <img
                                     id='openDrag'
                                     className='mb-1'
-                                    src={
-                                        userInfo.meeter_image_slug === ''
-                                            ? '/assets/images/photo.png'
-                                            : userInfo.meeter_image_slug
-                                    }
+                                    src={userInfo ? accessFromObject(userInfo, 'meeter_image_slug') : noPhoto}
                                     alt='photo'
                                     onClick={() => dispatch(openModal('AvatarModal', { open: true }))}
                                 />
