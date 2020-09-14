@@ -1,4 +1,4 @@
-import React  from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useForm } from 'react-hook-form';
@@ -12,7 +12,7 @@ const Login = props => {
 
     const dispatch = useDispatch();
     const auth = useSelector(state => state.auth);
-    const { loading } = auth
+    const { loading } = auth;
 
     /**
      * * @useForm hooks
@@ -25,10 +25,10 @@ const Login = props => {
      *
      * @param value
      */
-    const login = (value) => {
-          dispatch(loginUser(value.email, value.password, history));
-    }
- 
+    const login = value => {
+        dispatch(loginUser(value.email, value.password, history));
+    };
+
     return (
         <>
             <ThePublicHeader />
@@ -69,7 +69,9 @@ const Login = props => {
                                             }
                                         })}
                                     />
-                                    {errors.email && <p className='customErrors text-danger mt-2'>{errors.email.message}</p>}
+                                    {errors.email && (
+                                        <p className='customErrors text-danger mt-2'>{errors.email.message}</p>
+                                    )}
                                 </div>
 
                                 <div className='form-group password-input'>
@@ -81,13 +83,15 @@ const Login = props => {
                                         id='exampleInputPassword1'
                                         placeholder='Password'
                                         name='password'
-                                        ref={register({required: true})}
+                                        ref={register({ required: true })}
                                     />
-                                    {errors.password && <p className='customErrors text-danger mt-2'>Please enter password</p>}
+                                    {errors.password && (
+                                        <p className='customErrors text-danger mt-2'>Please enter password</p>
+                                    )}
                                 </div>
 
                                 <button type='submit' className='btn btn-primary w-100'>
-                                    Sign In
+                                    {loading ? 'Signing in...' : 'Sign In'}
                                 </button>
                                 {/*<Dimmer active={loading} inverted><Loader active={loading} className={'lcolor'}/></Dimmer>*/}
                             </form>
@@ -100,7 +104,6 @@ const Login = props => {
                     </div>
                 </div>
             </section>
-
         </>
     );
 };

@@ -151,7 +151,6 @@ const SignUp = props => {
                                             paddingLeft: '50px'
                                         }}
                                         country={'us'}
-                                        ref={register()}
                                         onChange={phone => setPhoneNumber(phone)}
                                     />
                                     {errors.full_name && (
@@ -196,7 +195,7 @@ const SignUp = props => {
                                 </div>
 
                                 <button type='submit' className='btn btn-primary w-100'>
-                                    Continue
+                                    {loading ? 'Signing up...' : 'Continue'}
                                 </button>
                             </form>
 

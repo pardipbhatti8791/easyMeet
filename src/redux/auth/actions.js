@@ -11,6 +11,8 @@ import {
 import { gpAxios } from '~/utils/gpAxios';
 import { apiPaths } from '../../utils/apiPaths';
 import { setUserToken } from '../../utils/gpAxios';
+import swal from '@sweetalert/with-react';
+import { errorAlert } from '../../utils/sweetAlert';
 
 /**
  *
@@ -48,6 +50,8 @@ export const loginUser = (email, password, history = null) => async dispatch => 
         dispatch(loadUserPostAuthentication(response.data.data.result.auth_user_token));
     } catch (error) {
         dispatch(authSpinner(false));
+
+        errorAlert({ message: error.response.data.message });
         dispatch({
             type: LOGIN_FAILED
         });
@@ -73,7 +77,7 @@ export const signUpRequest = (data, history) => dispatch => {
         })
         .catch(e => {
             dispatch(authSpinner(false));
-            dispatch({ type: REGISTER_FAILED });
+            errorAlert(e.response.data.errors);
         });
 };
 
@@ -111,23 +115,21 @@ export const logout = () => async dispatch => {
  * @returns {function(...[*]=)}
  */
 export const loadUserPostAuthentication = (token = null, history) => async dispatch => {
-
     try {
         const res = await gpAxios.get('/meeter/me', {
             headers: {
-                "User-key" : token
+                'User-key': token
             }
         });
         dispatch({
             type: USER_LOADED,
             payload: {
-                user: res.data.data.result,
+                user: res.data.data.result
             }
         });
         dispatch(authSpinner(false));
         history.push('/onboarding-one');
     } catch (e) {
-
         dispatch({
             type: AUTH_ERROR
         });
