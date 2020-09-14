@@ -1,0 +1,15 @@
+.change-cropbtn {
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+.crop-imagebox {
+  max-width: 50%;
+  margin: 0 auto;
+}
+.profile-photo-dialog .photo__options {
+  padding: 0 1rem;
+}
+.profile-photo-dialog .modal-body {
+  max-height: 70vh;
+  overflow-y: auto;
+}
