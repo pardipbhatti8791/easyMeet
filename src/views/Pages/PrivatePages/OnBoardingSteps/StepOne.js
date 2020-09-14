@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { checkSlugAvailability } from '~/redux/boarding/action';
 import { updateSlug } from '~/redux/boarding/action';
+import { loadUser } from '~/redux/auth/actions'; 
+import { errorAlert } from '../../../../utils/sweetAlert';
 
 function stepOne(props) {
 
@@ -13,6 +15,7 @@ function stepOne(props) {
     const [meetSlug, setMeetSlug] = useState(meeter_meet_slug !== null ? meeter_meet_slug : '');
     const [error, setError] = useState(null);
     const [typingTimeout, setTypingTimeout] = useState(true);
+    const [loader, setLoader] = useState(false);
 
     useEffect(() => {
         const body = document.body;
@@ -24,28 +27,32 @@ function stepOne(props) {
      * Handle Submit
      */
     const handleSubmit = () => {
-        const data = {
-            'meeter_slug': meetSlug
-        };
-        console.log(data);
-        if (error == null) {
-            dispatch(updateSlug(data))
-                .then(res => {
-                    if (res.status == '203') {
-                        setError('This Meeter Slug already exists.');
-                    } else {
-                        setError(null);
-                        localStorage.removeItem('meeter_slug');
-                        localStorage.setItem('meeter_slug', meetSlug);
-                        history.push('/onboarding-two');
-                    }
-                })
-                .catch(err => console.log(err));
+        if(meeter_meet_slug === meetSlug){
+            history.push('/onboarding-two');
+        }else{
+            const data = {
+                'meeter_slug': meetSlug
+            };
+            if (error == null) {
+                dispatch(updateSlug(data))
+                    .then(res => {
+                        if (res.status == '203') {
+                            setError('This Meeter Slug already exists.');
+                        } else {
+                            setError(null);
+                            dispatch(loadUser());
+                            localStorage.removeItem('meeter_slug');
+                            localStorage.setItem('meeter_slug', meetSlug);
+                            history.push('/onboarding-two');
+                        }
+                    })
+                    .catch(err => console.log(err));
+            }
         }
     };
 
-    const checkAvail = evt => {
-        console.log(evt.target.value);
+    const checkAvail = evt => { 
+        setLoader(true);
         var value = evt.target.value;
 
         setMeetSlug(value);
@@ -55,15 +62,17 @@ function stepOne(props) {
         setTypingTimeout(
             setTimeout(() => {
                 dispatch(checkSlugAvailability(value))
-                    .then(res => {
-                            if (res.status == '203') {
-                                setError('This Meeter Slug already exists.');
-                            } else {
-                                setError(null);
-                            }
+                    .then(res => { 
+                            setLoader(false);
+                            setError(null);
                         }
                     )
-                    .catch(err => console.log(err));
+                    .catch(err => {
+                        setError('This Meeter Slug already exists.');
+                        setLoader(false); 
+                        console.log(err.response.data.errors)
+                        errorAlert(err.response.data.errors);
+                    });
             }, 2000)
         );
     };
@@ -121,9 +130,12 @@ function stepOne(props) {
                                     <button
                                         type='submit'
                                         className='btn btn-primary'
-                                        disabled={meetSlug == ''}
+                                        disabled={loader}
                                         onClick={handleSubmit}>
-                                        Continue
+                                        {
+                                            loader ? 'Checking slug' : 'Continue'    
+                                        }  
+                                      
                                     </button>
                                 </div>
                                 {error !== null && <p className='customErrors'>{error}</p>}
