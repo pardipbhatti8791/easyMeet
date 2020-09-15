@@ -128,7 +128,7 @@ export const loadUserPostAuthentication = (token = null, history) => async dispa
             }
         });
         dispatch(authSpinner(false));
-        history.push('/onboarding-one');
+        window.location.href = '/onboarding-one';
     } catch (e) {
         dispatch({
             type: AUTH_ERROR

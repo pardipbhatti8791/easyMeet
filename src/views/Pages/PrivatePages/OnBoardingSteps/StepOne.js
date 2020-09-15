@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { checkSlugAvailability } from '~/redux/boarding/action';
 import { updateSlug } from '~/redux/boarding/action';
-import { loadUser } from '~/redux/auth/actions'; 
+import { loadUser } from '~/redux/auth/actions';
 import { errorAlert } from '../../../../utils/sweetAlert';
 
-function stepOne(props) {
-
+function StepOne(props) {
     const dispatch = useDispatch();
     const user = useSelector(state => state.auth);
-    const { user: { meeter_meet_slug } } = user;
+    const {
+        user: { meeter_meet_slug }
+    } = user;
     const { history } = props;
 
     const [meetSlug, setMeetSlug] = useState(meeter_meet_slug !== null ? meeter_meet_slug : '');
@@ -20,18 +21,17 @@ function stepOne(props) {
     useEffect(() => {
         const body = document.body;
         body.classList.add('onboarding');
-
     }, []);
 
     /**
      * Handle Submit
      */
     const handleSubmit = () => {
-        if(meeter_meet_slug === meetSlug){
+        if (meeter_meet_slug === meetSlug) {
             history.push('/onboarding-two');
-        }else{
+        } else {
             const data = {
-                'meeter_slug': meetSlug
+                meeter_slug: meetSlug
             };
             if (error == null) {
                 dispatch(updateSlug(data))
@@ -51,7 +51,7 @@ function stepOne(props) {
         }
     };
 
-    const checkAvail = evt => { 
+    const checkAvail = evt => {
         setLoader(true);
         var value = evt.target.value;
 
@@ -62,15 +62,14 @@ function stepOne(props) {
         setTypingTimeout(
             setTimeout(() => {
                 dispatch(checkSlugAvailability(value))
-                    .then(res => { 
-                            setLoader(false);
-                            setError(null);
-                        }
-                    )
+                    .then(res => {
+                        setLoader(false);
+                        setError(null);
+                    })
                     .catch(err => {
                         setError('This Meeter Slug already exists.');
-                        setLoader(false); 
-                        console.log(err.response.data.errors)
+                        setLoader(false);
+                        console.log(err.response.data.errors);
                         errorAlert(err.response.data.errors);
                     });
             }, 2000)
@@ -79,7 +78,6 @@ function stepOne(props) {
 
     return (
         <>
-
             <section className='free-sign-up mt-5'>
                 <div className='container'>
                     <div className='row justify-content-center'>
@@ -132,22 +130,16 @@ function stepOne(props) {
                                         className='btn btn-primary'
                                         disabled={loader}
                                         onClick={handleSubmit}>
-                                        {
-                                            loader ? 'Checking slug' : 'Continue'    
-                                        }  
-                                      
+                                        {loader ? 'Checking slug' : 'Continue'}
                                     </button>
                                 </div>
-                                {error !== null && <p className='customErrors'>{error}</p>}
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
-
-
         </>
     );
-};
+}
 
-export default stepOne;
+export default StepOne;
