@@ -1,13 +1,18 @@
 import React, { useEffect } from 'react';
-import { Route, Switch, BrowserRouter } from 'react-router-dom';
+import { Switch, BrowserRouter, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import './scss/style.scss';
+
 import createStore from './store/store';
-import { loadUser } from './actions/auth';
 import ProtectedRoute from './routing/ProtectedRoute';
-import SignUp from './views/Pages/Register/signUp';
-import stepOne from './views/Pages/onBoardingSteps/stepOne';
 import PublicRoute from './routing/PublicRoute';
+import { loadUser } from './redux/auth/actions';
+import ModalManager from './redux/global_modal/manager';
+
+// Containers
+const Login = React.lazy(() => import('./views/Pages/PublicPages/Login/Login'));
+const SignUp = React.lazy(() => import('./views/Pages/PublicPages/Register/SignUp'));
+const MeetingLink = React.lazy(() => import('./views/Pages/PublicPages/MeetingLink/MeetingLink'));
+const DefaultLayout = React.lazy(() => import('./containers/PrivateLayouts/TheLayout'));
 
 const loading = () => (
     <div className='animated fadeIn pt-3 text-center'>
@@ -17,24 +22,19 @@ const loading = () => (
 
 const store = createStore;
 
-// Containers
-const Login = React.lazy(() => import('./views/Pages/Login/Login'));
-const Register = React.lazy(() => import('./views/Pages/Register/Register'));
-const DefaultLayout = React.lazy(() => import('./containers/TheLayout'));
-
 const App = () => {
-    // useEffect(() => {
-    //     store.dispatch(loadUser());
-    // }, []);
-
+    useEffect(() => {
+        store.dispatch(loadUser());
+    }, []);
     return (
         <Provider store={store}>
             <BrowserRouter>
+                <ModalManager />
                 <React.Suspense fallback={loading()}>
                     <Switch>
+                        <Route path='/meet/:slug' exact component={MeetingLink} />
                         <PublicRoute exact path='/login' component={Login} />
                         <PublicRoute exact path='/sign-up' component={SignUp} />
-                        <ProtectedRoute exact path='/onBoarding-one' component={stepOne} />
                         <ProtectedRoute path='/' component={DefaultLayout} />
                     </Switch>
                 </React.Suspense>

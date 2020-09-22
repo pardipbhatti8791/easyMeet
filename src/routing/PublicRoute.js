@@ -2,18 +2,34 @@ import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-const PublicRoute = ({ component: Component, ...rest }) => {
-    const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
-    function requireAuth(nextState, replace, next) {
-        if (isAuthenticated) {
-            replace({
-                pathname: '/onBoarding-one',
-                state: { nextPathname: nextState.location.pathname }
-            });
-        }
-        next();
-    }
-    return <Route {...rest} render={props => <Component {...props} onEnter={requireAuth} />} />;
+
+/**
+ *
+ * @param path
+ * @returns {JSX.Element}
+ */
+export const returnToRoute = path => {
+    return <Redirect to={path} />;
 };
+
+/**
+ *
+ * @param Component
+ * @param rest
+ * @returns {JSX.Element}
+ * @constructor
+ */
+const PublicRoute = ({ component: Component, ...rest }) => {
+    const auth = useSelector(state => state.auth);
+    const { isAuthenticated } = auth;
+
+    if (isAuthenticated) {
+        return <Route {...rest} render={props => returnToRoute('/')} />;
+    } else {
+        return <Route {...rest} render={props => <Component {...props} />} />;
+    }
+};
+
+
 
 export default PublicRoute;

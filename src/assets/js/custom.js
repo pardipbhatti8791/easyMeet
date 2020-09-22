@@ -11,3 +11,8 @@ function showPass() {
     }
   }
 
+
+  $('#openDrag').click(function()
+  {
+      $("#drag").modal('show')
+  });

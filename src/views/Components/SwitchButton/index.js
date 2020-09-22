@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../../scss/components/_switch.scss';
+
 
 export default function SwitchButton({ checked, ...props }) {
     return (

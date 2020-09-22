@@ -1,8 +1,7 @@
-import TheAside from './TheAside';
-import TheContent from './TheContent';
-import TheFooter from './TheFooter';
-import TheHeader from './TheHeader';
-import TheLayout from './TheLayout';
-import TheSidebar from './TheSidebar';
+import ThePublicHeader from './PublicLayouts/PublicHeader';
+import ThePrivateContent from './PrivateLayouts/TheContent';
+import ThePrivateHeader from './PrivateLayouts/PrivateHeader';
+import ThePrivateLayout from './PrivateLayouts/TheLayout';
 
-export { TheAside, TheContent, TheFooter, TheHeader, TheLayout, TheSidebar };
+
+export { ThePrivateLayout, ThePrivateHeader, ThePrivateContent, ThePublicHeader };

@@ -1,0 +1,41 @@
+.change-cropbtn {
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+.crop-imagebox {
+  max-width: 50%;
+  margin: 1rem auto;
+}
+.profile-photo-dialog .photo__options {
+  padding: 0 1rem;
+  margin-top: 0;
+}
+.profile-photo-dialog .modal-body {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+.available_btnWrapper > div > div {
+  font-size: 0.74rem !important;
+  border-radius: 5px !important;
+  padding: 9px 5px !important;
+  white-space: nowrap;
+  line-height: 1;
+  height: 32px;
+  text-align: center;
+}
+.dashboard .button.b2.available_btnWrapper {
+  border: 0;
+}
+.available_btnWrapper > div > div > div > div:last-child,
+.modal-available-btnwrapper > div > div > div > div:last-child {
+  display: none;
+}
+.modal-available-btnwrapper > div > div {
+  font-size: 0.74rem !important;
+  border-radius: 5px !important;
+  padding: 9px 5px !important;
+  white-space: nowrap;
+  line-height: 1;
+  height: 32px;
+  text-align: center;
+}

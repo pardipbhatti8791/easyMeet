@@ -1,13 +1,13 @@
 import { combineReducers } from 'redux';
-import auth from './reducers/auth';
-import gui from './reducers/gui';
-import userAuth from './authentications/reducer';
 
-import { user } from './reducers/user';
+import auth from './auth/reducer';
+import meeting from './meetings/reducer';
+import { user } from './user';
+import modals from './global_modal/reducer';
 
 export default combineReducers({
     auth,
-    gui,
     user,
-    userAuth
+    meeting,
+    modals
 });

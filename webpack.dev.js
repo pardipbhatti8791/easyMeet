@@ -16,7 +16,7 @@ module.exports = {
     entry: './src/index.js',
     output: {
         path: path.join(__dirname, 'build/'),
-        filename: 'smacty-bundle.js',
+        filename: 'gpcoders-bundle.js',
         publicPath: '/'
     },
     module: {
@@ -81,9 +81,6 @@ module.exports = {
         hot: true,
         historyApiFallback: true,
         https: false
-        // key: fs.readFileSync('C:/ZDATA/900 - House.CONNECT/10 - Implementation/05 - Cloud/01 - SmactyCloud/certs/smacty.key'),
-        // cert: fs.readFileSync('C:/ZDATA/900 - House.CONNECT/10 - Implementation/05 - Cloud/01 - SmactyCloud/certs/smacty.crt'),
-        // ca: fs.readFileSync('C:/ZDATA/900 - House.CONNECT/10 - Implementation/05 - Cloud/01 - SmactyCloud/certs/smactyCA.crt')
     },
     plugins: [
         new Dotenv({

@@ -1,68 +1,61 @@
 @import "../variables";
+//@import "../utilities/mixins";
 
 .spin {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: $zAbove;
+  @include fill_window;
+  z-index: $zHighAbove;
   display: block;
-  width: 100vw;
-  height: 100vh;
   opacity: 1;
   background-color: #f8f9fab5;
 
   &__area {
+    @include abs-position(50%, auto, auto, 50%);
     display: inline-block;
     width: 30px;
     height: 30px;
-    position: absolute;
-      top: 50%;
-      left: 50%;
-      margin: -10px;
+    margin: -10px;
 
-      div {
-        position: absolute;
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: #2895d8;
-        animation: spinner 1.2s linear infinite;
+    div {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #2895d8;
+      animation: spinner 1.2s linear infinite;
 
-        &:nth-child(1) {
-          top: 8px;
-          left: 8px;
-          animation-delay: 0s;
-        }
-
-        &:nth-child(2) {
-          top: 8px;
-          left: 18px;
-          animation-delay: -0.4s;
-        }
-
-        &:nth-child(3) {
-          top: 18px;
-          left: 18px;
-          animation-delay: -0.8s;
-        }
-
-        &:nth-child(4) {
-          top: 18px;
-          left: 8px;
-          animation-delay: -0.4s;
-        }
+      &:nth-child(1) {
+        top: 8px;
+        left: 8px;
+        animation-delay: 0s;
       }
+
+      &:nth-child(2) {
+        top: 8px;
+        left: 18px;
+        animation-delay: -0.4s;
+      }
+
+      &:nth-child(3) {
+        top: 18px;
+        left: 18px;
+        animation-delay: -0.8s;
+      }
+
+      &:nth-child(4) {
+        top: 18px;
+        left: 8px;
+        animation-delay: -0.4s;
+      }
+    }
   }
 }
 
-@keyframes spinner {
-
+@include keyframes(spinner) {
   0%,
-  100% {
-    opacity: 1;
-  }
-
   50% {
     opacity: 0.2;
+  }
+  100% {
+    opacity: 1;
   }
 }

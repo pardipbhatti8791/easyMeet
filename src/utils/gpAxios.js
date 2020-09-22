@@ -1,24 +1,29 @@
 import axios from 'axios';
 
+const userToken = localStorage.getItem('token');
 export const base_url = process.env.API_HOST;
+
+let withoutToken = {
+    Authorization: `Basic ${process.env.REACT_APP_TOKEN}`
+};
+
+if (userToken !== null) {
+    withoutToken = { ...withoutToken, 'User-key': userToken };
+}
 
 export const gpAxios = axios.create({
     baseURL: base_url,
-    headers: {
-        // 'Content-Type': 'application/json',
-        Authorization: 'Basic ZWFzeW1lZXRjcDoyMDIwI0FCQ1Btaw=='
-    }
+    headers: withoutToken
 });
 
+/**
+ *
+ * @param token
+ */
 export const setUserToken = token => {
     if (token) {
-        gpAxios.defaults.headers.common['User-Key'] = token;
+        gpAxios.defaults.headers.common['Authorization'] = `Basic ${process.env.REACT_APP_TOKEN}`;
     } else {
         delete gpAxios.defaults.headers.common['User-Key'];
     }
 };
-if (localStorage.getItem('user_token')) {
-    gpAxios.defaults.headers['User-Key'] = localStorage.getItem('user_token');
-}
-// export const gpAxios
-// gpAxios.defaults.headers.common.token = localStorage.getItem("id_token");
