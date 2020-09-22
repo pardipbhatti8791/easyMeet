@@ -6,8 +6,12 @@
   "homepage": "smacty.com",
   "copyright": "Copyright 2020 Easy Meat",
   "private": true,
+  "engines": {
+    "npm": "6.14.6",
+    "node": "12.18.3"
+  },
   "scripts": {
-    "start": "node server.js",
+    "start": "npm run dev-server",
     "dev-server": "webpack-dev-server --config webpack.dev.js",
     "prod": "npm run clean && npm run build:prod",
     "build:dev": "webpack --config webpack.dev.js",
