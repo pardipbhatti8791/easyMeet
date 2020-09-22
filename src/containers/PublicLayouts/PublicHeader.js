@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
+import logo from '../../assets/images/EasyMeet.svg'
 import { useSelector } from 'react-redux';
 
 const ThePublicHeader = (props) => {
@@ -9,7 +10,7 @@ const ThePublicHeader = (props) => {
             <nav className="navbar navbar-expand-lg bg-white pt-4 pb-4">
                 <div className="container">
                     <a className="navbar-brand" href="index.html">
-                        <img src="../../assets/images/EasyMeet.svg" alt="logo"/>
+                        <img src={logo} alt="logo"/>
                     </a>
                     <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
