@@ -18,7 +18,7 @@ module.exports = {
     entry: './src/index.js',
     output: {
         path: path.join(__dirname, 'build/'),
-        filename: 'smacty-bundle.js',
+        filename: 'gpcoders-bundle.js',
         publicPath: '/'
     },
     optimization: {
