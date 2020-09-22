@@ -19,8 +19,6 @@ const routes = [
     { path: '/', exact: true, name: 'Dashboard', component: Dashboard },
     { path: '/dashboard', name: 'Dashboard', component: Dashboard },
     { path: '/onboarding-one', name: 'onboarding-one', component: StepOne },
-    { path: '/onboarding-two', name: 'onboarding-two', component: StepTwo },
-    { path: '/onboarding-three', name: 'onboarding-three', component: StepThree },
     { path: '**', component: NoPageFound },
 ];
 

@@ -43,7 +43,7 @@ function StepOne(props) {
                             dispatch(loadUser());
                             localStorage.removeItem('meeter_slug');
                             localStorage.setItem('meeter_slug', meetSlug);
-                            history.push('/onboarding-two');
+                            history.push('/dashboard');
                         }
                     })
                     .catch(err => console.log(err));
