@@ -1,9 +1,9 @@
 import React from 'react';
 
-const Dashboard = React.lazy(() => import('~/views/pages/PrivatePages/Dashboard/Dashboard'));
-const StepOne = React.lazy(() => import('~/views/Pages/PrivatePages/OnBoardingSteps/StepOne'));
-const StepTwo = React.lazy(() => import('~/views/Pages/PrivatePages/OnBoardingSteps/StepTwo'));
-const StepThree = React.lazy(() => import('~/views/Pages/PrivatePages/OnBoardingSteps/StepThree'));
+const Dashboard = React.lazy(() => import('../views/pages/PrivatePages/Dashboard/Dashboard'));
+const StepOne = React.lazy(() => import('../views/Pages/PrivatePages/OnBoardingSteps/StepOne'));
+const StepTwo = React.lazy(() => import('../views/Pages/PrivatePages/OnBoardingSteps/StepTwo'));
+const StepThree = React.lazy(() => import('../views/Pages/PrivatePages/OnBoardingSteps/StepThree'));
 
 /**
  * @returns {JSX.Element}
