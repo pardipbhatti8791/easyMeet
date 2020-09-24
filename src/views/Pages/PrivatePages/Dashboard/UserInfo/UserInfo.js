@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RadioGroup, RadioButton } from 'react-radio-buttons';
-import copy from 'copy-to-clipboard';
+
 import { updateUserBio } from '~/redux/boarding/action';
 import Modal from 'react-bootstrap/Modal';
 import { updateAvailability } from '~/redux/boarding/action';
@@ -11,7 +11,8 @@ import {
     openModal
 } from '../../../../../redux/global_modal/actions';
 import noPhoto from '~/assets/images/photo.png';
-import { errorAlert } from '../../../../../utils/sweetAlert';
+import { copyToClipBoard } from '../../../../../utils/copyToCilpBoard';
+
 
 function UserInfo() {
     const dispatch = useDispatch();
@@ -57,14 +58,6 @@ function UserInfo() {
         } else {
             dispatch(openModal('MyAvailabilityModal', { open: true }));
         }
-    };
-
-    const copyToClipBoard = (message) => {
-        copy(message, {
-            debug: true,
-            message: 'Press #{key} to copy'
-        });
-        errorAlert({ message: "Copied to clip board" }, 'success');
     };
 
     return (
