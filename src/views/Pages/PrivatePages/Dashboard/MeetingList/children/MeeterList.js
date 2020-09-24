@@ -1,8 +1,15 @@
 import React from 'react';
 import { notifyAll } from '~/redux/boarding/action';
+import { useDispatch, useSelector } from 'react-redux';
+
 import { accessFromObject } from '../../../../../../utils/accessFromObject';
 import { accessFromArray } from '../../../../../../utils/accessFromArray';
-import { useDispatch, useSelector } from 'react-redux';
+
+import copyImage from '~/assets/images/Copy.png'
+import facebook from '~/assets/images/facebook.png'
+import twitter from '~/assets/images/twitter.png'
+import linkedin from '~/assets/images/linkedin.png'
+import envelop from '~/assets/images/Envelope.png'
 
 const MeeterList = (props) => {
   const dispatch = useDispatch();
@@ -179,7 +186,7 @@ const MeeterList = (props) => {
                     <a className='px-1 py-2' href='#'>
                       <img
                         className='pr-1'
-                        src='/assets/images/Copy.png'
+                        src={copyImage}
                         alt='Copy'
                       />{' '}
                       <span>Copy</span>{' '}
@@ -189,7 +196,7 @@ const MeeterList = (props) => {
                     <a className='px-1 py-2' href='#'>
                       <img
                         className='pr-1'
-                        src='/assets/images/facebook.png'
+                        src={facebook}
                         alt='Facebook'
                       />
                       <span>Facebook</span>{' '}
@@ -199,7 +206,7 @@ const MeeterList = (props) => {
                     <a className='px-1 py-2' href='#'>
                       <img
                         className='pr-1'
-                        src='/assets/images/twitter.png'
+                        src={twitter}
                         alt='Twitter'
                       />{' '}
                       <span>Twitter</span>{' '}
@@ -209,7 +216,7 @@ const MeeterList = (props) => {
                     <a className='px-1 py-2' href='#'>
                       <img
                         className='pr-1'
-                        src='/assets/images/linkedin.png'
+                        src={linkedin}
                         alt='LinkedIn'
                       />{' '}
                       <span>LinkedIn</span>{' '}
@@ -219,7 +226,7 @@ const MeeterList = (props) => {
                     <a className='px-1 py-2' href='#'>
                       <img
                         className='pr-1'
-                        src='/assets/images/Envelope.png'
+                        src={envelop}
                         alt='Email'
                       />{' '}
                       <span>Email</span>{' '}

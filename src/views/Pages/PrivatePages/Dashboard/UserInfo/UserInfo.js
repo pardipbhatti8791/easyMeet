@@ -9,6 +9,7 @@ import {
   closeModal,
   openModal,
 } from '../../../../../redux/global_modal/actions';
+import noPhoto from '~/assets/images/photo.png'
 
 function UserInfo() {
   const dispatch = useDispatch();
@@ -68,7 +69,7 @@ function UserInfo() {
                   className='mb-1'
                   src={
                     userInfo.meeter_image_slug === ''
-                      ? '/assets/images/photo.png'
+                      ? noPhoto
                       : userInfo.meeter_image_slug
                   }
                   alt='photo'
