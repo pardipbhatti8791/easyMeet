@@ -6,7 +6,8 @@ import {
     REGISTER_FAILED,
     AUTH_SPINNING,
     USER_LOADED,
-    AUTH_ERROR
+    AUTH_ERROR,
+    FORGET_PASSWORD
 } from './types';
 import { gpAxios } from '~/utils/gpAxios';
 import { apiPaths } from '../../utils/apiPaths';
@@ -133,5 +134,25 @@ export const loadUserPostAuthentication = (token = null, history) => async dispa
         dispatch({
             type: AUTH_ERROR
         });
+    }
+};
+
+/**
+ *
+ * @param email
+ * @param local
+ *
+ */
+
+export const forgetPassword = email => async dispatch => {
+    const data = {
+        email: email,
+        local: 'yes'
+    };
+    try {
+        const response = await gpAxios.post('/forgot-password', data);
+        return response;
+    } catch {
+        errorAlert(e.response.data.errors);
     }
 };

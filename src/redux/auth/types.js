@@ -6,4 +6,3 @@ export const AUTH_SPINNING = 'AUTH_SPINNING';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_FAILED = 'LOGIN_FAILED';
 export const LOGOUT = 'LOGOUT';
-

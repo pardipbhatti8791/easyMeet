@@ -96,7 +96,7 @@ const Login = props => {
                                 {/*<Dimmer active={loading} inverted><Loader active={loading} className={'lcolor'}/></Dimmer>*/}
                             </form>
                             <div className='text-center'>
-                                <a href='#' className='text-dark'>
+                                <a href='/forget-password' className='text-dark'>
                                     Forget your password?
                                 </a>
                             </div>
