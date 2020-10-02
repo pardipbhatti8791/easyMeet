@@ -18,7 +18,7 @@ const ForgetPassword = () => {
                 alert(res.data.message);
             })
             .catch(e => {
-                console.log(e.res);
+                console.log(e);
             });
     };
 
