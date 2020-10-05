@@ -100,6 +100,7 @@
     "svg-url-loader": "^4.0.0",
     "sweetalert": "^2.1.2",
     "ts-pnp": "1.1.6",
+    "twilio-video": "^2.7.2",
     "uglifyjs-webpack-plugin": "^2.2.0",
     "url-loader": "2.3.0",
     "webpack-manifest-plugin": "2.2.0",
