@@ -123,7 +123,6 @@ export const updateProfilePicture = data => async dispatch => {
 };
 
 export const getAccessToken = () => async dispatch => {
-    console.log('control shifted');
     try {
         const response = await gpAxios.get('/meeter/video/get-access-token');
         return response;
