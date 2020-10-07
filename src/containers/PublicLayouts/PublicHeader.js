@@ -19,10 +19,10 @@ const ThePublicHeader = (props) => {
                     <div className="collapse navbar-collapse" id="navbarNav">
                         <ul className="navbar-nav ml-auto">
                             <li className="nav-item active">
-                                <a href={'/login'}>Login</a>
+                                <Link to={'/login'}>Login</Link>
                             </li>
                             <li className="nav-item">
-                                <button type="button" onClick={() => window.location.href = '/sign-up'} className="btn btn-primary">Sign Up</button>
+                                <button type="button" onClick={() => history.push('/sign-up')} className="btn btn-primary">Sign Up</button>
                             </li>
                         </ul>
                     </div>

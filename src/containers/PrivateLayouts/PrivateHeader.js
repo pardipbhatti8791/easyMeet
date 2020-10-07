@@ -28,9 +28,9 @@ function ThePrivateHeader() {
               <li className='nav-item active'>
                 <Link to={`/dashboard`}>Dashboard</Link>
               </li>
-              {/*<li className='nav-item'>*/}
-              {/*  <Link to={`/settings`}>Settings</Link>*/}
-              {/*</li>*/}
+              <li className='nav-item'>
+                <Link to={`/settings`}>Settings</Link>
+              </li>
               <li className='nav-item'>
                 <a href='#' onClick={() => dispatch(logout())}>
                   Log Out

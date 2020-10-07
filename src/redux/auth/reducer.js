@@ -22,19 +22,19 @@ export default (state = initialState, action) => {
         case AUTH_SPINNING:
             return {
                 ...state,
-                loading: payload
+                loading: payload,
             };
         case REGISTER_SUCCESS:
             localStorage.setItem('token', payload);
             return {
                 ...state,
-                token: payload.token
+                token: payload.token,
             };
         case LOGIN_SUCCESS:
             localStorage.setItem('token', payload);
             return {
                 ...state,
-                token: payload.token
+                token: payload.token,
             };
         case USER_LOADED:
             localStorage.setItem('userInfo', JSON.stringify(payload.user));
@@ -44,11 +44,10 @@ export default (state = initialState, action) => {
                 user: payload.user,
                 loading: false
             };
-
         case REGISTER_FAILED:
         case LOGIN_FAILED:
         case AUTH_ERROR:
-            return state;
+            return state
         case LOGOUT:
             localStorage.removeItem('token');
             localStorage.removeItem('userInfo');
