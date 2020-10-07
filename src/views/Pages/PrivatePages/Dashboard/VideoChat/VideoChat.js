@@ -23,7 +23,7 @@ const VideoChat = () => {
     };
     const joinRoom = () => {
         if (!roomName.trim()) {
-            setRoomName(true);
+            setRoomNameErr(true);
             return;
         }
         console.log("Joining room '" + roomName + "'...");
@@ -46,6 +46,8 @@ const VideoChat = () => {
         if (!previewContainer.querySelector('video')) {
             attachParticipantTracks(room.localParticipant, previewContainer);
         }
+        console.log('here are the participants', room.participants);
+        console.log('data provided by the room', room);
 
         // Attach the Tracks of the room's participants.
         // room.participants.forEach(participant => {
@@ -157,8 +159,14 @@ const VideoChat = () => {
                             onChange={() => {
                                 setRoomName(event.target.value);
                             }}
-                            errortext={roomNameErr ? 'Room Name is required' : undefined}
                         />
+                        {roomNameErr ? (
+                            <span className='medium-size text-left' style={{ color: '#ff2828' }}>
+                                Room name is required
+                            </span>
+                        ) : (
+                            ''
+                        )}
                     </div>
                 </div>
                 <div className='row'>
