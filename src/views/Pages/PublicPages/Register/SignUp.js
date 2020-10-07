@@ -133,7 +133,9 @@ const SignUp = props => {
                                     <label htmlFor='meeter_phone'>Phone</label>
                                     <PhoneInput
                                         inputProps={{
-                                            name: 'phone'
+                                            name: 'phone',
+                                            required: true,
+
                                         }}
                                         inputStyle={{
                                             display: 'block',
@@ -150,12 +152,9 @@ const SignUp = props => {
                                             minHeight: '41px',
                                             paddingLeft: '50px'
                                         }}
-                                        country={'us'}
                                         onChange={phone => setPhoneNumber(phone)}
                                     />
-                                    {errors.full_name && (
-                                        <p className='customErrors text-danger mt-2'>{errors.full_name.message}</p>
-                                    )}
+
                                 </div>
                                 <div className='form-group password-input'>
                                     <label htmlFor='exampleInputPassword1'>Password</label>
