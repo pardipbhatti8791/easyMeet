@@ -153,16 +153,24 @@ export const forgetPassword = email => async dispatch => {
         const response = await gpAxios.post('/forgot-password', data);
         console.log(response);
         return response;
-    } catch {
-        errorAlert(response.data.errors);
+    } catch (e) {
+        alert(e.response.data.message);
     }
 };
 
-export const getAccessToken = () => async dispatch => {
-    try {
-        const response = await gpAxios.get('/meeter/video/get-access-token');
-        console.log('res from twilio', response);
-    } catch {
-        console.log(response.data.errors);
-    }
+/**
+ *
+ * @param token
+ * @param password
+ *
+ */
+export const resetPassword = data => async dispatch => {
+    gpAxios
+        .post(apiPaths.user_management.reset_passsword, data)
+        .then(res => {
+            alert(res.data.message);
+        })
+        .catch(err => {
+            console.log(err);
+        });
 };

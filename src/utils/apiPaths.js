@@ -7,7 +7,9 @@ export const apiPaths = {
         change_availability: '/meeter/change-availibity',
         check_meeter_availabiliy: 'check-meeter-availibility?meeter_id=',
         get_meeter_from_slug: '/meeter-details?meet_slug=',
-        forget_password: '/forgot-password'
+        forget_password: '/forgot-password',
+        reset_passsword: '/reset-password',
+        video_get_access_token: '/meeter/video/get-access-token'
     },
     meeter_slug: '/check-meeting-slug/?meeter_slug=',
     meeter_slug_update: '/update-meeting-slug',
