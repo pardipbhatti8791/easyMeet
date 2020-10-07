@@ -28,7 +28,7 @@ function StepOne(props) {
      */
     const handleSubmit = () => {
         if (meeter_meet_slug === meetSlug) {
-            history.push('/dashboard');
+            history.push('/onboarding-two');
         } else {
             const data = {
                 meeter_slug: meetSlug
@@ -102,7 +102,7 @@ function StepOne(props) {
                             <div className='createURL text-left'>
                                 <h3 className='mb-3'>Create your EasyMeet URL</h3>
                                 <p>
-                                    Choose a URL that describes you or your business in a concise way. Make it short and
+                                    Choose a URL that describes you or your business in a concice way. Make it short and
                                     easy to remember so you can share links with ease. You can change it later any time.
                                 </p>
                             </div>
@@ -121,7 +121,7 @@ function StepOne(props) {
                                 />
                             </div>
                             <div className='set-up-later row'>
-                                <div className='col-4 pt-3 text-left' onClick={() => history.push('/dashboard')} style={{ fontSize: '.85rem', opacity: '0.6', cursor: "pointer" }}>
+                                <div className='col-4 pt-3 text-left' style={{ fontSize: '.85rem', opacity: '0.6' }}>
                                     Set up later
                                 </div>
                                 <div className='col-8 text-right'>

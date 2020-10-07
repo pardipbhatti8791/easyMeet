@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Switch, BrowserRouter, Route } from 'react-router-dom';
-import { Provider, useSelector } from 'react-redux';
+import { Provider } from 'react-redux';
 
 import createStore from './store/store';
 import ProtectedRoute from './routing/ProtectedRoute';
@@ -13,7 +13,7 @@ const Login = React.lazy(() => import('./views/Pages/PublicPages/Login/Login'));
 const SignUp = React.lazy(() => import('./views/Pages/PublicPages/Register/SignUp'));
 const MeetingLink = React.lazy(() => import('./views/Pages/PublicPages/MeetingLink/MeetingLink'));
 const DefaultLayout = React.lazy(() => import('./containers/PrivateLayouts/TheLayout'));
-const ForgetPassword = React.lazy(() => import('./views/Pages/PublicPages/ForgetPassword/ForgetPassword'));
+
 const loading = () => (
     <div className='animated fadeIn pt-3 text-center'>
         <div className='sk-spinner sk-spinner-pulse'></div>
@@ -24,9 +24,7 @@ const store = createStore;
 
 const App = () => {
     useEffect(() => {
-        if (localStorage.getItem('token')) {
-            store.dispatch(loadUser());
-        }
+        store.dispatch(loadUser());
     }, []);
     return (
         <Provider store={store}>
@@ -34,10 +32,9 @@ const App = () => {
                 <ModalManager />
                 <React.Suspense fallback={loading()}>
                     <Switch>
-                        <Route path='/meet/:slug' component={MeetingLink} />
-                        <Route exact path='/login' component={Login} />
-                        <Route exact path='/sign-up' component={SignUp} />
-                        <Route exact path='/forget-password' component={ForgetPassword} />
+                        <Route path='/meet/:slug' exact component={MeetingLink} />
+                        <PublicRoute exact path='/login' component={Login} />
+                        <PublicRoute exact path='/sign-up' component={SignUp} />
                         <ProtectedRoute path='/' component={DefaultLayout} />
                     </Switch>
                 </React.Suspense>
