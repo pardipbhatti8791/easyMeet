@@ -4,22 +4,21 @@ const Dashboard = React.lazy(() => import('../views/Pages/PrivatePages/Dashboard
 const StepOne = React.lazy(() => import('../views/Pages/PrivatePages/OnBoardingSteps/StepOne'));
 const StepTwo = React.lazy(() => import('../views/Pages/PrivatePages/OnBoardingSteps/StepTwo'));
 const StepThree = React.lazy(() => import('../views/Pages/PrivatePages/OnBoardingSteps/StepThree'));
-
+const VideoChat = React.lazy(() => import('../views/Pages/PrivatePages/Dashboard/VideoChat/VideoChat'));
 /**
  * @returns {JSX.Element}
  * @constructor
  */
 const NoPageFound = () => {
-    return (
-        <h1>404 Page not found</h1>
-    )
-}
+    return <h1>404 Page not found</h1>;
+};
 
 const routes = [
     { path: '/', exact: true, name: 'Dashboard', component: Dashboard },
     { path: '/dashboard', name: 'Dashboard', component: Dashboard },
     { path: '/onboarding-one', name: 'onboarding-one', component: StepOne },
-    { path: '**', component: NoPageFound },
+    { path: '/video-chat', name: 'VideoChat', component: VideoChat },
+    { path: '**', component: NoPageFound }
 ];
 
 export default routes;
