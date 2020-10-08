@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getAccessToken } from '../../../../../redux/meetings/action';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import Video from 'twilio-video';
-import { RadioGroup, RadioButton } from 'react-radio-buttons';
 
 const VideoChat = () => {
     const localMedia = useRef(null);
@@ -33,6 +32,7 @@ const VideoChat = () => {
         if (previewTracks) {
             connectOptions.tracks = previewTracks;
         }
+        alert('new participant trying as', roomName);
         Video.connect(token, connectOptions).then(roomJoined, error => {
             alert('Could not connect to Twilio: ' + error.message);
         });
@@ -46,52 +46,52 @@ const VideoChat = () => {
         if (!previewContainer.querySelector('video')) {
             attachParticipantTracks(room.localParticipant, previewContainer);
         }
-        console.log('here are the participants', room.participants);
+        console.log('here are the participants', room.participant);
         console.log('data provided by the room', room);
 
-        // Attach the Tracks of the room's participants.
-        // room.participants.forEach(participant => {
-        //     console.log("Already in Room: '" + participant.identity + "'");
-        //     var previewContainer = remoteMedia.current;
-        //     attachParticipantTracks(participant, previewContainer);
-        // });
-        // Participant joining room
-        // room.on('participantConnected', participant => {
-        //     console.log("Joining: '" + participant.identity + "'");
-        // });
+        //Attach the Tracks of the room's participants.
+        room.participants.forEach(participant => {
+            console.log("Already in Room: '" + participant.identity + "'");
+            var previewContainer = remoteMedia.current;
+            attachParticipantTracks(participant, previewContainer);
+        });
+        //Participant joining room
+        room.on('participantConnected', participant => {
+            console.log("Joining: '" + participant.identity + "'");
+        });
 
         // Attach participant’s tracks to DOM when they add a track
-        // room.on('trackAdded', (track, participant) => {
-        //     console.log(participant.identity + ' added track: ' + track.kind);
-        //     var previewContainer = remoteMedia.current;
-        //     attachTracks([track], previewContainer);
-        // });
+        room.on('trackAdded', (track, participant) => {
+            console.log(participant.identity + ' added track: ' + track.kind);
+            var previewContainer = remoteMedia.current;
+            attachTracks([track], previewContainer);
+        });
 
         // Detach participant’s track from DOM when they remove a track.
-        // room.on('trackRemoved', (track, participant) => {
-        //     this.log(participant.identity + ' removed track: ' + track.kind);
-        //     this.detachTracks([track]);
-        // });
+        room.on('trackRemoved', (track, participant) => {
+            this.log(participant.identity + ' removed track: ' + track.kind);
+            this.detachTracks([track]);
+        });
 
         // Detach all participant’s track when they leave a room.
-        // room.on('participantDisconnected', participant => {
-        //     console.log("Participant '" + participant.identity + "' left the room");
-        //     this.detachParticipantTracks(participant);
-        // });
+        room.on('participantDisconnected', participant => {
+            console.log("Participant '" + participant.identity + "' left the room");
+            this.detachParticipantTracks(participant);
+        });
 
         // Once the local participant leaves the room, detach the Tracks
-        // of all other participants, including that of the LocalParticipant.
-        // room.on('disconnected', () => {
-        //     if (previewTracks) {
-        //         previewTracks.forEach(track => {
-        //             track.stop();
-        //         });
-        //     }
-        //     this.detachParticipantTracks(room.localParticipant);
-        //     room.participants.forEach(this.detachParticipantTracks);
-        //     activeRoom = null;
-        //     // this.setState({ hasJoinedRoom: false, localMediaAvailable: false });
-        // });
+        //of all other participants, including that of the LocalParticipant.
+        room.on('disconnected', () => {
+            if (previewTracks) {
+                previewTracks.forEach(track => {
+                    track.stop();
+                });
+            }
+            detachParticipantTracks(room.localParticipant);
+            room.participants.forEach(detachParticipantTracks);
+            setActiveRoom(null);
+            setHasJoinedRoom(false), setLocalMediaAvailable(false);
+        });
     };
 
     // Attach the Participant's Tracks to the DOM.
@@ -106,23 +106,25 @@ const VideoChat = () => {
             container.appendChild(track.track.attach());
         });
     };
-    // const detachTracks = tracks => {
-    //     tracks.forEach(track => {
-    //         track.track.detach().forEach(detachedElement => {
-    //             detachedElement.remove();
-    //         });
-    //     });
-    // };
+    const detachTracks = tracks => {
+        tracks.forEach(track => {
+            track.track.detach().forEach(detachedElement => {
+                detachedElement.remove();
+            });
+        });
+    };
 
-    // const detachParticipantTracks = participant => {
-    //     var tracks = Array.from(participant.tracks.values());
-    //     detachTracks(tracks);
-    // };
+    const detachParticipantTracks = participant => {
+        var tracks = Array.from(participant.tracks.values());
+        detachTracks(tracks);
+    };
 
     const startVideo = () => {
         dispatch(getAccessToken()).then(res => {
             setIdentity(res.data.data.result.identity);
             setToken(res.data.data.result.access_token);
+            console.log('token recieved is', res.data.data.result.access_token);
+            console.log('data from twilio', res);
         });
     };
 
@@ -169,11 +171,13 @@ const VideoChat = () => {
                         )}
                     </div>
                 </div>
+
+                <div className='row'> {joinOrLeaveRoomButton}</div>
                 <div className='row'>
-                    {joinOrLeaveRoomButton}
                     <div className='col-sm-6'>{showLocalTrack}</div>
                     <div className='col-sm-6'>
                         <div className='flex-item' id='remote-media' ref={remoteMedia} />
+                        remotemedia
                     </div>
                 </div>
             </div>
