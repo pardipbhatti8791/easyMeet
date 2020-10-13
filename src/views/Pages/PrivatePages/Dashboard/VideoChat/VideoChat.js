@@ -1,16 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getAccessToken } from '../../../../../redux/meetings/action';
 import { useDispatch } from 'react-redux';
-import { Video, connect } from 'twilio-video';
-
+const { connect, createLocalTracks, createLocalVideoTrack } = require('twilio-video');
 const VideoChat = () => {
     const localMedia = useRef(null);
     const remoteMedia = useRef(null);
     const dispatch = useDispatch();
-    const [count, setCount] = useState(0);
     const [identity, setIdentity] = useState(null);
-    const [roomName, setRoomName] = useState('');
     const [tempIdentity, setTempIdentity] = useState('');
+    const [roomName, setRoomName] = useState('');
     const [roomNameErr, setRoomNameErr] = useState(false);
     const [previewTracks, setPreviewTracks] = useState(null);
     const [localMediaAvailable, setLocalMediaAvailable] = useState(false);
@@ -18,10 +16,18 @@ const VideoChat = () => {
     const [activeRoom, setActiveRoom] = useState(null);
     const [token, setToken] = useState(null);
     const leaveRoom = () => {
+        activeRoom.on('disconnected', room => {
+            // Detach the local media elements
+            room.localParticipant.tracks.forEach(publication => {
+                const attachedElements = publication.track.detach();
+                attachedElements.forEach(element => element.remove());
+            });
+        });
         activeRoom.disconnect();
+        setToken(null);
         setHasJoinedRoom(false);
-        setLocalMediaAvailable(false);
     };
+
     const joinRoom = () => {
         if (!roomName.trim()) {
             setRoomNameErr(true);
@@ -29,138 +35,104 @@ const VideoChat = () => {
         }
         console.log("Joining room '" + roomName + "'...");
         let connectOptions = {
-            name: roomName
+            name: roomName,
+            video: true,
+            audio: true
         };
         if (previewTracks) {
             connectOptions.tracks = previewTracks;
         }
-        //alert('new participant trying as', roomName);
-        // Video.connect(token, connectOptions).then(roomJoined, error => {
-        //     alert('Could not connect to Twilio: ' + error.message);
-        // });
 
-        connect(
-            token,
-            connectOptions
-        ).then(
-            room => {
+        createLocalTracks({
+            audio: true,
+            video: { width: 640 }
+        })
+            .then(localTracks => {
+                return connect(
+                    token,
+                    {
+                        name: roomName,
+                        tracks: localTracks
+                    }
+                );
+            })
+            .then(room => {
+                console.log(`Connected to Room: ${room.name}`);
                 roomJoined(room);
-                console.log(`Successfully joined a Room: ${room}`);
-                // room.on('participantConnected', participant => {
-                //   console.log(`A remote Participant connected: {participant}`);
-                //}
-                //);
-            },
-            error => {
-                console.error(`Unable to connect to Room: ${error.message}`);
-            }
-        );
+            });
     };
 
     const roomJoined = room => {
-        console.log('room joined as', identity);
-        setActiveRoom(room), setLocalMediaAvailable(true), setHasJoinedRoom(true);
+        setActiveRoom(room);
+        setHasJoinedRoom(true);
 
-        var previewContainer = localMedia.current;
-        if (!previewContainer.querySelector('video')) {
-            attachParticipantTracks(room.localParticipant, previewContainer);
-        }
-        console.log('here are the participants', room.participants);
-        console.log('data provided by the room', room);
+        // Log your Client's LocalParticipant in the Room
+        const localParticipant = room.localParticipant;
+        console.log(`Connected to the Room as LocalParticipant "${localParticipant.identity}"`);
 
-        //Participant joining room
-        room.on('participantConnected', participant => {
-            console.log("Joining a participant: '" + participant.identity + "'");
-        });
-
-        //Attach the Tracks of the room's participants.
+        // Log any Participants already connected to the Room
         room.participants.forEach(participant => {
-            console.log("Already in Room: '" + participant.identity + "'");
-
-            var previewContainer = remoteMedia.current;
-            attachParticipantTracks(participant, previewContainer);
+            console.log(`Participant "${participant.identity}" is connected to the Room`);
         });
 
-        // Attach participant’s tracks to DOM when they add a track
-        room.on('trackAdded', (track, participant) => {
-            console.log(participant.identity + ' added track: ' + track.kind);
-            var previewContainer = remoteMedia.current;
-            attachTracks([track], previewContainer);
+        // Log new Participants as they connect to the Room
+        room.once('participantConnected', participant => {
+            console.log(`Participant "${participant.identity}" has connected to the Room`);
         });
 
-        // Detach participant’s track from DOM when they remove a track.
-        room.on('trackRemoved', (track, participant) => {
-            log(participant.identity + ' removed track: ' + track.kind);
-            detachTracks([track]);
+        // Log Participants as they disconnect from the Room
+        room.once('participantDisconnected', participant => {
+            console.log(`Participant "${participant.identity}" has disconnected from the Room`);
         });
 
-        // Detach all participant’s track when they leave a room.
+        room.on('participantConnected', participant => {
+            console.log(`Participant connected: ${participant.identity}`);
+        });
+
         room.on('participantDisconnected', participant => {
-            console.log("Participant '" + participant.identity + "' left the room");
-            detachParticipantTracks(participant);
+            console.log(`   Participant disconnected: ${participant.identity}`);
         });
 
-        // Once the local participant leaves the room, detach the Tracks
-        //of all other participants, including that of the LocalParticipant.
-        room.on('disconnected', () => {
-            if (previewTracks) {
-                previewTracks.forEach(track => {
-                    track.stop();
-                });
-            }
-            detachParticipantTracks(room.localParticipant);
-            room.participants.forEach(detachParticipantTracks);
-            setActiveRoom(null);
-            setHasJoinedRoom(false), setLocalMediaAvailable(false);
-        });
-    };
+        // Attach the Participant's Media to a <div> element.
+        room.on('participantConnected', participant => {
+            console.log(`Participant "${participant.identity}" connected`);
 
-    // Attach the Participant's Tracks to the DOM.
-    const attachParticipantTracks = (participant, container) => {
-        var tracks = Array.from(participant.tracks.values()).filter(track => track !== null);
-        console.log('complete tracks');
-        attachTracks(tracks, container);
-    };
+            participant.tracks.forEach(publication => {
+                if (publication.isSubscribed) {
+                    const track = publication.track;
+                    remoteMedia.current.appendChild(track.attach());
+                }
+            });
 
-    const attachTracks = (tracks, container) => {
-        tracks.forEach(track => {
-            console.log('individual track', track);
-            var count = 0;
-            count + 1;
-            container.appendChild(track.track.attach());
+            participant.on('trackSubscribed', track => {
+                remoteMedia.current.appendChild(track.attach());
+            });
         });
-    };
-    const detachTracks = tracks => {
-        tracks.forEach(track => {
-            track.track.detach().forEach(detachedElement => {
-                detachedElement.remove();
+        room.participants.forEach(participant => {
+            participant.tracks.forEach(publication => {
+                if (publication.track) {
+                    remoteMedia.current.appendChild(publication.track.attach());
+                }
+            });
+
+            participant.on('trackSubscribed', track => {
+                remoteMedia.current.appendChild(track.attach());
             });
         });
     };
 
-    const detachParticipantTracks = participant => {
-        var tracks = Array.from(participant.tracks.values());
-        detachTracks(tracks);
-    };
-
     const startVideo = () => {
-        console.log('values are', roomName, tempIdentity);
-
         dispatch(getAccessToken(roomName, tempIdentity)).then(res => {
             setIdentity(res.data.data.result.identity);
             setToken(res.data.data.result.access_token);
-            console.log('token recieved is', res.data.data.result.access_token);
-            console.log('data from twilio', res);
+        });
+        createLocalVideoTrack().then(track => {
+            const localMediaContainer = localMedia.current;
+            console.log('attaching local media', track);
+            localMedia.current.appendChild(track.attach());
         });
     };
 
-    let showLocalTrack = localMediaAvailable ? (
-        <div className='flex-item'>
-            <div ref={localMedia} />{' '}
-        </div>
-    ) : (
-        ''
-    );
     let joinOrLeaveRoomButton = hasJoinedRoom ? (
         <button label='Leave Room' onClick={leaveRoom} className='btn btn-warning'>
             Leave room
@@ -207,7 +179,7 @@ const VideoChat = () => {
 
                 <div className='row'> {joinOrLeaveRoomButton}</div>
                 <div className='row'>
-                    <div className='col-sm-6'>{showLocalTrack}</div>
+                    <div className='col-sm-6' ref={localMedia}></div>
                     <div className='col-sm-6'>
                         <div className='flex-item' id='remote-media' ref={remoteMedia} />
                         {
