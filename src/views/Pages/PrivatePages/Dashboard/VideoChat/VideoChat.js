@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getAccessToken } from '../../../../../redux/meetings/action';
 import { useDispatch } from 'react-redux';
-const { connect, createLocalTracks, createLocalVideoTrack } = require('twilio-video');
+const { connect, createLocalTracks, createLocalVideoTrack, isSupported } = require('twilio-video');
 const VideoChat = () => {
     const localMedia = useRef(null);
     const remoteMedia = useRef(null);
+
     const dispatch = useDispatch();
     const [identity, setIdentity] = useState(null);
     const [tempIdentity, setTempIdentity] = useState('');
@@ -18,9 +19,11 @@ const VideoChat = () => {
     const leaveRoom = () => {
         activeRoom.on('disconnected', room => {
             // Detach the local media elements
-            room.localParticipant.tracks.forEach(publication => {
+            activeRoom.localParticipant.tracks.forEach(publication => {
+                publication.track.stop();
                 const attachedElements = publication.track.detach();
-                attachedElements.forEach(element => element.remove());
+                attachedElements.forEach(element => element.stop());
+                console.log('removing local media');
             });
         });
         activeRoom.disconnect();
@@ -33,39 +36,52 @@ const VideoChat = () => {
             setRoomNameErr(true);
             return;
         }
+
         console.log("Joining room '" + roomName + "'...");
         let connectOptions = {
             name: roomName,
             video: true,
             audio: true
         };
-        if (previewTracks) {
-            connectOptions.tracks = previewTracks;
-        }
 
-        createLocalTracks({
-            audio: true,
-            video: { width: 640 }
-        })
-            .then(localTracks => {
-                return connect(
-                    token,
-                    {
-                        name: roomName,
-                        tracks: localTracks
-                    }
-                );
+        if (isSupported) {
+            createLocalTracks({
+                audio: true,
+                video: true
             })
-            .then(room => {
-                console.log(`Connected to Room: ${room.name}`);
-                roomJoined(room);
-            });
+                .then(localTracks => {
+                    console.log('localTRackss', localTracks);
+                    return connect(
+                        token,
+                        {
+                            name: roomName,
+                            tracks: localTracks
+                        }
+                    );
+                })
+                .then(room => {
+                    console.log(`Connected to Room: ${room.name}`);
+                    roomJoined(room);
+                });
+        } else {
+            alert('Browser not supported');
+        }
     };
 
     const roomJoined = room => {
         setActiveRoom(room);
         setHasJoinedRoom(true);
 
+        //local media tracks attaching to dom
+        createLocalVideoTrack()
+            .then(track => {
+                const localMediaContainer = localMedia.current;
+                console.log('attaching local media', track);
+                localMedia.current.appendChild(track.attach());
+            })
+            .then(err => {
+                console.log(err);
+            });
         // Log your Client's LocalParticipant in the Room
         const localParticipant = room.localParticipant;
         console.log(`Connected to the Room as LocalParticipant "${localParticipant.identity}"`);
@@ -100,17 +116,20 @@ const VideoChat = () => {
             participant.tracks.forEach(publication => {
                 if (publication.isSubscribed) {
                     const track = publication.track;
+                    console.log('first track', track);
                     remoteMedia.current.appendChild(track.attach());
                 }
             });
 
             participant.on('trackSubscribed', track => {
+                console.log('trackSubscribed', track);
                 remoteMedia.current.appendChild(track.attach());
             });
         });
         room.participants.forEach(participant => {
             participant.tracks.forEach(publication => {
                 if (publication.track) {
+                    console.log('publication track', track);
                     remoteMedia.current.appendChild(publication.track.attach());
                 }
             });
@@ -121,15 +140,16 @@ const VideoChat = () => {
         });
     };
 
+    // useEffect(() => {
+    //     dispatch(getAccessToken(roomName, tempIdentity)).then(res => {
+    //         setIdentity(res.data.data.result.identity);
+    //         setToken(res.data.data.result.access_token);
+    //     });
+    // });
     const startVideo = () => {
         dispatch(getAccessToken(roomName, tempIdentity)).then(res => {
             setIdentity(res.data.data.result.identity);
             setToken(res.data.data.result.access_token);
-        });
-        createLocalVideoTrack().then(track => {
-            const localMediaContainer = localMedia.current;
-            console.log('attaching local media', track);
-            localMedia.current.appendChild(track.attach());
         });
     };
 
@@ -149,7 +169,7 @@ const VideoChat = () => {
                 <div className='row'>
                     <div className='col-sm-6'>
                         <button className='btn btn-primary' onClick={startVideo}>
-                            startVideo
+                            getToken
                         </button>
                     </div>
                     <div className='col-sm-6'>
@@ -179,12 +199,11 @@ const VideoChat = () => {
 
                 <div className='row'> {joinOrLeaveRoomButton}</div>
                 <div className='row'>
-                    <div className='col-sm-6' ref={localMedia}></div>
                     <div className='col-sm-6'>
-                        <div className='flex-item' id='remote-media' ref={remoteMedia} />
-                        {
-                            // div for localmedia
-                        }
+                        <div className='card' ref={localMedia}></div>
+                    </div>
+                    <div className='col-sm-6'>
+                        <div className='card' ref={remoteMedia}></div>
                     </div>
                 </div>
             </div>
