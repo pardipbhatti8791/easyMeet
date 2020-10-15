@@ -1,5 +1,4 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
@@ -8,14 +7,19 @@ import { getMeeterData, meetingRequest } from '../../../../redux/meetings/action
 
 import RenderComponent from '../../../../utils/renderComponent';
 import MeeterDetails from './children/MeeterDetails';
+import PhoneInput from "react-phone-input-2";
 
 function MeetingLink(props) {
+
+    const [phoneNumber, setPhoneNumber] = useState("")
+
     const dispatch = useDispatch();
     const {
         match: { params }
     } = props;
     const meeting = useSelector(state => state.meeting);
     const { meeter_spinner, meeter_data } = meeting;
+
     useEffect(() => {
         dispatch(getMeeterData(params.slug));
         return {};
@@ -38,6 +42,7 @@ function MeetingLink(props) {
             meeter_id: meeter_data.id,
             requester_name: formData.full_name,
             requester_email: formData.email,
+            requester_phone: phoneNumber,
             summary: formData.summary,
             device_token: 'dasdkfjasdkf'
         };
@@ -46,7 +51,6 @@ function MeetingLink(props) {
     return (
         <>
             <ThePublicHeader />
-
             <div className='meeterProfile'>
                 <div className='container'>
                     <div className='row'>
@@ -124,6 +128,32 @@ function MeetingLink(props) {
                                                     }
                                                 })}
                                             />
+                                        </div>
+                                        <div className='form-group'>
+                                            <label htmlFor='meeter_phone'>Phone</label>
+                                            <PhoneInput
+                                                inputProps={{
+                                                    name: 'phone',
+                                                    required: true,
+                                                }}
+                                                inputStyle={{
+                                                    display: 'block',
+                                                    width: '100%',
+                                                    lineHeight: 1.5,
+                                                    color: '#495057',
+                                                    backgroundColor: '#fff',
+                                                    backgroundClip: 'padding-box',
+                                                    border: '1px solid #ced4da',
+                                                    borderRadius: '.25rem',
+                                                    padding: '0.7rem 0.75rem',
+                                                    borderColor: '#eeeeee',
+                                                    fontSize: '0.86rem',
+                                                    minHeight: '41px',
+                                                    paddingLeft: '50px'
+                                                }}
+                                                onChange={phone => setPhoneNumber(phone)}
+                                            />
+
                                         </div>
                                         <div className='form-group'>
                                             <label htmlFor='summary'>Meeting summary</label>

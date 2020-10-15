@@ -1,16 +1,16 @@
-import React, { Fragment } from 'react'
+import React, { Fragment } from 'react';
 import { accessFromObject } from '../../../../../utils/accessFromObject';
 import { Link } from 'react-router-dom';
 
 const MeeterDetails = (props) => {
-    const { data } = props
+    const { data } = props;
     return (
         <Fragment>
-
             <div className='media personal-details media-body text-center d-block mb-4'>
                 <div className='text-center default-opacity m-auto avatar-container'>
-                    <img src={accessFromObject(data, 'meeter_image_slug') === '' ? "../../../../assets/images/photo.png" : accessFromObject(data, 'meeter_image_slug') } 
-                     alt='photo' />
+                    <img
+                        src={accessFromObject(data, 'meeter_image_slug') === '' ? '../../../../assets/images/photo.png' : accessFromObject(data, 'meeter_image_slug')}
+                        alt='photo' />
                 </div>
                 <h2 className='requesterName mt-3 mb-1 mb-0'>
                     {accessFromObject(data, 'meeter_fullname')}
@@ -19,14 +19,14 @@ const MeeterDetails = (props) => {
                     {accessFromObject(data, 'meeter_bio')}
                 </a>
                 <span className='small-size d-block opacity-6 mt-1'>
-                                                Has been available <span>4</span> hours ago
-                                            </span>
+                    Has been available <span>4</span> hours ago
+                </span>
             </div>
             <div className='mb-4'>
                 <span className='requesterMsg'>{accessFromObject(data, 'meeter_fullname')}</span>{' '}
                 <span className='requesterMsg opacity-8'>
-                                                wants to meet with you when you're both free.
-                                            </span>
+                    wants to meet with you when you're both free.
+                </span>
             </div>
             <div>
                 <p className='small-size opacity-6 mb-0'>
@@ -54,7 +54,7 @@ const MeeterDetails = (props) => {
                 </Link>
             </div>
         </Fragment>
-    )
-}
+    );
+};
 
-export default MeeterDetails
+export default MeeterDetails;
