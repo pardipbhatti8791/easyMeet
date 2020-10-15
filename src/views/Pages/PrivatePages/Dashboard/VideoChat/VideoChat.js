@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getAccessToken } from '../../../../../redux/meetings/action';
 import { useDispatch } from 'react-redux';
+import CryptoJS from 'crypto-js';
 const { connect, createLocalTracks, createLocalVideoTrack, isSupported } = require('twilio-video');
-const VideoChat = () => {
+const VideoChat = props => {
     const localMedia = useRef(null);
     const remoteMedia = useRef(null);
 
@@ -11,12 +12,22 @@ const VideoChat = () => {
     const [tempIdentity, setTempIdentity] = useState('');
     const [roomName, setRoomName] = useState('');
     const [roomNameErr, setRoomNameErr] = useState(false);
-    const [previewTracks, setPreviewTracks] = useState(null);
-    const [localMediaAvailable, setLocalMediaAvailable] = useState(false);
     const [hasJoinedRoom, setHasJoinedRoom] = useState(false);
     const [activeRoom, setActiveRoom] = useState(null);
     const [token, setToken] = useState(null);
-    const leaveRoom = () => {
+    useEffect(() => {
+        var bytes = CryptoJS.AES.decrypt(props.match.params.identity, 'my-secret-key@123');
+        var userIdentity = bytes.toString(CryptoJS.enc.Utf8);
+        console.log('decrypted data is', userIdentity);
+        if (token == null) {
+            dispatch(getAccessToken(userIdentity, userIdentity)).then(res => {
+                setToken(res.data.data.result.access_token);
+                console.log(token);
+                joinRoom(res.data.data.result.access_token);
+            });
+        }
+    }, [token]);
+    const leaveRoom = props => {
         activeRoom.on('disconnected', room => {
             // Detach the local media elements
             activeRoom.localParticipant.tracks.forEach(publication => {
@@ -27,22 +38,19 @@ const VideoChat = () => {
             });
         });
         activeRoom.disconnect();
-        setToken(null);
+        //        setToken(null);
         setHasJoinedRoom(false);
     };
 
-    const joinRoom = () => {
+    const joinRoom = roomName => {
+        setToken(roomName);
+        console.log('generating token', token);
         if (!roomName.trim()) {
             setRoomNameErr(true);
             return;
         }
 
         console.log("Joining room '" + roomName + "'...");
-        let connectOptions = {
-            name: roomName,
-            video: true,
-            audio: true
-        };
 
         if (isSupported) {
             createLocalTracks({
@@ -50,7 +58,7 @@ const VideoChat = () => {
                 video: true
             })
                 .then(localTracks => {
-                    console.log('localTRackss', localTracks);
+                    console.log('tokensss', token);
                     return connect(
                         token,
                         {
@@ -146,12 +154,7 @@ const VideoChat = () => {
     //         setToken(res.data.data.result.access_token);
     //     });
     // });
-    const startVideo = () => {
-        dispatch(getAccessToken(roomName, tempIdentity)).then(res => {
-            setIdentity(res.data.data.result.identity);
-            setToken(res.data.data.result.access_token);
-        });
-    };
+    const startVideo = () => {};
 
     let joinOrLeaveRoomButton = hasJoinedRoom ? (
         <button label='Leave Room' onClick={leaveRoom} className='btn btn-warning'>
