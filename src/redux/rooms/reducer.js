@@ -1,4 +1,5 @@
 import { SET_TOKEN_SUCCESS } from './type';
+import { TWILIO_LOGOUT } from './type';
 
 const intialState = {
     // token: localStorage.getItem('twilioacesstoken') != null ? localStorage.getItem('twilioacesstoken') : null
@@ -12,6 +13,11 @@ export default (state = intialState, actions) => {
             return {
                 ...state,
                 token: actions.payload
+            };
+        case TWILIO_LOGOUT:
+            return {
+                ...state,
+                token: null
             };
         default:
             return state;

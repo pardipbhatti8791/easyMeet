@@ -3,7 +3,6 @@ import { notifyAll } from '~/redux/boarding/action';
 import { getAccessToken } from '../../../../../../redux/rooms/action';
 
 import { useDispatch, useSelector } from 'react-redux';
-import CryptoJS from 'crypto-js';
 import { accessFromObject } from '../../../../../../utils/accessFromObject';
 import { accessFromArray } from '../../../../../../utils/accessFromArray';
 
@@ -17,19 +16,21 @@ import { copyToClipBoard } from '../../../../../../utils/copyToCilpBoard';
 const MeeterList = props => {
     const dispatch = useDispatch();
     const { data } = props;
-    const [isNotified, setIsNotified] = useState(false);
+
     const total_req = accessFromObject(data, 'total_pending');
     const meetings = accessFromArray(data, 'mettings');
     const userInfo = useSelector(state => state.auth.user);
     const roomInfo = useSelector(state => state.rooms);
-    console.log('room info is', roomInfo);
-    const userIdentity = userInfo.meeter_meet_slug;
+    console.log('user info is', userInfo);
+    const roomName = Math.floor(Math.random() * 1000000 + 1);
+    const userEmail = userInfo.meeter_email;
     const onClickNotify = value => {
+        console.log('room', Math.floor(Math.random() * 1000000 + 1));
         const data = {
             status_category: 'single',
             status_type: 'accept',
             requester_id: value,
-            video_meeting_url: `http://localhost:5010/video-chat/:${userIdentity}`
+            video_meeting_url: `http://localhost:5010/video-chat/${roomName}`
         };
         dispatch(notifyAll(data));
     };
@@ -56,9 +57,9 @@ const MeeterList = props => {
         dispatch(notifyAll(data));
     };
     const onJoinRoomClick = () => {
-        dispatch(getAccessToken(userIdentity, userIdentity)).then(res => {
+        dispatch(getAccessToken(roomName, userEmail)).then(res => {
             localStorage.setItem('twilioacesstoken', res.data.data.result.access_token);
-            window.location.href = `/video-chat/:${userIdentity}`;
+            window.location.href = `/video-chat/${roomName}`;
         });
     };
 
@@ -130,20 +131,17 @@ const MeeterList = props => {
                                     </div>
                                     <div className='ml-auto'>
                                         <div className='bulk-action text-right pr-0'>
-                                            {isNotified ? (
-                                                <button onClick={onJoinRoomClick}>Join Room</button>
-                                            ) : (
-                                                <button
-                                                    className='btn default-btn small-size bg-white notify ml-3'
-                                                    value={requester.requester_id}
-                                                    onClick={e => {
-                                                        onClickNotify(e.target.value);
-                                                        setIsNotified(true);
-                                                    }}>
-                                                    <i className='fa fa-bell-o mr-1' aria-hidden='true' />
-                                                    Notify All
-                                                </button>
-                                            )}
+                                            <button onClick={onJoinRoomClick}>Join Room</button>
+
+                                            <button
+                                                className='btn default-btn small-size bg-white notify ml-3'
+                                                value={requester.requester_id}
+                                                onClick={e => {
+                                                    onClickNotify(e.target.value);
+                                                }}>
+                                                <i className='fa fa-bell-o mr-1' aria-hidden='true' />
+                                                Notify All
+                                            </button>
 
                                             <button
                                                 className='btn default-btn small-size bg-white reject'

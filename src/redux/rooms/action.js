@@ -1,4 +1,5 @@
 import { SET_TOKEN_SUCCESS } from './type';
+import { TWILIO_LOGOUT } from './type';
 import { gpAxios } from '../../utils/gpAxios';
 import axios from 'axios';
 export const getAccessToken = (roomName, identity) => async dispatch => {
@@ -29,4 +30,11 @@ export const setAccessToken = data => async dispatch => {
     } catch (e) {
         console.log(e);
     }
+};
+
+export const twilioLogout = () => dispatch => {
+    console.log('twilio logout action');
+    dispatch({
+        type: TWILIO_LOGOUT
+    });
 };

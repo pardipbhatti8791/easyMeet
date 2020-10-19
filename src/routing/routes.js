@@ -17,7 +17,7 @@ const routes = [
     { path: '/', exact: true, name: 'Dashboard', component: Dashboard },
     { path: '/dashboard', name: 'Dashboard', component: Dashboard },
     { path: '/onboarding-one', name: 'onboarding-one', component: StepOne },
-    { path: '/video-chat/:identity', name: 'VideoChat', component: VideoChat },
+    { path: '/video-chat/:roomName', name: 'VideoChat', component: VideoChat },
     { path: '**', component: NoPageFound }
 ];
 

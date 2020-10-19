@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { getAccessToken } from '../../../../../redux/rooms/action';
-import { setAccessToken } from '../../../../../redux/rooms/action';
+import { setAccessToken, twilioLogout, getAccessToken } from '../../../../../redux/rooms/action';
 import { useDispatch, useSelector } from 'react-redux';
-import { GET_TOKEN_SUCCESS } from '../../../../../redux/rooms/type';
-import CryptoJS from 'crypto-js';
+
 const { connect, createLocalTracks, createLocalVideoTrack, isSupported } = require('twilio-video');
 const VideoChat = props => {
     const localMedia = useRef(null);
@@ -11,36 +9,38 @@ const VideoChat = props => {
     const dispatch = useDispatch();
     const [hasJoinedRoom, setHasJoinedRoom] = useState(false);
     const [activeRoom, setActiveRoom] = useState(null);
-
+    const userInfo = useSelector(state => state.auth.user);
     const twilioToken = useSelector(state => state.rooms.token);
+    const userIdentity = userInfo.meeter_email;
+    const roomName = props.match.params.identity;
+    const leaveRoom = props => {
+        activeRoom.on('disconnected', room => {
+            // Detach the local media elements
+            activeRoom.localParticipant.tracks.forEach(publication => {
+                publication.track.stop();
+                const attachedElements = publication.track.detach();
+                attachedElements.forEach(element => element.stop());
+                console.log('removing local media');
+            });
+        });
+        activeRoom.disconnect();
+        //        setToken(null);
+        localStorage.removeItem('twilioacesstoken');
+        dispatch(twilioLogout());
+        setHasJoinedRoom(false);
+    };
 
-    const urlData = props.match.params.identity;
-    // const leaveRoom = props => {
-    //     activeRoom.on('disconnected', room => {
-    //         // Detach the local media elements
-    //         activeRoom.localParticipant.tracks.forEach(publication => {
-    //             publication.track.stop();
-    //             const attachedElements = publication.track.detach();
-    //             attachedElements.forEach(element => element.stop());
-    //             console.log('removing local media');
-    //         });
-    //     });
-    //     activeRoom.disconnect();
-    //     //        setToken(null);
-    //     setHasJoinedRoom(false);
-    // };
-
-    const joinRoom = roomName => {
+    const joinRoom = (roomName, accessToken) => {
         console.log("Joining room '" + roomName + "'...");
-
+        const tokenToBeSend = twilioToken == null ? accessToken : twilioToken;
         if (isSupported) {
             createLocalTracks({
                 audio: true,
-                video: true
+                video: { width: 640 }
             })
                 .then(localTracks => {
                     return connect(
-                        twilioToken,
+                        tokenToBeSend,
                         {
                             name: roomName,
                             tracks: localTracks
@@ -61,15 +61,15 @@ const VideoChat = props => {
         setHasJoinedRoom(true);
 
         //local media tracks attaching to dom
-        createLocalVideoTrack()
-            .then(track => {
-                const localMediaContainer = localMedia.current;
-                console.log('attaching local media', track);
-                localMedia.current.appendChild(track.attach());
-            })
-            .then(err => {
-                console.log(err);
-            });
+        // createLocalVideoTrack()
+        //     .then(track => {
+        //         const localMediaContainer = localMedia.current;
+        //         console.log('attaching local media', track);
+        //         localMedia.current.appendChild(track.attach());
+        //     })
+        //     .then(err => {
+        //         console.log(err);
+        //     });
         // Log your Client's LocalParticipant in the Room
         const localParticipant = room.localParticipant;
         console.log(`Connected to the Room as LocalParticipant "${localParticipant.identity}"`);
@@ -104,7 +104,6 @@ const VideoChat = props => {
             participant.tracks.forEach(publication => {
                 if (publication.isSubscribed) {
                     const track = publication.track;
-                    console.log('first track', track);
                     remoteMedia.current.appendChild(track.attach());
                 }
             });
@@ -129,23 +128,21 @@ const VideoChat = props => {
     };
 
     const startVideo = () => {
-        console.log('params', props.match.params.identity);
         if (twilioToken == null) {
-            console.log('urldatais', urlData);
-            dispatch(getAccessToken(urlData, urlData)).then(res => {
+            dispatch(getAccessToken(roomName, userIdentity)).then(res => {
                 localStorage.setItem('twilioacesstoken', res.data.data.result.access_token);
-                console.log('token in redux', twilioToken);
+                const accessToken = res.data.data.result.access_token;
                 dispatch(setAccessToken(res.data.data.result.access_token));
-                joinRoom(urlData);
+                joinRoom(roomName, accessToken);
             });
         } else {
             console.log('join to room   ');
-            joinRoom(urlData);
+            joinRoom(roomName);
         }
     };
 
     let joinOrLeaveRoomButton = hasJoinedRoom ? (
-        <button label='Leave Room' className='btn btn-warning'>
+        <button label='Leave Room' className='btn btn-warning' onClick={leaveRoom}>
             Leave room
         </button>
     ) : (
@@ -157,9 +154,13 @@ const VideoChat = props => {
             <div className='container'>
                 <div className='row'>
                     <div className='col-sm-6'>
-                        <button className='btn btn-primary' onClick={startVideo}>
-                            getToken
-                        </button>
+                        {hasJoinedRoom ? (
+                            ''
+                        ) : (
+                            <button className='btn btn-primary' onClick={startVideo}>
+                                Start Call
+                            </button>
+                        )}
                     </div>
                 </div>
 
