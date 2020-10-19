@@ -1,55 +1,36 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { getAccessToken } from '../../../../../redux/meetings/action';
-import { useDispatch } from 'react-redux';
+import { getAccessToken } from '../../../../../redux/rooms/action';
+import { setAccessToken } from '../../../../../redux/rooms/action';
+import { useDispatch, useSelector } from 'react-redux';
+import { GET_TOKEN_SUCCESS } from '../../../../../redux/rooms/type';
 import CryptoJS from 'crypto-js';
 const { connect, createLocalTracks, createLocalVideoTrack, isSupported } = require('twilio-video');
 const VideoChat = props => {
     const localMedia = useRef(null);
     const remoteMedia = useRef(null);
-
     const dispatch = useDispatch();
-    const [identity, setIdentity] = useState(null);
-    const [tempIdentity, setTempIdentity] = useState('');
-    const [roomName, setRoomName] = useState('');
-    const [roomNameErr, setRoomNameErr] = useState(false);
     const [hasJoinedRoom, setHasJoinedRoom] = useState(false);
     const [activeRoom, setActiveRoom] = useState(null);
-    const [token, setToken] = useState(null);
-    useEffect(() => {
-        var bytes = CryptoJS.AES.decrypt(props.match.params.identity, 'my-secret-key@123');
-        var userIdentity = bytes.toString(CryptoJS.enc.Utf8);
-        console.log('decrypted data is', userIdentity);
-        if (token == null) {
-            dispatch(getAccessToken(userIdentity, userIdentity)).then(res => {
-                setToken(res.data.data.result.access_token);
-                console.log(token);
-                joinRoom(res.data.data.result.access_token);
-            });
-        }
-    }, [token]);
-    const leaveRoom = props => {
-        activeRoom.on('disconnected', room => {
-            // Detach the local media elements
-            activeRoom.localParticipant.tracks.forEach(publication => {
-                publication.track.stop();
-                const attachedElements = publication.track.detach();
-                attachedElements.forEach(element => element.stop());
-                console.log('removing local media');
-            });
-        });
-        activeRoom.disconnect();
-        //        setToken(null);
-        setHasJoinedRoom(false);
-    };
+
+    const twilioToken = useSelector(state => state.rooms.token);
+
+    const urlData = props.match.params.identity;
+    // const leaveRoom = props => {
+    //     activeRoom.on('disconnected', room => {
+    //         // Detach the local media elements
+    //         activeRoom.localParticipant.tracks.forEach(publication => {
+    //             publication.track.stop();
+    //             const attachedElements = publication.track.detach();
+    //             attachedElements.forEach(element => element.stop());
+    //             console.log('removing local media');
+    //         });
+    //     });
+    //     activeRoom.disconnect();
+    //     //        setToken(null);
+    //     setHasJoinedRoom(false);
+    // };
 
     const joinRoom = roomName => {
-        setToken(roomName);
-        console.log('generating token', token);
-        if (!roomName.trim()) {
-            setRoomNameErr(true);
-            return;
-        }
-
         console.log("Joining room '" + roomName + "'...");
 
         if (isSupported) {
@@ -58,9 +39,8 @@ const VideoChat = props => {
                 video: true
             })
                 .then(localTracks => {
-                    console.log('tokensss', token);
                     return connect(
-                        token,
+                        twilioToken,
                         {
                             name: roomName,
                             tracks: localTracks
@@ -148,22 +128,28 @@ const VideoChat = props => {
         });
     };
 
-    // useEffect(() => {
-    //     dispatch(getAccessToken(roomName, tempIdentity)).then(res => {
-    //         setIdentity(res.data.data.result.identity);
-    //         setToken(res.data.data.result.access_token);
-    //     });
-    // });
-    const startVideo = () => {};
+    const startVideo = () => {
+        console.log('params', props.match.params.identity);
+        if (twilioToken == null) {
+            console.log('urldatais', urlData);
+            dispatch(getAccessToken(urlData, urlData)).then(res => {
+                localStorage.setItem('twilioacesstoken', res.data.data.result.access_token);
+                console.log('token in redux', twilioToken);
+                dispatch(setAccessToken(res.data.data.result.access_token));
+                joinRoom(urlData);
+            });
+        } else {
+            console.log('join to room   ');
+            joinRoom(urlData);
+        }
+    };
 
     let joinOrLeaveRoomButton = hasJoinedRoom ? (
-        <button label='Leave Room' onClick={leaveRoom} className='btn btn-warning'>
+        <button label='Leave Room' className='btn btn-warning'>
             Leave room
         </button>
     ) : (
-        <button label='Join Room' className='btn btn-primary' onClick={joinRoom}>
-            Join room
-        </button>
+        ''
     );
 
     return (
@@ -174,29 +160,6 @@ const VideoChat = props => {
                         <button className='btn btn-primary' onClick={startVideo}>
                             getToken
                         </button>
-                    </div>
-                    <div className='col-sm-6'>
-                        <input
-                            placeholder='Room Name'
-                            name='roomName'
-                            onChange={() => {
-                                setRoomName(event.target.value);
-                            }}
-                        />
-                        {roomNameErr ? (
-                            <span className='medium-size text-left' style={{ color: '#ff2828' }}>
-                                Room name is required
-                            </span>
-                        ) : (
-                            ''
-                        )}
-                        <input
-                            placeholder='identity'
-                            name='tempIdentity'
-                            onChange={() => {
-                                setTempIdentity(event.target.value);
-                            }}
-                        />
                     </div>
                 </div>
 

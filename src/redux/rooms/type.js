@@ -1,0 +1,1 @@
+export const SET_TOKEN_SUCCESS = 'SET_TOKEN_SUCCESS';

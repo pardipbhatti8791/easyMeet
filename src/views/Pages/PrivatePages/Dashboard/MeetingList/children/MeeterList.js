@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { notifyAll } from '~/redux/boarding/action';
+import { getAccessToken } from '../../../../../../redux/rooms/action';
 
 import { useDispatch, useSelector } from 'react-redux';
 import CryptoJS from 'crypto-js';
@@ -16,26 +17,20 @@ import { copyToClipBoard } from '../../../../../../utils/copyToCilpBoard';
 const MeeterList = props => {
     const dispatch = useDispatch();
     const { data } = props;
-    const [encryptedIdentity, setEncryptedIdentity] = useState(null);
     const [isNotified, setIsNotified] = useState(false);
     const total_req = accessFromObject(data, 'total_pending');
     const meetings = accessFromArray(data, 'mettings');
     const userInfo = useSelector(state => state.auth.user);
+    const roomInfo = useSelector(state => state.rooms);
+    console.log('room info is', roomInfo);
+    const userIdentity = userInfo.meeter_meet_slug;
     const onClickNotify = value => {
-        var meeter_slug = CryptoJS.AES.encrypt(userInfo.meeter_meet_slug, 'my-secret-key@123').toString();
-        setEncryptedIdentity(meeter_slug);
-        console.log('encrypted data', meeter_slug);
-        // var bytes = CryptoJS.AES.decrypt(meeter_slug, 'my-secret-key@123');
-        // var decryptedData = bytes.toString(CryptoJS.enc.Utf8);
-        // console.log('decrypted data is', decryptedData);
         const data = {
             status_category: 'single',
             status_type: 'accept',
             requester_id: value,
-            identity: meeter_slug
+            video_meeting_url: `http://localhost:5010/video-chat/:${userIdentity}`
         };
-        console.log('data we are sending to server is', data);
-        console.log('user info that we have', userInfo.meeter_meet_slug);
         dispatch(notifyAll(data));
     };
     const onClickReject = value => {
@@ -61,8 +56,10 @@ const MeeterList = props => {
         dispatch(notifyAll(data));
     };
     const onJoinRoomClick = () => {
-        console.log('onjoin clicked');
-        window.location.href = `/video-chat/${encryptedIdentity}`;
+        dispatch(getAccessToken(userIdentity, userIdentity)).then(res => {
+            localStorage.setItem('twilioacesstoken', res.data.data.result.access_token);
+            window.location.href = `/video-chat/:${userIdentity}`;
+        });
     };
 
     return (
