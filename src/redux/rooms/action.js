@@ -1,6 +1,7 @@
 import { SET_TOKEN_SUCCESS } from './type';
 import { TWILIO_LOGOUT } from './type';
 import { gpAxios } from '../../utils/gpAxios';
+import { apiPaths } from '../../utils/apiPaths';
 import axios from 'axios';
 export const getAccessToken = (roomName, identity) => async dispatch => {
     try {
@@ -8,7 +9,7 @@ export const getAccessToken = (roomName, identity) => async dispatch => {
         const response = await gpAxios.get(
             `/meeter/video/get-access-token\?identity=${identity}&room_name=${roomName}`
         );
-        console.log('actiohn');
+        console.log('action');
         dispatch({
             type: SET_TOKEN_SUCCESS,
             payload: response.data.data.result.access_token
@@ -37,4 +38,14 @@ export const twilioLogout = () => dispatch => {
     dispatch({
         type: TWILIO_LOGOUT
     });
+};
+
+export const meetingStatus = data => async => {
+    console.log('meeting status');
+    try {
+        const response = gpAxios.post(apiPaths.change_meeting_status, data);
+        return response;
+    } catch (e) {
+        console.log(e);
+    }
 };

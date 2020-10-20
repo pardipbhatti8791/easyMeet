@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { setAccessToken, twilioLogout, getAccessToken } from '../../../../../redux/rooms/action';
+import { setAccessToken, twilioLogout, getAccessToken, meetingStatus } from '../../../../../redux/rooms/action';
 import { useDispatch, useSelector } from 'react-redux';
 
 const { connect, createLocalTracks, createLocalVideoTrack, isSupported } = require('twilio-video');
@@ -12,9 +12,12 @@ const VideoChat = props => {
     const userInfo = useSelector(state => state.auth.user);
     const twilioToken = useSelector(state => state.rooms.token);
     const userIdentity = userInfo.meeter_email;
-    const roomName = props.match.params.identity;
+    const userId = userInfo.id;
+    console.log('userid', userId);
+    const roomName = props.match.params.roomName;
+    console.log('room name in url is', roomName);
     const leaveRoom = props => {
-        activeRoom.on('disconnected', room => {
+        activeRoom.on('disconnected', () => {
             // Detach the local media elements
             activeRoom.localParticipant.tracks.forEach(publication => {
                 publication.track.stop();
@@ -25,6 +28,16 @@ const VideoChat = props => {
         });
         activeRoom.disconnect();
         //        setToken(null);
+        const data = {
+            status_category: 'single',
+            status_type: 'completed',
+            requester_id: userId
+        };
+
+        dispatch(meetingStatus(data)).then(res => {
+            console.log('response', res);
+        });
+        setActiveRoom(null);
         localStorage.removeItem('twilioacesstoken');
         dispatch(twilioLogout());
         setHasJoinedRoom(false);
@@ -57,6 +70,15 @@ const VideoChat = props => {
     };
 
     const roomJoined = room => {
+        const data = {
+            status_category: 'single',
+            status_type: 'in_meeting',
+            requester_id: userId
+        };
+
+        dispatch(meetingStatus(data)).then(res => {
+            console.log('response', res);
+        });
         setActiveRoom(room);
         setHasJoinedRoom(true);
 
@@ -131,6 +153,7 @@ const VideoChat = props => {
         if (twilioToken == null) {
             dispatch(getAccessToken(roomName, userIdentity)).then(res => {
                 localStorage.setItem('twilioacesstoken', res.data.data.result.access_token);
+
                 const accessToken = res.data.data.result.access_token;
                 dispatch(setAccessToken(res.data.data.result.access_token));
                 joinRoom(roomName, accessToken);
