@@ -3,13 +3,18 @@ import { TWILIO_LOGOUT } from './type';
 import { gpAxios } from '../../utils/gpAxios';
 import { apiPaths } from '../../utils/apiPaths';
 import axios from 'axios';
+
+/*
+
+get access token from twilio
+@params roomName identity
+*/
 export const getAccessToken = (roomName, identity) => async dispatch => {
     try {
-        console.log('action fired for twilio', roomName);
         const response = await gpAxios.get(
             `/meeter/video/get-access-token\?identity=${identity}&room_name=${roomName}`
         );
-        console.log('action');
+
         dispatch({
             type: SET_TOKEN_SUCCESS,
             payload: response.data.data.result.access_token
@@ -21,8 +26,12 @@ export const getAccessToken = (roomName, identity) => async dispatch => {
     }
 };
 
+/*
+
+set access token 
+@params token
+*/
 export const setAccessToken = data => async dispatch => {
-    console.log('setaccestoken dispatch');
     try {
         dispatch({
             type: SET_TOKEN_SUCCESS,
@@ -33,19 +42,43 @@ export const setAccessToken = data => async dispatch => {
     }
 };
 
+/*
+
+twilio logout
+
+*/
 export const twilioLogout = () => dispatch => {
-    console.log('twilio logout action');
     dispatch({
         type: TWILIO_LOGOUT
     });
 };
 
+/*
+
+set meeting status
+@params data as meeting status
+*/
+
 export const meetingStatus = data => async => {
-    console.log('meeting status');
     try {
         const response = gpAxios.post(apiPaths.change_meeting_status, data);
         return response;
     } catch (e) {
         console.log(e);
+    }
+};
+
+/*
+
+get meeting room status from twilio
+@params roomName
+*/
+export const getMeetingRoomStatus = roomName => async => {
+    console.log('room status');
+    try {
+        const response = gpAxios.get(`/check-room-status?room_name=${roomName}`);
+        return response;
+    } catch (err) {
+        console.log(err.response.data.errors);
     }
 };
