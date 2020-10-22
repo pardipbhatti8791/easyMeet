@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 const Footer = props => {
     console.log('footer component', props.room);
     const room = props.room;
+
     const dispatch = useDispatch();
     const userInfo = useSelector(state => state.auth.user);
     const userId = userInfo.id;
@@ -23,6 +24,7 @@ const Footer = props => {
         });
         room.disconnect();
         //        setToken(null);
+        props.setHasJoinedRoom(false);
         const data = {
             status_category: 'single',
             status_type: 'completed',
@@ -66,11 +68,11 @@ const Footer = props => {
                         <div className='waiting d-lg-block d-none align-items-center text-left py-2 mr-4 pr-4 borderRight'>
                             <div className='media text-left'>
                                 <div className='align-self-center default-opacity text-center noBorder mr-2 mt-1 avatar-container bg-white medium-size'>
-                                    <img className='w-100' src='images/photo.png' alt='photo' />
+                                    {/* <img className='w-100' src='images/photo.png' alt='photo' /> */}
                                 </div>
                                 <div className='media-body align-self-center'>
                                     <div className='d-flex align-items-center justify-content-start'>
-                                        <h2 className='my-0 requesterName mr-3'>John Doe</h2>
+                                        {/* <h2 className='my-0 requesterName mr-3'>John Doe</h2> */}
                                         <span className='mic'>
                                             <button className='btn mr-2'>
                                                 <i className='fa fa-microphone-slash red' aria-hidden='true'></i>

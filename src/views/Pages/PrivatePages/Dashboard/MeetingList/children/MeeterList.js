@@ -19,6 +19,7 @@ const MeeterList = props => {
 
     const total_req = accessFromObject(data, 'total_pending');
     const meetings = accessFromArray(data, 'mettings');
+    console.log('data of meeter', meetings);
     const userInfo = useSelector(state => state.auth.user);
     const roomInfo = useSelector(state => state.rooms);
     console.log('user info is', userInfo);
@@ -114,7 +115,7 @@ const MeeterList = props => {
                     </div>
                 </div>
             </section>
-            <section className='meeting-requists'>
+            <section>
                 <div className='container'>
                     {Array.isArray(meetings) === true ? (
                         meetings.map((requester, index) => (
@@ -131,7 +132,11 @@ const MeeterList = props => {
                                     </div>
                                     <div className='ml-auto'>
                                         <div className='bulk-action text-right pr-0'>
-                                            <button onClick={onJoinRoomClick}>Join Room</button>
+                                            <button
+                                                className='btn default-btn small-size bg-white  ml-3'
+                                                onClick={onJoinRoomClick}>
+                                                Join Room
+                                            </button>
 
                                             <button
                                                 className='btn default-btn small-size bg-white notify ml-3'
@@ -140,7 +145,7 @@ const MeeterList = props => {
                                                     onClickNotify(e.target.value);
                                                 }}>
                                                 <i className='fa fa-bell-o mr-1' aria-hidden='true' />
-                                                Notify All
+                                                Notify
                                             </button>
 
                                             <button
@@ -148,7 +153,7 @@ const MeeterList = props => {
                                                 value={requester.requester_id}
                                                 onClick={e => onClickReject(e.target.value)}>
                                                 <i className='fa fa-times mr-1' aria-hidden='true' />
-                                                Reject All
+                                                Reject
                                             </button>
                                         </div>
                                     </div>

@@ -8,6 +8,7 @@ import {
 } from '../../../../../redux/rooms/action';
 import { useDispatch, useSelector } from 'react-redux';
 import Room from './Room';
+import Footer from './Footer';
 
 const { connect, createLocalTracks, createLocalVideoTrack, isSupported } = require('twilio-video');
 const VideoChat = props => {
@@ -102,6 +103,7 @@ const VideoChat = props => {
                 </div>
             </div>
             {hasJoinedRoom ? <Room room={activeRoom} /> : ''}
+            {hasJoinedRoom ? <Footer room={activeRoom} setHasJoinedRoom={setHasJoinedRoom} /> : ''}
         </>
     );
 };
