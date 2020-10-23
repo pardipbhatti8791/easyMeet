@@ -85,7 +85,7 @@ const MeeterList = props => {
                                 </div>
                             </div>
                         </div>
-                        <div className='col-6 mr-auto bulk-action text-right pr-0'>
+                        {/* <div className='col-6 mr-auto bulk-action text-right pr-0'>
                             <span className='col-3 align-self-center small-size text-left pr-0'>Bulk Actions:</span>
                             <div className='notifyBtnContainer d-inline-block'>
                                 <button
@@ -111,7 +111,7 @@ const MeeterList = props => {
                                 <i className='fa fa-times mr-1' aria-hidden='true' />
                                 Reject All
                             </button>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </section>

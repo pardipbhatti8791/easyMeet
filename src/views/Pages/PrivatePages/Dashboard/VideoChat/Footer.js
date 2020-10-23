@@ -9,6 +9,10 @@ const Footer = props => {
     const dispatch = useDispatch();
     const userInfo = useSelector(state => state.auth.user);
     const userId = userInfo.id;
+    const availibility = userInfo.availibility.meeter_availibility;
+    // if (availibility == 'yes') {
+    //     const { hours, minutes, seconds } = userInfo.availibility.available_for;
+    // }
     const [localAudio, setLocalAudio] = useState(true);
     const [localVideo, setLocalVideo] = useState(true);
 
@@ -73,7 +77,7 @@ const Footer = props => {
                                 <div className='media-body align-self-center'>
                                     <div className='d-flex align-items-center justify-content-start'>
                                         {/* <h2 className='my-0 requesterName mr-3'>John Doe</h2> */}
-                                        <span className='mic'>
+                                        {/* <span className='mic'>
                                             <button className='btn mr-2'>
                                                 <i className='fa fa-microphone-slash red' aria-hidden='true'></i>
                                                 <i className='fa fa-microphone hide' aria-hidden='true'></i>
@@ -81,7 +85,7 @@ const Footer = props => {
                                             <button className='btn'>
                                                 <i className='fa fa-video-camera' aria-hidden='true'></i>
                                             </button>
-                                        </span>
+                                        </span> */}
                                     </div>
                                     <span className='url-room small-size d-block'>
                                         {' '}
@@ -110,13 +114,18 @@ const Footer = props => {
                             </div>
                             <div className='sm-none text-left'>
                                 <p className='font14 mb-1'>My Availability</p>
-                                <span className='small-size gray6 text-left'>
-                                    Available for 7h 49m.{' '}
-                                    <a className='blue' href='#'>
-                                        {' '}
-                                        Adjust
-                                    </a>{' '}
-                                </span>
+                                {availibility == 'yes' ? (
+                                    <span className='small-size gray6 text-left'>
+                                        Available for {userInfo.availibility.available_for.hours}h{' '}
+                                        {userInfo.availibility.available_for.minutes}m.{' '}
+                                        {/* <a className='blue' href='#'>
+                                            {' '}
+                                            Adjust
+                                        </a>{' '} */}
+                                    </span>
+                                ) : (
+                                    <span className='small-size gray6 text-left'>Not Available</span>
+                                )}
                             </div>
                         </div>
                     </div>

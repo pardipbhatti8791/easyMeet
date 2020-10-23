@@ -95,14 +95,12 @@ const Room = props => {
     return (
         <>
             <div className='bgdark withSideBar meetRoom waitingHost'>
-                <div className='host text-right  d-none d-lg-block videodiv'>
-                    <button className='btn px-4  small-size ' ref={localMedia}></button>
-                </div>
+                <div className='host text-right  d-none d-lg-block videodiv' ref={localMedia}></div>
                 <div className='container mainRoom'>
                     <div className='row justify-content-center align-items-center h-100'>
                         <div>
                             <div
-                                className='media mainRoomMedia personal-details media-body text-center d-block mb-4'
+                                className='media mainRoomMedia personal-details media-body text-center d-block mb-4 remotevideodiv'
                                 ref={remoteMedia}></div>
 
                             {/* {!isRemote ? (

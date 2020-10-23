@@ -19,9 +19,7 @@ const VideoChat = props => {
     const twilioToken = useSelector(state => state.rooms.token);
     const userIdentity = userInfo.meeter_email;
     const userId = userInfo.id;
-    console.log('userid', userId);
     const roomName = props.match.params.roomName;
-    console.log('room name in url is', roomName);
 
     const joinRoom = (roomName, accessToken) => {
         console.log("Joining room '" + roomName + "'...");
@@ -29,7 +27,7 @@ const VideoChat = props => {
         if (isSupported) {
             createLocalTracks({
                 audio: true,
-                video: true
+                video: { width: 1920, height: 1080 }
             })
                 .then(localTracks => {
                     return connect(
@@ -56,9 +54,7 @@ const VideoChat = props => {
             requester_id: userId
         };
 
-        dispatch(meetingStatus(data)).then(res => {
-            // console.log('response', res);
-        });
+        dispatch(meetingStatus(data)).then(res => {});
         setActiveRoom(room);
         setHasJoinedRoom(true);
 
