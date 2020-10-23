@@ -7,7 +7,6 @@ import {
     getMeetingRoomStatus
 } from '../../../../../redux/rooms/action';
 import { useDispatch, useSelector } from 'react-redux';
-import Room from './Room';
 import Footer from './Footer';
 
 const { connect, createLocalTracks, createLocalVideoTrack, isSupported } = require('twilio-video');
@@ -15,36 +14,36 @@ const VideoChat = props => {
     const dispatch = useDispatch();
     const [hasJoinedRoom, setHasJoinedRoom] = useState(false);
     const [activeRoom, setActiveRoom] = useState(null);
+    const [isRemote, setIsRemote] = useState(false);
     const userInfo = useSelector(state => state.auth.user);
     const twilioToken = useSelector(state => state.rooms.token);
     const userIdentity = userInfo.meeter_email;
     const userId = userInfo.id;
+    const localMedia = useRef(null);
+    const remoteMedia = useRef(null);
     const roomName = props.match.params.roomName;
 
     const joinRoom = (roomName, accessToken) => {
         console.log("Joining room '" + roomName + "'...");
         const tokenToBeSend = twilioToken == null ? accessToken : twilioToken;
-        if (isSupported) {
-            createLocalTracks({
-                audio: true,
-                video: { width: 1920, height: 1080 }
+
+        createLocalTracks({
+            audio: true,
+            video: { width: 1920, height: 1080 }
+        })
+            .then(localTracks => {
+                return connect(
+                    tokenToBeSend,
+                    {
+                        name: roomName,
+                        tracks: localTracks
+                    }
+                );
             })
-                .then(localTracks => {
-                    return connect(
-                        tokenToBeSend,
-                        {
-                            name: roomName,
-                            tracks: localTracks
-                        }
-                    );
-                })
-                .then(room => {
-                    console.log(`Connected to Room: ${room.name}`);
-                    roomJoined(room);
-                });
-        } else {
-            alert('Browser not supported');
-        }
+            .then(room => {
+                console.log(`Connected to Room: ${room.name}`);
+                roomJoined(room);
+            });
     };
 
     const roomJoined = room => {
@@ -53,12 +52,96 @@ const VideoChat = props => {
             status_type: 'in_meeting',
             requester_id: userId
         };
-
+        const localParticipant = room.localParticipant;
         dispatch(meetingStatus(data)).then(res => {});
         setActiveRoom(room);
         setHasJoinedRoom(true);
 
         // Log your Client's LocalParticipant in the Room
+        console.log(`Connected to the Room as LocalParticipant "${localParticipant.identity}"`);
+
+        // Log any Participants already connected to the Room
+        room.participants.forEach(participant => {
+            console.log(`Participant "${participant.identity}" is connected to the Room`);
+            setIsRemote(true);
+        });
+
+        // Log new Participants as they connect to the Room
+        room.once('participantConnected', participant => {
+            console.log(`Participant "${participant.identity}" has connected to the Room`);
+        });
+
+        // Log Participants as they disconnect from the Room
+        room.once('participantDisconnected', participant => {
+            console.log(`Participant "${participant.identity}" has disconnected from the Room`);
+            setIsRemote(false);
+        });
+
+        room.on('participantConnected', participant => {
+            console.log(`Participant connected: ${participant.identity}`);
+            setIsRemote(true);
+        });
+
+        room.on('participantDisconnected', participant => {
+            console.log(`   Participant disconnected: ${participant.identity}`);
+        });
+
+        // Attach the Participant's Media to a <div> element.
+        room.on('participantConnected', participant => {
+            console.log(`Participant "${participant.identity}" connected`);
+            //seIsRemote(true);
+            participant.tracks.forEach(publication => {
+                if (publication.isSubscribed) {
+                    const track = publication.track;
+                    remoteMedia.current.appendChild(track.attach());
+                }
+            });
+
+            participant.on('trackSubscribed', track => {
+                console.log('trackSubscribed', track);
+                remoteMedia.current.appendChild(track.attach());
+            });
+        });
+        room.participants.forEach(participant => {
+            participant.tracks.forEach(publication => {
+                if (publication.track) {
+                    console.log('publication track', track);
+                    remoteMedia.current.appendChild(publication.track.attach());
+                }
+            });
+
+            participant.on('trackSubscribed', track => {
+                remoteMedia.current.appendChild(track.attach());
+            });
+        });
+
+        //Handle Remote Media Unmute Events
+
+        // room.participants.forEach(participant => {
+        //     participant.tracks.forEach(publication => {
+        //         if (publication.isSubscribed) {
+        //             handleTrackEnabled(publication.track);
+        //         }
+        //         publication.on('subscribed', handleTrackEnabled);
+        //     });
+        // });
+
+        // const handleTrackEnabled = track => {
+        //     track.on('enabled', () => {
+        //         console.log('enabled video track');
+        //     });
+        // };
+
+        //local media tracks attaching to dom
+        createLocalVideoTrack()
+            .then(track => {
+                const localMediaContainer = localMedia.current;
+                console.log('attaching local media', track);
+                localMedia.current.appendChild(track.attach());
+            })
+            .then(err => {
+                console.log(err);
+            });
     };
 
     const startVideo = () => {
@@ -98,7 +181,36 @@ const VideoChat = props => {
                     </div>
                 </div>
             </div>
-            {hasJoinedRoom ? <Room room={activeRoom} /> : ''}
+            {/* {hasJoinedRoom ? <Room room={activeRoom} /> : ''} */}
+            {hasJoinedRoom ? (
+                <div className='bgdark withSideBar meetRoom waitingHost'>
+                    <div className='host text-right  d-none d-lg-block videodiv flex-item' ref={localMedia}></div>
+                    <div className='container mainRoom'>
+                        <div className='row justify-content-center align-items-center h-100'>
+                            <div>
+                                <div
+                                    className='media mainRoomMedia personal-details media-body text-center d-block mb-4 remotevideodiv'
+                                    ref={remoteMedia}></div>
+
+                                {isRemote ? (
+                                    ''
+                                ) : (
+                                    <div className='media mainRoomMedia personal-details media-body text-center d-block mb-4'>
+                                        <div className='text-center default-opacity m-auto avatar-container'></div>
+                                        <h2 className='font36 mt-4 mb-2 mb-0'>Waiting for the host.</h2>
+                                        <p className='edit-bio medium-size gray8' href='#'>
+                                            Host is available and must join the room soon
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ) : (
+                ''
+            )}
+
             {hasJoinedRoom ? <Footer room={activeRoom} setHasJoinedRoom={setHasJoinedRoom} /> : ''}
         </>
     );

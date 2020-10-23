@@ -19,14 +19,13 @@ const MeeterList = props => {
 
     const total_req = accessFromObject(data, 'total_pending');
     const meetings = accessFromArray(data, 'mettings');
-    console.log('data of meeter', meetings);
+
     const userInfo = useSelector(state => state.auth.user);
     const roomInfo = useSelector(state => state.rooms);
-    console.log('user info is', userInfo);
+
     const roomName = Math.floor(Math.random() * 1000000 + 1);
     const userEmail = userInfo.meeter_email;
     const onClickNotify = value => {
-        console.log('room', Math.floor(Math.random() * 1000000 + 1));
         const data = {
             status_category: 'single',
             status_type: 'accept',

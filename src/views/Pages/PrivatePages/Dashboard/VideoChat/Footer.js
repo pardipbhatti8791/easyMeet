@@ -11,7 +11,7 @@ const Footer = props => {
     const userId = userInfo.id;
     const availibility = userInfo.availibility.meeter_availibility;
     // if (availibility == 'yes') {
-    //     const { hours, minutes, seconds } = userInfo.availibility.available_for;
+    //     const { hours, minutes, seconds } = userInfo.availibility.available_for
     // }
     const [localAudio, setLocalAudio] = useState(true);
     const [localVideo, setLocalVideo] = useState(true);
