@@ -55,7 +55,7 @@ function UserInfo() {
             dispatch(openModal('MyAvailabilityModal', { open: true }));
         }
     };
-    const addDefaultSrc = () => {
+    const addDefaultSrc = e => {
         e.target.src = defaultImg;
     };
     return (
