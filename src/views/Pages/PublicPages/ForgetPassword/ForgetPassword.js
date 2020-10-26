@@ -5,26 +5,18 @@ import ThePublicHeader from '~/containers/PublicLayouts/PublicHeader';
 import { useForm } from 'react-hook-form';
 
 const ForgetPassword = () => {
-    const { register, handleSubmit, errors, watch, formState } = useForm({
+    const { register, handleSubmit, errors } = useForm({
         mode: 'onChange'
     });
     const dispatch = useDispatch();
 
-    const [email, setEmail] = useState('');
-    const onSubmit = e => {
-        e.preventDefault();
-        dispatch(forgetPassword(email))
-            .then(res => {
-                alert(res.data.message);
-            })
-            .catch(err => {
-                console.log(err);
-            });
+    const onSubmit = formData => {
+        const email = formData.email;
+        dispatch(forgetPassword(email)).then(res => {
+            alert('Reset mail sent');
+        });
     };
 
-    const handleEmailChange = event => {
-        setEmail(event.target.value);
-    };
     return (
         <section className='free-sign-up h-100 w-100'>
             <ThePublicHeader />
@@ -40,16 +32,15 @@ const ForgetPassword = () => {
                                 Enter your Email and we'll send you a link to reset your password
                             </p>
                         </div>
-                        <form className='mb-0 text-left' onSubmit={onSubmit}>
+                        <form className='mb-0 text-left' onSubmit={handleSubmit(onSubmit)}>
                             <div className='form-group mb-2'>
                                 <input
                                     type='email'
                                     className='form-control'
                                     id='exampleInputEmail1'
-                                    value={email}
+                                    name='email'
                                     placeholder='Email address'
                                     aria-describedby='emailHelp'
-                                    onChange={handleEmailChange}
                                     ref={register({
                                         required: {
                                             value: true,

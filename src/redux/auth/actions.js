@@ -147,14 +147,14 @@ export const loadUserPostAuthentication = (token = null, history) => async dispa
 export const forgetPassword = email => async dispatch => {
     const data = {
         email: email,
-        local: 'yes'
+        local: 'no'
     };
+
     try {
         const response = await gpAxios.post('/forgot-password', data);
-        console.log(response);
         return response;
     } catch (e) {
-        alert(e.response.data.message);
+        errorAlert(e.response.data.errors);
     }
 };
 
@@ -165,12 +165,10 @@ export const forgetPassword = email => async dispatch => {
  *
  */
 export const resetPassword = data => async dispatch => {
-    gpAxios
-        .post(apiPaths.user_management.reset_passsword, data)
-        .then(res => {
-            alert(res.data.message);
-        })
-        .catch(err => {
-            console.log(err);
-        });
+    try {
+        const response = gpAxios.post(apiPaths.user_management.reset_passsword, data);
+        return response;
+    } catch (err) {
+        errorAlert(err.response.data.errors);
+    }
 };

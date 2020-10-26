@@ -30,7 +30,7 @@ const MeeterList = props => {
             status_category: 'single',
             status_type: 'accept',
             requester_id: value,
-            video_meeting_url: `http://localhost:5010/video-chat/${roomName}`
+            video_meeting_url: `http://99.79.9.197/video-chat/${roomName}`
         };
         dispatch(notifyAll(data));
     };
@@ -121,7 +121,9 @@ const MeeterList = props => {
                             <div key={index} className='requster-container bg-white w-100 mt-3'>
                                 <div className='row mx-0'>
                                     <div className='media text-left mr-auto'>
-                                        <div className='align-self-start text-center mr-3 avatar-container bg-white medium-size'>
+                                        <div
+                                            className='align-self-start text-center mr-3 avatar-container bg-white medium-size'
+                                            style={{ paddingTop: '30px' }}>
                                             <span>{requester.requester_name.substr(0, 1).toUpperCase()} </span>
                                         </div>
                                         <div className='media-body align-self-center'>

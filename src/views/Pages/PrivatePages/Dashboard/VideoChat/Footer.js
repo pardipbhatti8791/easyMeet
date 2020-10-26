@@ -3,30 +3,26 @@ import { twilioLogout, meetingStatus } from '../../../../../redux/rooms/action';
 import { useSelector, useDispatch } from 'react-redux';
 
 const Footer = props => {
-    console.log('footer component', props.room);
     const room = props.room;
 
     const dispatch = useDispatch();
     const userInfo = useSelector(state => state.auth.user);
     const userId = userInfo.id;
     const availibility = userInfo.availibility.meeter_availibility;
-    // if (availibility == 'yes') {
-    //     const { hours, minutes, seconds } = userInfo.availibility.available_for
-    // }
+
     const [localAudio, setLocalAudio] = useState(true);
     const [localVideo, setLocalVideo] = useState(true);
 
     const leaveRoom = () => {
         room.on('disconnected', () => {
+            room.disconnect();
             // Detach the local media elements
             room.localParticipant.tracks.forEach(publication => {
                 publication.track.stop();
                 const attachedElements = publication.track.detach();
                 attachedElements.forEach(element => element.stop());
-                console.log('removing local media');
             });
         });
-        room.disconnect();
         //        setToken(null);
         props.setHasJoinedRoom(false);
         const data = {

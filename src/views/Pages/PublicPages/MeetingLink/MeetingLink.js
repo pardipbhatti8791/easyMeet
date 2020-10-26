@@ -7,11 +7,10 @@ import { getMeeterData, meetingRequest } from '../../../../redux/meetings/action
 
 import RenderComponent from '../../../../utils/renderComponent';
 import MeeterDetails from './children/MeeterDetails';
-import PhoneInput from "react-phone-input-2";
+import PhoneInput from 'react-phone-input-2';
 
 function MeetingLink(props) {
-
-    const [phoneNumber, setPhoneNumber] = useState("")
+    const [phoneNumber, setPhoneNumber] = useState('');
 
     const dispatch = useDispatch();
     const {
@@ -56,7 +55,11 @@ function MeetingLink(props) {
                     <div className='row'>
                         <div className='col-6 pl-0'>
                             <div className='personal-details py-5 boxShadowNon'>
-                                <RenderComponent component={MeeterDetails} spinner={meeter_spinner} data={meeter_data} />
+                                <RenderComponent
+                                    component={MeeterDetails}
+                                    spinner={meeter_spinner}
+                                    data={meeter_data}
+                                />
                             </div>
                         </div>
                         <div className='col-6 bg-white'>
@@ -130,11 +133,11 @@ function MeetingLink(props) {
                                             />
                                         </div>
                                         <div className='form-group'>
-                                            <label htmlFor='meeter_phone'>Phone</label>
+                                            <label htmlFor='meeter_phone'></label>
                                             <PhoneInput
                                                 inputProps={{
                                                     name: 'phone',
-                                                    required: true,
+                                                    required: true
                                                 }}
                                                 inputStyle={{
                                                     display: 'block',
@@ -153,7 +156,6 @@ function MeetingLink(props) {
                                                 }}
                                                 onChange={phone => setPhoneNumber(phone)}
                                             />
-
                                         </div>
                                         <div className='form-group'>
                                             <label htmlFor='summary'>Meeting summary</label>
