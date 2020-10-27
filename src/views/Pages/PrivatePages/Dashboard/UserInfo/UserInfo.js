@@ -156,7 +156,7 @@ function UserInfo() {
                                     <>
                                         Available for <span>{available_for && available_for.hours}</span> hours{' '}
                                         <span>{available_for && available_for.minutes}</span> minutes. available_for
-                                        <a href='#'>Extend ⯆</a>
+                                        {/* <a href='#'>Extend ⯆</a> */}
                                     </>
                                 ) : (
                                     'Not Available'

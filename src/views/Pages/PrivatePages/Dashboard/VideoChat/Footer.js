@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 const Footer = props => {
     const room = props.room;
-
+    console.log('room value is', room);
     const dispatch = useDispatch();
     const userInfo = useSelector(state => state.auth.user);
     const userId = userInfo.id;
@@ -14,9 +14,9 @@ const Footer = props => {
     const [localVideo, setLocalVideo] = useState(true);
 
     const leaveRoom = () => {
+        room.disconnect();
         room.on('disconnected', () => {
-            room.disconnect();
-            // Detach the local media elements
+            console.log('disconected');
             room.localParticipant.tracks.forEach(publication => {
                 publication.track.stop();
                 const attachedElements = publication.track.detach();

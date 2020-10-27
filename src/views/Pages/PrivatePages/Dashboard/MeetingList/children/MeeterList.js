@@ -26,6 +26,10 @@ const MeeterList = props => {
     const roomName = Math.floor(Math.random() * 1000000 + 1);
     const userEmail = userInfo.meeter_email;
     const onClickNotify = value => {
+        dispatch(getAccessToken(roomName, userEmail)).then(res => {
+            localStorage.setItem('twilioacesstoken', res.data.data.result.access_token);
+            window.location.href = `/video-chat/${roomName}`;
+        });
         const data = {
             status_category: 'single',
             status_type: 'accept',
@@ -42,26 +46,20 @@ const MeeterList = props => {
         };
         dispatch(notifyAll(data));
     };
-    const onClickNotifyAll = () => {
-        const data = {
-            status_category: 'multiple',
-            status_type: 'accept'
-        };
-        dispatch(notifyAll(data));
-    };
-    const onClickRejectAll = () => {
-        const data = {
-            status_category: 'multiple',
-            status_type: 'reject'
-        };
-        dispatch(notifyAll(data));
-    };
-    const onJoinRoomClick = () => {
-        dispatch(getAccessToken(roomName, userEmail)).then(res => {
-            localStorage.setItem('twilioacesstoken', res.data.data.result.access_token);
-            window.location.href = `/video-chat/${roomName}`;
-        });
-    };
+    // const onClickNotifyAll = () => {
+    //     const data = {
+    //         status_category: 'multiple',
+    //         status_type: 'accept'
+    //     };
+    //     dispatch(notifyAll(data));
+    // };
+    // const onClickRejectAll = () => {
+    //     const data = {
+    //         status_category: 'multiple',
+    //         status_type: 'reject'
+    //     };
+    //     dispatch(notifyAll(data));
+    // };
 
     return (
         <>
@@ -133,11 +131,11 @@ const MeeterList = props => {
                                     </div>
                                     <div className='ml-auto'>
                                         <div className='bulk-action text-right pr-0'>
-                                            <button
+                                            {/* <button
                                                 className='btn default-btn small-size bg-white  ml-3'
                                                 onClick={onJoinRoomClick}>
                                                 Join Room
-                                            </button>
+                                            </button> */}
 
                                             <button
                                                 className='btn default-btn small-size bg-white notify ml-3'

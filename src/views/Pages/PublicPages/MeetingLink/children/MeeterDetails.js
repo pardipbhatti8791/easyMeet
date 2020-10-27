@@ -1,11 +1,10 @@
 import React, { Fragment } from 'react';
 import { accessFromObject } from '../../../../../utils/accessFromObject';
-import { Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+
 const MeeterDetails = props => {
     const { data } = props;
-    const meetingData = useSelector(state => state.meeting);
-    console.log('meeting data', meetingData);
+
+    const availabilty = accessFromObject(data, 'availibility');
     return (
         <Fragment>
             <div className='media personal-details media-body text-center d-block mb-4'>
@@ -24,7 +23,12 @@ const MeeterDetails = props => {
                     {accessFromObject(data, 'meeter_bio')}
                 </a>
                 <span className='small-size d-block opacity-6 mt-1'>
-                    Has been available <span>4</span> hours ago
+                    {accessFromObject(availabilty, 'meeter_availibility') === 'yes' &&
+                    accessFromObject(availabilty, 'available_for').hours <= 72
+                        ? `Available for ${accessFromObject(availabilty, 'available_for').hours} hours and ${
+                              accessFromObject(availabilty, 'available_for').minutes
+                          }`
+                        : 'Not Available'}
                 </span>
             </div>
             <div className='mb-4'>

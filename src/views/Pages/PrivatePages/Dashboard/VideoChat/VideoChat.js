@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
     setAccessToken,
     twilioLogout,
@@ -22,9 +22,14 @@ const VideoChat = props => {
     const localMedia = useRef(null);
     const remoteMedia = useRef(null);
     const roomName = props.match.params.roomName;
-
+    useEffect(() => {
+        if (twilioToken !== null && hasJoinedRoom === false) {
+            joinRoom(roomName, twilioToken);
+        }
+    }, []);
     const joinRoom = (roomName, accessToken) => {
-        console.log("Joining room '" + roomName + "'...");
+        //console.log("Joining room '" + roomName + "'...");
+        console.log('join room called');
         const tokenToBeSend = twilioToken == null ? accessToken : twilioToken;
 
         createLocalTracks({
@@ -41,7 +46,7 @@ const VideoChat = props => {
                 );
             })
             .then(room => {
-                console.log(`Connected to Room: ${room.name}`);
+                // console.log(`Connected to Room: ${room.name}`);
                 roomJoined(room);
             });
     };
@@ -55,6 +60,7 @@ const VideoChat = props => {
         const localParticipant = room.localParticipant;
         dispatch(meetingStatus(data)).then(res => {});
         setActiveRoom(room);
+
         setHasJoinedRoom(true);
 
         // Log your Client's LocalParticipant in the Room
@@ -98,14 +104,14 @@ const VideoChat = props => {
             });
 
             participant.on('trackSubscribed', track => {
-                console.log('trackSubscribed', track);
+                // console.log('trackSubscribed', track);
                 remoteMedia.current.appendChild(track.attach());
             });
         });
         room.participants.forEach(participant => {
             participant.tracks.forEach(publication => {
                 if (publication.track) {
-                    console.log('publication track', track);
+                    //  console.log('publication track', track);
                     remoteMedia.current.appendChild(publication.track.attach());
                 }
             });
@@ -136,11 +142,11 @@ const VideoChat = props => {
         createLocalVideoTrack()
             .then(track => {
                 const localMediaContainer = localMedia.current;
-                console.log('attaching local media', track);
+                // console.log('attaching local media', track);
                 localMedia.current.appendChild(track.attach());
             })
             .then(err => {
-                console.log(err);
+                //  console.log(err);
             });
     };
 
@@ -160,10 +166,11 @@ const VideoChat = props => {
                         dispatch(twilioLogout());
                     });
             });
-        } else {
-            console.log('join to room   ');
-            joinRoom(roomName);
         }
+        // else {
+        //     // console.log('join to room   ');
+        //     joinRoom(roomName);
+        // }
     };
 
     return (
@@ -171,12 +178,16 @@ const VideoChat = props => {
             <div className='container'>
                 <div className='row'>
                     <div className='col-sm-6'>
-                        {hasJoinedRoom ? (
-                            ''
+                        {twilioToken === null ? (
+                            hasJoinedRoom ? (
+                                ''
+                            ) : (
+                                <button className='btn btn-primary' onClick={startVideo}>
+                                    Start Call
+                                </button>
+                            )
                         ) : (
-                            <button className='btn btn-primary' onClick={startVideo}>
-                                Start Call
-                            </button>
+                            ''
                         )}
                     </div>
                 </div>
@@ -197,10 +208,8 @@ const VideoChat = props => {
                                 ) : (
                                     <div className='media mainRoomMedia personal-details media-body text-center d-block mb-4'>
                                         <div className='text-center default-opacity m-auto avatar-container'></div>
-                                        <h2 className='font36 mt-4 mb-2 mb-0'>Waiting for the host.</h2>
-                                        <p className='edit-bio medium-size gray8' href='#'>
-                                            Host is available and must join the room soon
-                                        </p>
+                                        <h2 className='font36 mt-4 mb-2 mb-0'>Waiting for the participant.</h2>
+                                        <p className='edit-bio medium-size gray8' href='#'></p>
                                     </div>
                                 )}
                             </div>
