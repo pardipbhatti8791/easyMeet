@@ -34,7 +34,7 @@ const MeeterList = props => {
             status_category: 'single',
             status_type: 'accept',
             requester_id: value,
-            video_meeting_url: `http://99.79.9.197/video-chat/${roomName}`
+            video_meeting_url: `http://35.182.91.29/video-chat/${roomName}`
         };
         dispatch(notifyAll(data));
     };

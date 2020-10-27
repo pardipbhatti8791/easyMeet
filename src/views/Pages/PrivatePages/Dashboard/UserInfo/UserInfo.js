@@ -155,7 +155,7 @@ function UserInfo() {
                                 ) : meeter_availibility === 'yes' ? (
                                     <>
                                         Available for <span>{available_for && available_for.hours}</span> hours{' '}
-                                        <span>{available_for && available_for.minutes}</span> minutes. available_for
+                                        <span>{available_for && available_for.minutes}</span> minutes.
                                         {/* <a href='#'>Extend ⯆</a> */}
                                     </>
                                 ) : (

@@ -29,7 +29,7 @@ const VideoChat = props => {
     }, []);
     const joinRoom = (roomName, accessToken) => {
         //console.log("Joining room '" + roomName + "'...");
-        console.log('join room called');
+        // console.log('join room called');
         const tokenToBeSend = twilioToken == null ? accessToken : twilioToken;
 
         createLocalTracks({
@@ -64,32 +64,32 @@ const VideoChat = props => {
         setHasJoinedRoom(true);
 
         // Log your Client's LocalParticipant in the Room
-        console.log(`Connected to the Room as LocalParticipant "${localParticipant.identity}"`);
+        //console.log(`Connected to the Room as LocalParticipant "${localParticipant.identity}"`);
 
         // Log any Participants already connected to the Room
         room.participants.forEach(participant => {
-            console.log(`Participant "${participant.identity}" is connected to the Room`);
+            //console.log(`Participant "${participant.identity}" is connected to the Room`);
             setIsRemote(true);
         });
 
         // Log new Participants as they connect to the Room
         room.once('participantConnected', participant => {
-            console.log(`Participant "${participant.identity}" has connected to the Room`);
+            // console.log(`Participant "${participant.identity}" has connected to the Room`);
         });
 
         // Log Participants as they disconnect from the Room
         room.once('participantDisconnected', participant => {
-            console.log(`Participant "${participant.identity}" has disconnected from the Room`);
+            // console.log(`Participant "${participant.identity}" has disconnected from the Room`);
             setIsRemote(false);
         });
 
         room.on('participantConnected', participant => {
-            console.log(`Participant connected: ${participant.identity}`);
+            // console.log(`Participant connected: ${participant.identity}`);
             setIsRemote(true);
         });
 
         room.on('participantDisconnected', participant => {
-            console.log(`   Participant disconnected: ${participant.identity}`);
+            // console.log(`   Participant disconnected: ${participant.identity}`);
         });
 
         // Attach the Participant's Media to a <div> element.
