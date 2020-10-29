@@ -16,8 +16,6 @@ const Avatar = () => {
     const [userProfileImageName, setUserProfileImageName] = useState();
     const dispatch = useDispatch();
 
-    // Azithral 500 - 1
-
     /**
      *
      * @param image
@@ -38,6 +36,7 @@ const Avatar = () => {
     const uploadProfileImage = () => {
         setLoader(true);
         var formData = new FormData();
+
         formData.append('meeter_image', userProfileImage, userProfileImageName);
         dispatch(updateProfilePicture(formData)).then(resp => {
             setLoader(false);
@@ -63,7 +62,7 @@ const Avatar = () => {
     };
 
     return (
-        <div className='profile-photo-dialog'>
+        <div>
             <div className='modal-header'>
                 <h5 className='modal-title small-size align-self-center'>Upload your photo</h5>
                 <button type='button' className='close' onClick={() => dispatch(closeModal())}>
@@ -75,7 +74,7 @@ const Avatar = () => {
                 <div className={previewImage != null ? 'd-block' : 'd-none'}>
                     <div style={{ width: '100%' }}>
                         <Cropper
-                            style={{ height: 350, width: '98%' }}
+                            style={{ height: 350, width: '100%' }}
                             initialAspectRatio={1}
                             src={image}
                             viewMode={1}
@@ -95,7 +94,7 @@ const Avatar = () => {
 
                 <div className={previewImage != null ? 'd-flex change-cropbtn' : ''}>
                     <div className={previewImage != null ? 'd-block text-right' : 'd-none'}>
-                        <button className='btn primary-btn ml-auto mb-1 medium-size updatePhoto' onClick={getCropData}>
+                        <button className='btn primary-btn ml-auto mb-3 medium-size updatePhoto' onClick={getCropData}>
                             Crop Image
                         </button>
                     </div>
@@ -104,16 +103,13 @@ const Avatar = () => {
                             {({ getRootProps, getInputProps }) => {
                                 return (
                                     <>
-                                        <section
-                                            className={
-                                                previewImage != null ? 'change-image' : ' photo is-desktop photo--empty'
-                                            }>
+                                        <section className='change-image'>
                                             <div
                                                 {...getRootProps()}
                                                 className={previewImage != null ? '' : 'photo__frame'}>
                                                 <input {...getInputProps()} />
                                                 <div className={previewImage != null ? 'd-block' : 'd-none'}>
-                                                    <button className='btn primary-btn ml-3 mb-1 medium-size updatePhoto'>
+                                                    <button className='btn primary-btn ml-3 mb-3 medium-size updatePhoto'>
                                                         Change Image
                                                     </button>
                                                 </div>
@@ -124,13 +120,15 @@ const Avatar = () => {
                                                     <i
                                                         className='fa fa-picture-o d-block opacity-4 mb-1'
                                                         aria-hidden='true'></i>
-                                                    <p className='message--desktop medium-size mb-1'>
+                                                    <p
+                                                        className='message--desktop medium-size mb-1'
+                                                        style={{ display: 'inline-block' }}>
                                                         Drop your photo here,
                                                         <span className='blue'> or browse</span>
                                                     </p>
-                                                    <p className='message--mobile mb-1'>
+                                                    {/* <p className='message--mobile mb-1'>
                                                         Tap here to select your picture.
-                                                    </p>
+                                                    </p> */}
                                                     <p className='small-size opacity-6 mb-1'>
                                                         Supported formats: JPG, PNG, BMP
                                                     </p>

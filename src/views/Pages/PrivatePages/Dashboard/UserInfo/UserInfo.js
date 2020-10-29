@@ -27,9 +27,6 @@ function UserInfo() {
         setEditBio({ value: userInfo.meeter_bio });
     }, []);
 
-    if (userInfo !== null) {
-    }
-
     const updateBio = () => {
         const data = {
             meeter_bio: editBio.value
@@ -69,9 +66,12 @@ function UserInfo() {
                                     id='openDrag'
                                     className='mb-1'
                                     src={userInfo.meeter_image_slug === '' ? noPhoto : userInfo.meeter_image_slug}
+                                    //src={userInfo.meeter_image_slug}
                                     alt='photo'
-                                    onError={addDefaultSrc}
-                                    onClick={() => dispatch(openModal('AvatarModal', { open: true }))}
+                                    //onError={addDefaultSrc}
+                                    onClick={() => {
+                                        dispatch(openModal('AvatarModal', { open: true }));
+                                    }}
                                 />
                             </div>
                             <div className='media-body align-self-center'>
