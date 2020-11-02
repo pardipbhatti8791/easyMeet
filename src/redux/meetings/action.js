@@ -122,11 +122,17 @@ export const updateProfilePicture = data => async dispatch => {
     }
 };
 
-export const getAccessToken = () => async dispatch => {
-    try {
-        const response = await gpAxios.get('/meeter/video/get-access-token');
-        return response;
-    } catch (e) {
-        console.log(e);
-    }
-};
+// export const getAccessToken = (roomName, identity) => async dispatch => {
+//     try {
+//         const response = await gpAxios.get(
+//             `/meeter/video/get-access-token\?identity=${identity}&room_name=${roomName}`
+//         );
+//         dispatch({
+//             type: meeting.GET_TOKEN_SUCESS,
+//             payload: response.data.data.result.access_token
+//         });
+//         return response;
+//     } catch (e) {
+//         console.log(e);
+//     }
+// };

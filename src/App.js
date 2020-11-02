@@ -39,7 +39,7 @@ const App = () => {
                         <Route exact path='/login' component={Login} />
                         <Route exact path='/sign-up' component={SignUp} />
                         <Route exact path='/forget-password' component={ForgetPassword} />
-                        <Route exact path='/reset-password/:token?' component={ResetPassword} />
+                        <PublicRoute exact path='/reset-password/:token?' component={ResetPassword} />
                         <ProtectedRoute path='/' component={DefaultLayout} />
                     </Switch>
                 </React.Suspense>

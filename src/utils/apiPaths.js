@@ -15,5 +15,6 @@ export const apiPaths = {
     meeter_slug_update: '/update-meeting-slug',
     get_meeting_request_url: '/meeting-request-send',
     get_meeting_list: 'show-meetings?meeting_status=all&keywords=&page=&limit=',
-    change_meeting_status: '/meeter/change-meeting-status'
+    change_meeting_status: '/meeter/change-meeting-status',
+    get_meeting_room_status: '/check-room-status?room_name='
 };

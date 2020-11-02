@@ -52,6 +52,7 @@ export default (state = initialState, action) => {
         case LOGOUT:
             localStorage.removeItem('token');
             localStorage.removeItem('userInfo');
+            localStorage.removeItem('twilioacesstoken');
             return {
                 ...state,
                 token: null,

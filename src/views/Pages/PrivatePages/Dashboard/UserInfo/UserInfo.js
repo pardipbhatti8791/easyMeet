@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RadioGroup, RadioButton } from 'react-radio-buttons';
-import VideoChat from '../VideoChat/VideoChat';
-
+import defaultImg from '../../../../../assets/images/defaultProfile.png';
 import { updateUserBio } from '~/redux/boarding/action';
 import Modal from 'react-bootstrap/Modal';
 import { updateAvailability } from '~/redux/boarding/action';
@@ -27,9 +26,6 @@ function UserInfo() {
         dispatch(checkAvailability(userInfo.id));
         setEditBio({ value: userInfo.meeter_bio });
     }, []);
-
-    if (userInfo !== null) {
-    }
 
     const updateBio = () => {
         const data = {
@@ -56,7 +52,9 @@ function UserInfo() {
             dispatch(openModal('MyAvailabilityModal', { open: true }));
         }
     };
-
+    const addDefaultSrc = e => {
+        e.target.src = defaultImg;
+    };
     return (
         <>
             <section className='personal-details bg-white pb-4'>
@@ -68,8 +66,12 @@ function UserInfo() {
                                     id='openDrag'
                                     className='mb-1'
                                     src={userInfo.meeter_image_slug === '' ? noPhoto : userInfo.meeter_image_slug}
+                                    //src={userInfo.meeter_image_slug}
                                     alt='photo'
-                                    onClick={() => dispatch(openModal('AvatarModal', { open: true }))}
+                                    //onError={addDefaultSrc}
+                                    onClick={() => {
+                                        dispatch(openModal('AvatarModal', { open: true }));
+                                    }}
                                 />
                             </div>
                             <div className='media-body align-self-center'>
@@ -133,7 +135,7 @@ function UserInfo() {
                                     <button
                                         className='btn btn-default meeting-btn bg-white small-size'
                                         onClick={() => {
-                                            window.location.href = '/video-chat';
+                                            // window.location.href = '/video-chat';
                                         }}>
                                         <i className='fa fa-camera' aria-hidden='true' /> Meeting Room
                                     </button>
@@ -153,8 +155,8 @@ function UserInfo() {
                                 ) : meeter_availibility === 'yes' ? (
                                     <>
                                         Available for <span>{available_for && available_for.hours}</span> hours{' '}
-                                        <span>{available_for && available_for.minutes}</span> minutes.{' '}
-                                        <a href='#'>Extend ⯆</a>
+                                        <span>{available_for && available_for.minutes}</span> minutes.
+                                        {/* <a href='#'>Extend ⯆</a> */}
                                     </>
                                 ) : (
                                     'Not Available'
