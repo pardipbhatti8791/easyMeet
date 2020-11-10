@@ -12,7 +12,7 @@
     "prod": "npm run clean && npm run build:prod",
     "build:dev": "webpack --config webpack.dev.js",
     "build:prod": "webpack -p --mode production --config webpack.prod.js",
-    "clean": "rimraf public/dist"
+    "clean": "rimraf public/dist",
   },
   "dependencies": {
     "@babel/core": "7.9.0",

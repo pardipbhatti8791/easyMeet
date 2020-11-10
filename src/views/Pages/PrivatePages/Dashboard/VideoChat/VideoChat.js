@@ -1,13 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import {
-    setAccessToken,
-    twilioLogout,
-    getAccessToken,
-    meetingStatus,
-    getMeetingRoomStatus
-} from '../../../../../redux/rooms/action';
+import axios from 'axios';
+import { twilioLogout, meetingStatus, getAccessToken, getMeetingRoomStatus } from '../../../../../redux/rooms/action';
 import { useDispatch, useSelector } from 'react-redux';
 import Footer from './Footer';
+import { queryString } from '../../../../../utils/qs';
 
 const { connect, createLocalTracks, createLocalVideoTrack, isSupported } = require('twilio-video');
 const VideoChat = props => {
@@ -15,56 +11,71 @@ const VideoChat = props => {
     const [hasJoinedRoom, setHasJoinedRoom] = useState(false);
     const [activeRoom, setActiveRoom] = useState(null);
     const [isRemote, setIsRemote] = useState(false);
-    const userInfo = useSelector(state => state.auth.user);
-    const twilioToken = useSelector(state => state.rooms.token);
-    const userIdentity = userInfo.meeter_email;
-    const userId = userInfo.id;
+    const [twilioToken, set_twilioToken] = useState(null);
+    const [twilioRoom, set_twilioRoom] = useState(null);
+    const [requester, set_requester] = useState(null);
+
+    const isAuth = useSelector(state => state.auth.isAuthenticated);
+
     const localMedia = useRef(null);
     const remoteMedia = useRef(null);
-    const roomName = props.match.params.roomName;
-    useEffect(() => {
-        if (twilioToken !== null && hasJoinedRoom === false) {
-            joinRoom(roomName, twilioToken);
-        }
-    }, []);
-    const joinRoom = (roomName, accessToken) => {
-        //console.log("Joining room '" + roomName + "'...");
-        // console.log('join room called');
-        const tokenToBeSend = twilioToken == null ? accessToken : twilioToken;
 
+    useEffect(() => {
+        checkToken();
+    }, []);
+
+    const checkToken = async () => {
+        const singnature = await queryString(props.location.search);
+
+        // eslint-disable-next-line no-undef
+        const decrypted = CryptoJS.AES.decrypt(singnature.room, 'guguilovu');
+        // eslint-disable-next-line no-undef
+        var plaintext = decrypted.toString(CryptoJS.enc.Utf8);
+
+        const { data } = await axios.post('http://localhost:4000/verify/', { token: plaintext });
+        if (data.hasOwnProperty('twillioToken') && data.hasOwnProperty('roomName')) {
+            set_requester(data.requesterEmail);
+            set_twilioRoom(data.roomName);
+            if (isAuth) {
+                joinRoom(data.roomName, data.twillioToken, data.requesterEmail);
+            }
+        }
+    };
+
+    const joinRoom = (roomName, accessToken, requesterEmail) => {
         createLocalTracks({
             audio: true,
             video: { width: 1920, height: 1080 }
         })
             .then(localTracks => {
-                return connect(
-                    tokenToBeSend,
-                    {
-                        name: roomName,
-                        tracks: localTracks
-                    }
-                );
+                return connect(accessToken, {
+                    name: roomName,
+                    tracks: localTracks
+                });
             })
             .then(room => {
                 // console.log(`Connected to Room: ${room.name}`);
-                roomJoined(room);
+                roomJoined(room, requesterEmail);
             });
     };
 
-    const roomJoined = room => {
+    const roomJoined = (room, requesterEmail) => {
         const data = {
             status_category: 'single',
             status_type: 'in_meeting',
-            requester_id: userId
+            requester_id: requesterEmail
         };
         const localParticipant = room.localParticipant;
-        dispatch(meetingStatus(data)).then(res => {});
+        if (isAuth) {
+            dispatch(meetingStatus(data)).then(res => {});
+        }
+
         setActiveRoom(room);
 
         setHasJoinedRoom(true);
 
         // Log your Client's LocalParticipant in the Room
-        //console.log(`Connected to the Room as LocalParticipant "${localParticipant.identity}"`);
+        console.log(`Connected to the Room as LocalParticipant "${localParticipant.identity}"`);
 
         // Log any Participants already connected to the Room
         room.participants.forEach(participant => {
@@ -152,47 +163,44 @@ const VideoChat = props => {
 
     const startVideo = () => {
         if (twilioToken == null) {
-            dispatch(getAccessToken(roomName, userIdentity)).then(res => {
-                localStorage.setItem('twilioacesstoken', res.data.data.result.access_token);
+            dispatch(getAccessToken(twilioRoom, requester)).then(res => {
                 const accessToken = res.data.data.result.access_token;
-                dispatch(getMeetingRoomStatus(roomName))
+                dispatch(getMeetingRoomStatus(twilioRoom))
                     .then(res => {
-                        dispatch(setAccessToken(res.data.data.result.access_token));
-                        joinRoom(roomName, accessToken);
+                        joinRoom(twilioRoom, accessToken);
                     })
                     .catch(err => {
                         alert('Room not exist');
                         localStorage.removeItem('twilioacesstoken');
                         dispatch(twilioLogout());
                     });
-            });
+            }).catch(e => {
+                alert('Unauthorized')
+            })
         }
-        // else {
-        //     // console.log('join to room   ');
-        //     joinRoom(roomName);
-        // }
     };
 
     return (
         <>
             <div className='container'>
-                <div className='row'>
-                    <div className='col-sm-6'>
-                        {twilioToken === null ? (
-                            hasJoinedRoom ? (
-                                ''
+                {!isAuth && (
+                    <div className='row'>
+                        <div className='col-sm-12 mt-5 justify-content-center align-items-center'>
+                            {twilioToken === null ? (
+                                hasJoinedRoom ? (
+                                    ''
+                                ) : (
+                                    <button className='btn btn-primary' onClick={startVideo}>
+                                        Start Call
+                                    </button>
+                                )
                             ) : (
-                                <button className='btn btn-primary' onClick={startVideo}>
-                                    Start Call
-                                </button>
-                            )
-                        ) : (
-                            ''
-                        )}
+                                ''
+                            )}
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
-            {/* {hasJoinedRoom ? <Room room={activeRoom} /> : ''} */}
             {hasJoinedRoom ? (
                 <div className='bgdark withSideBar meetRoom waitingHost'>
                     <div className='host text-right  d-none d-lg-block videodiv flex-item' ref={localMedia}></div>
@@ -217,7 +225,9 @@ const VideoChat = props => {
                     </div>
                 </div>
             ) : (
-                ''
+                <div className={'mt-5'}>
+                    <h1>{isAuth ? 'Please wait while we are loading room' : ''}</h1>
+                </div>
             )}
 
             {hasJoinedRoom ? <Footer room={activeRoom} setHasJoinedRoom={setHasJoinedRoom} /> : ''}
