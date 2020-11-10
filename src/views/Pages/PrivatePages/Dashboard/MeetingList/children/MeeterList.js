@@ -12,6 +12,7 @@ import twitter from '~/assets/images/twitter.png';
 import linkedin from '~/assets/images/linkedin.png';
 import envelop from '~/assets/images/Envelope.png';
 import { copyToClipBoard } from '../../../../../../utils/copyToCilpBoard';
+import axios from 'axios';
 
 const MeeterList = props => {
     const dispatch = useDispatch();
@@ -25,10 +26,23 @@ const MeeterList = props => {
 
     const roomName = Math.floor(Math.random() * 1000000 + 1);
     const userEmail = userInfo.meeter_email;
+
     const onClickNotify = value => {
         dispatch(getAccessToken(roomName, userEmail)).then(res => {
-            localStorage.setItem('twilioacesstoken', res.data.data.result.access_token);
-            window.location.href = `/video-chat/${roomName}`;
+            axios
+                .post('http://localhost:4000/', {
+
+                    twillioToken: res.data.data.result.access_token,
+                    hostEmail: userEmail,
+                    roomName: roomName,
+                    requesterEmail: value
+                })
+                .then(newResp => {
+                    const { data } = newResp;
+                    // eslint-disable-next-line no-undef
+                    var encrypted = CryptoJS.AES.encrypt(data.signature, "guguilovu");
+                    window.location.href = `/video-chat/start/?room=${encrypted}`;
+                });
         });
         const data = {
             status_category: 'single',
@@ -141,7 +155,7 @@ const MeeterList = props => {
                                                 className='btn default-btn small-size bg-white notify ml-3'
                                                 value={requester.requester_id}
                                                 onClick={e => {
-                                                    onClickNotify(e.target.value);
+                                                    onClickNotify(requester.requester_email);
                                                 }}>
                                                 <i className='fa fa-bell-o mr-1' aria-hidden='true' />
                                                 Notify
@@ -194,12 +208,14 @@ const MeeterList = props => {
                                     </div>
                                     <div className='col mx-2 px-0'>
                                         <a className='px-1 py-2' href='#'>
-                                            <img className='pr-1' src={twitter} alt='Twitter' /> <span>Twitter</span>{' '}
+                                            <img className='pr-1' src={twitter} alt='Twitter' />
+                                            <span>Twitter</span>{' '}
                                         </a>
                                     </div>
                                     <div className='col mx-2 px-0'>
                                         <a className='px-1 py-2' href='#'>
-                                            <img className='pr-1' src={linkedin} alt='LinkedIn' /> <span>LinkedIn</span>{' '}
+                                            <img className='pr-1' src={linkedin} alt='LinkedIn' />
+                                            <span>LinkedIn</span>{' '}
                                         </a>
                                     </div>
                                     <div className='col mx-2 px-0'>

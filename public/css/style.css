@@ -2,7 +2,7 @@
 Project         :  Easy Meet
 Version         :  v1.0
 Author          :  Areeb
-Date            :  8/20/2020          
+Date            :  8/20/2020
 */
 
 /* ============================================ *
@@ -266,7 +266,7 @@ body {
   padding: 1.1rem 1.1rem;
 }
 .icon-bar {
-	width: 12px; 
+	width: 12px;
 	height: 2px;
 	background-color: #000;
 	display: block;
@@ -657,7 +657,7 @@ span.field-icon {
 
 /* Add animation (fade in the popup) */
 @-webkit-keyframes fadeIn {
-  from {opacity: 0;} 
+  from {opacity: 0;}
   to {opacity: 1;}
 }
 
@@ -788,7 +788,7 @@ span.field-icon {
   .modal #button-10 .checkbox:checked + .knobs:after {
   font-family: "Sofia-Pro-Light";
   color: #000;
- } 
+ }
  .modal #button-10 .knobs:after {
   content: "Not Available";
   right: 5px;
@@ -1299,7 +1299,7 @@ span.field-icon {
 #drag .flex {
   display: flex;
   width: 100%;
-  
+
 }
 
 #drag .flex .left {
@@ -1488,7 +1488,7 @@ footer .terms ul {
 .fixed-top::-webkit-scrollbar-thumb {
   -webkit-border-radius: 10px;
   border-radius: 10px;
-  background: #6d6d6d; 
+  background: #6d6d6d;
 }
 .fixed-top .modal-header .close {
   float: left;
@@ -1702,8 +1702,8 @@ footer .footerDetails > div {
   #home .about .aboutTitle,
   #home .about .aboutImg,
   #home .howItWorksSteps  {
-    text-align: center!important;  
-  } 
+    text-align: center!important;
+  }
   #home .about .aboutTitle {
     margin: auto;
     margin-bottom: 2rem;
@@ -1807,7 +1807,7 @@ footer .footerDetails > div {
     width: 35px;
   }
 }
-.videodiv video 
+.videodiv video
 {
   width: 35%;
   height: 15%;
@@ -1820,4 +1820,14 @@ footer .footerDetails > div {
   height: 15%;
   background-color: #272726;
   background-repeat: no-repeat;
+}
+
+
+element.style {
+}
+.meetRoom .host {
+  position: absolute;
+  right: 0;
+  width: 500px;
+  padding: 20px;
 }

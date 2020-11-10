@@ -12,6 +12,7 @@ import ModalManager from './redux/global_modal/manager';
 const Login = React.lazy(() => import('./views/Pages/PublicPages/Login/Login'));
 const SignUp = React.lazy(() => import('./views/Pages/PublicPages/Register/SignUp'));
 const MeetingLink = React.lazy(() => import('./views/Pages/PublicPages/MeetingLink/MeetingLink'));
+const VideoChat = React.lazy(() => import('./views/Pages/PrivatePages/Dashboard/VideoChat/VideoChat'));
 const DefaultLayout = React.lazy(() => import('./containers/PrivateLayouts/TheLayout'));
 const ForgetPassword = React.lazy(() => import('./views/Pages/PublicPages/ForgetPassword/ForgetPassword'));
 const ResetPassword = React.lazy(() => import('./views/Pages/PublicPages/ResetPassword/ResetPassword'));
@@ -35,6 +36,7 @@ const App = () => {
                 <ModalManager />
                 <React.Suspense fallback={loading()}>
                     <Switch>
+                        <Route path='/video-chat/:signature' component={VideoChat} />
                         <Route path='/meet/:slug' component={MeetingLink} />
                         <Route exact path='/login' component={Login} />
                         <Route exact path='/sign-up' component={SignUp} />
