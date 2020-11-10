@@ -2,7 +2,6 @@ import { SET_TOKEN_SUCCESS } from './type';
 import { TWILIO_LOGOUT } from './type';
 import { gpAxios } from '../../utils/gpAxios';
 import { apiPaths } from '../../utils/apiPaths';
-import axios from 'axios';
 
 /*
 

@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 const Footer = props => {
     const room = props.room;
-    console.log('room value is', room);
+
     const dispatch = useDispatch();
     const userInfo = useSelector(state => state.auth.user);
     const userId = userInfo.id;
@@ -16,14 +16,13 @@ const Footer = props => {
     const leaveRoom = () => {
         room.disconnect();
         room.on('disconnected', () => {
-            console.log('disconected');
             room.localParticipant.tracks.forEach(publication => {
                 publication.track.stop();
                 const attachedElements = publication.track.detach();
                 attachedElements.forEach(element => element.stop());
             });
         });
-        //        setToken(null);
+
         props.setHasJoinedRoom(false);
         const data = {
             status_category: 'single',

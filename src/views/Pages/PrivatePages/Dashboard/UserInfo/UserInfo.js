@@ -61,14 +61,13 @@ function UserInfo() {
                 <div className='container'>
                     <div className='row'>
                         <div className='media text-left'>
-                            <div className='align-self-center text-center mr-3 default-opacity avatar-container'>
+                            <div>
                                 <img
                                     id='openDrag'
-                                    className='mb-1'
+                                    className='mb-1 align-self-center text-center mr-3 default-opacity avatar-container'
                                     src={userInfo.meeter_image_slug === '' ? noPhoto : userInfo.meeter_image_slug}
-                                    //src={userInfo.meeter_image_slug}
                                     alt='photo'
-                                    //onError={addDefaultSrc}
+                                    onError={addDefaultSrc}
                                     onClick={() => {
                                         dispatch(openModal('AvatarModal', { open: true }));
                                     }}

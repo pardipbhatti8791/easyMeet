@@ -31,24 +31,27 @@ const VideoChat = props => {
         //console.log("Joining room '" + roomName + "'...");
         // console.log('join room called');
         const tokenToBeSend = twilioToken == null ? accessToken : twilioToken;
-
-        createLocalTracks({
-            audio: true,
-            video: { width: 1920, height: 1080 }
-        })
-            .then(localTracks => {
-                return connect(
-                    tokenToBeSend,
-                    {
-                        name: roomName,
-                        tracks: localTracks
-                    }
-                );
+        if (isSupported) {
+            createLocalTracks({
+                audio: true,
+                video: { width: 1920, height: 1080 }
             })
-            .then(room => {
-                // console.log(`Connected to Room: ${room.name}`);
-                roomJoined(room);
-            });
+                .then(localTracks => {
+                    return connect(
+                        tokenToBeSend,
+                        {
+                            name: roomName,
+                            tracks: localTracks
+                        }
+                    );
+                })
+                .then(room => {
+                    // console.log(`Connected to Room: ${room.name}`);
+                    roomJoined(room);
+                });
+        } else {
+            alert('Browser not supported');
+        }
     };
 
     const roomJoined = room => {
