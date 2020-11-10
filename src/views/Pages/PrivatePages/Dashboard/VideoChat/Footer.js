@@ -7,8 +7,9 @@ const Footer = props => {
 
     const dispatch = useDispatch();
     const userInfo = useSelector(state => state.auth.user);
-    const userId = userInfo.id;
-    const availibility = userInfo.availibility.meeter_availibility;
+    // const userId = userInfo.id;
+    const isAuth = useSelector(state => state.auth.isAuthenticated);
+    // const availibility = userInfo.availibility.meeter_availibility;
 
     const [localAudio, setLocalAudio] = useState(true);
     const [localVideo, setLocalVideo] = useState(true);
@@ -26,8 +27,8 @@ const Footer = props => {
         props.setHasJoinedRoom(false);
         const data = {
             status_category: 'single',
-            status_type: 'completed',
-            requester_id: userId
+            status_type: 'completed'
+            //       requester_id: userId
         };
 
         dispatch(meetingStatus(data)).then(res => {
@@ -95,8 +96,34 @@ const Footer = props => {
                                 </div>
                             </div>
                         </div>
-
-                        <div className='myAvilability d-flex align-items-start justify-content-center flex-column py-2 mr-4 pr-4'>
+                        {isAuth ? (
+                            <div className='myAvilability d-flex align-items-start justify-content-center flex-column py-2 mr-4 pr-4'>
+                                <div className='d-lg-none d-sm-block'>
+                                    <p className='font14 mb-1'>Available for</p>
+                                    <span className='small-size gray6 text-left'>
+                                        7h 49m.
+                                        <a className='blue' href='#'>
+                                            {' '}
+                                            Adjust
+                                        </a>{' '}
+                                    </span>
+                                </div>
+                                <div className='sm-none text-left'>
+                                    <p className='font14 mb-1'>My Availability</p>
+                                    {userInfo.availibility.meeter_availibility == 'yes' ? (
+                                        <span className='small-size gray6 text-left'>
+                                            Available for {userInfo.availibility.available_for.hours}h{' '}
+                                            {userInfo.availibility.available_for.minutes}m.{' '}
+                                        </span>
+                                    ) : (
+                                        <span className='small-size gray6 text-left'>Not Available</span>
+                                    )}
+                                </div>
+                            </div>
+                        ) : (
+                            ''
+                        )}
+                        {/* <div className='myAvilability d-flex align-items-start justify-content-center flex-column py-2 mr-4 pr-4'>
                             <div className='d-lg-none d-sm-block'>
                                 <p className='font14 mb-1'>Available for</p>
                                 <span className='small-size gray6 text-left'>
@@ -113,16 +140,13 @@ const Footer = props => {
                                     <span className='small-size gray6 text-left'>
                                         Available for {userInfo.availibility.available_for.hours}h{' '}
                                         {userInfo.availibility.available_for.minutes}m.{' '}
-                                        {/* <a className='blue' href='#'>
-                                            {' '}
-                                            Adjust
-                                        </a>{' '} */}
+                                       
                                     </span>
                                 ) : (
                                     <span className='small-size gray6 text-left'>Not Available</span>
                                 )}
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                     <div className='col-xs-5 d-flex ml-auto justify-content-end footerDetails'>
                         <div className='settings py-2 d-flex align-items-center mr-4 pr-4 sm-none borderRight'>

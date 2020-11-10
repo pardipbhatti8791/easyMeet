@@ -13,11 +13,11 @@ import linkedin from '~/assets/images/linkedin.png';
 import envelop from '~/assets/images/Envelope.png';
 import { copyToClipBoard } from '../../../../../../utils/copyToCilpBoard';
 import axios from 'axios';
+import { gpAxios } from '../../../../../../utils/gpAxios';
 
 const MeeterList = props => {
     const dispatch = useDispatch();
     const { data } = props;
-
     const total_req = accessFromObject(data, 'total_pending');
     const meetings = accessFromArray(data, 'mettings');
 
@@ -29,9 +29,8 @@ const MeeterList = props => {
 
     const onClickNotify = value => {
         dispatch(getAccessToken(roomName, userEmail)).then(res => {
-            axios
-                .post('http://localhost:4000/', {
-
+            gpAxios
+                .post('/generate-token', {
                     twillioToken: res.data.data.result.access_token,
                     hostEmail: userEmail,
                     roomName: roomName,
@@ -39,18 +38,20 @@ const MeeterList = props => {
                 })
                 .then(newResp => {
                     const { data } = newResp;
+
                     // eslint-disable-next-line no-undef
-                    var encrypted = CryptoJS.AES.encrypt(data.signature, "guguilovu");
-                    window.location.href = `/video-chat/start/?room=${encrypted}`;
+                    var encrypted = CryptoJS.AES.encrypt(data.token, 'guguilovu');
+                    const data1 = {
+                        status_category: 'single',
+                        status_type: 'accept',
+                        requester_id: value,
+                        video_meeting_url: `http://35.182.91.29/video-chat/?signature=${encrypted}`
+                    };
+                    dispatch(notifyAll(data1));
+                    //window.location.href = `/video-chat/${encrypted}`;
+                    window.location.href = `/video-chat/?signature=${encrypted}`;
                 });
         });
-        const data = {
-            status_category: 'single',
-            status_type: 'accept',
-            requester_id: value,
-            video_meeting_url: `http://35.182.91.29/video-chat/${roomName}`
-        };
-        dispatch(notifyAll(data));
     };
     const onClickReject = value => {
         const data = {

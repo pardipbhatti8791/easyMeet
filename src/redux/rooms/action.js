@@ -63,7 +63,7 @@ export const meetingStatus = data => async => {
         const response = gpAxios.post(apiPaths.change_meeting_status, data);
         return response;
     } catch (e) {
-        console.log(e);
+        console.log(e.response.data.errors);
     }
 };
 

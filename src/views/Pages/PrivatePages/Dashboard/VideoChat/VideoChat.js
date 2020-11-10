@@ -4,6 +4,7 @@ import { twilioLogout, meetingStatus, getAccessToken, getMeetingRoomStatus } fro
 import { useDispatch, useSelector } from 'react-redux';
 import Footer from './Footer';
 import { queryString } from '../../../../../utils/qs';
+import { gpAxios } from '../../../../../utils/gpAxios';
 
 const { connect, createLocalTracks, createLocalVideoTrack, isSupported } = require('twilio-video');
 const VideoChat = props => {
@@ -25,14 +26,12 @@ const VideoChat = props => {
     }, []);
 
     const checkToken = async () => {
-        const singnature = await queryString(props.location.search);
-
+        const { signature } = await queryString(props.location.search);
         // eslint-disable-next-line no-undef
-        const decrypted = CryptoJS.AES.decrypt(singnature.room, 'guguilovu');
+        const decrypted = CryptoJS.AES.decrypt(signature, 'guguilovu');
         // eslint-disable-next-line no-undef
         var plaintext = decrypted.toString(CryptoJS.enc.Utf8);
-
-        const { data } = await axios.post('http://localhost:4000/verify/', { token: plaintext });
+        const { data } = await gpAxios.post('/generate-token-decode', { token: plaintext });
         if (data.hasOwnProperty('twillioToken') && data.hasOwnProperty('roomName')) {
             set_requester(data.requesterEmail);
             set_twilioRoom(data.roomName);
@@ -78,7 +77,7 @@ const VideoChat = props => {
         setHasJoinedRoom(true);
 
         // Log your Client's LocalParticipant in the Room
-        console.log(`Connected to the Room as LocalParticipant "${localParticipant.identity}"`);
+        //console.log(`Connected to the Room as LocalParticipant "${localParticipant.identity}"`);
 
         // Log any Participants already connected to the Room
         room.participants.forEach(participant => {
