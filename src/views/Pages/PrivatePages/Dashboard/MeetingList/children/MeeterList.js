@@ -12,7 +12,6 @@ import twitter from '~/assets/images/twitter.png';
 import linkedin from '~/assets/images/linkedin.png';
 import envelop from '~/assets/images/Envelope.png';
 import { copyToClipBoard } from '../../../../../../utils/copyToCilpBoard';
-import axios from 'axios';
 import { gpAxios } from '../../../../../../utils/gpAxios';
 
 const MeeterList = props => {
@@ -27,14 +26,15 @@ const MeeterList = props => {
     const roomName = Math.floor(Math.random() * 1000000 + 1);
     const userEmail = userInfo.meeter_email;
 
-    const onClickNotify = value => {
+    const onClickNotify = (requester_id, requester_email) => {
         dispatch(getAccessToken(roomName, userEmail)).then(res => {
             gpAxios
                 .post('/generate-token', {
                     twillioToken: res.data.data.result.access_token,
                     hostEmail: userEmail,
                     roomName: roomName,
-                    requesterEmail: value
+                    requesterEmail: requester_email,
+                    requesterId: requester_id
                 })
                 .then(newResp => {
                     const { data } = newResp;
@@ -44,8 +44,8 @@ const MeeterList = props => {
                     const data1 = {
                         status_category: 'single',
                         status_type: 'accept',
-                        requester_id: value,
-                        video_meeting_url: `http://35.182.91.29/video-chat/?signature=${encrypted}`
+                        requester_id: requester_id,
+                        video_meeting_url: `https://easymeet.io/video-chat/?signature=${encrypted}`
                     };
                     dispatch(notifyAll(data1));
                     //window.location.href = `/video-chat/${encrypted}`;
@@ -156,7 +156,7 @@ const MeeterList = props => {
                                                 className='btn default-btn small-size bg-white notify ml-3'
                                                 value={requester.requester_id}
                                                 onClick={e => {
-                                                    onClickNotify(requester.requester_email);
+                                                    onClickNotify(requester.requester_id, requester.requester_email);
                                                 }}>
                                                 <i className='fa fa-bell-o mr-1' aria-hidden='true' />
                                                 Notify

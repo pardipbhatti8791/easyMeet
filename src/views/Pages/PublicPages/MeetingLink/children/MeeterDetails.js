@@ -8,8 +8,9 @@ const MeeterDetails = props => {
     return (
         <Fragment>
             <div className='media personal-details media-body text-center d-block mb-4'>
-                <div className='text-center default-opacity m-auto avatar-container'>
+                <div>
                     <img
+                        className='text-center default-opacity m-auto avatar-container'
                         src={
                             accessFromObject(data, 'meeter_image_slug') === ''
                                 ? '../../../../assets/images/photo.png'
@@ -37,7 +38,8 @@ const MeeterDetails = props => {
             </div>
             <div>
                 <p className='small-size opacity-6 mb-0'>
-                    Simply fill the information required and you'll get notified whenever John Doe is free to <br />
+                    Simply fill the information required and you'll get notified whenever{' '}
+                    {accessFromObject(data, 'meeter_fullname')} is free to <br />
                     take a meeting.
                 </p>
                 <br />

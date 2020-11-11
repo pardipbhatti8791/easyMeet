@@ -105,11 +105,13 @@ export const updateProfilePicture = data => async dispatch => {
     dispatch({
         type: [meeting.GET_PROFILE_IMAGE_DATA_INIT]
     });
+
     try {
         const meetingData = await gpAxios.post(apiPaths.user_management.update_profile_pic, data);
         dispatch({
             type: [meeting.UPLOAD_PROFILE_IMGAE_DATA_SUCESS]
         });
+        return meetingData;
         dispatch(loadUser());
     } catch (e) {
         console.log(e);

@@ -36,9 +36,11 @@ const Avatar = () => {
     const uploadProfileImage = () => {
         setLoader(true);
         var formData = new FormData();
-
+        console.log('userProfileImage is', userProfileImage);
+        console.log('userProfileImageName is', userProfileImageName);
         formData.append('meeter_image', userProfileImage, userProfileImageName);
         dispatch(updateProfilePicture(formData)).then(resp => {
+            console.log('response from update profilepic', resp);
             setLoader(false);
             dispatch(closeModal());
             setPreviewImage(null);

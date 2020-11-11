@@ -15,6 +15,7 @@ const VideoChat = props => {
     const [twilioToken, set_twilioToken] = useState(null);
     const [twilioRoom, set_twilioRoom] = useState(null);
     const [requester, set_requester] = useState(null);
+    const [requesterId, setRequesterId] = useState(null);
 
     const isAuth = useSelector(state => state.auth.isAuthenticated);
 
@@ -32,16 +33,22 @@ const VideoChat = props => {
         // eslint-disable-next-line no-undef
         var plaintext = decrypted.toString(CryptoJS.enc.Utf8);
         const { data } = await gpAxios.post('/generate-token-decode', { token: plaintext });
-        if (data.hasOwnProperty('twillioToken') && data.hasOwnProperty('roomName')) {
+        console.log('data', data.requesterId);
+        if (
+            data.hasOwnProperty('twillioToken') &&
+            data.hasOwnProperty('roomName') &&
+            data.hasOwnProperty('requesterId')
+        ) {
             set_requester(data.requesterEmail);
             set_twilioRoom(data.roomName);
+            setRequesterId(data.requesterId);
             if (isAuth) {
-                joinRoom(data.roomName, data.twillioToken, data.requesterEmail);
+                joinRoom(data.roomName, data.twillioToken, data.requesterId);
             }
         }
     };
 
-    const joinRoom = (roomName, accessToken, requesterEmail) => {
+    const joinRoom = (roomName, accessToken, requesterId) => {
         createLocalTracks({
             audio: true,
             video: { width: 1920, height: 1080 }
@@ -57,15 +64,15 @@ const VideoChat = props => {
             })
             .then(room => {
                 // console.log(`Connected to Room: ${room.name}`);
-                roomJoined(room, requesterEmail);
+                roomJoined(room, requesterId);
             });
     };
 
-    const roomJoined = (room, requesterEmail) => {
+    const roomJoined = (room, requesterId) => {
         const data = {
             status_category: 'single',
             status_type: 'in_meeting',
-            requester_id: requesterEmail
+            requester_id: requesterId
         };
         const localParticipant = room.localParticipant;
         if (isAuth) {
@@ -183,9 +190,45 @@ const VideoChat = props => {
                 });
         }
     };
+    const leaveRoom = () => {
+        activeRoom.disconnect();
+        activeRoom.on('disconnected', () => {
+            activeRoom.localParticipant.tracks.forEach(publication => {
+                publication.track.stop();
+                const attachedElements = publication.track.detach();
+                attachedElements.forEach(element => element.stop());
+            });
+        });
+
+        setHasJoinedRoom(false);
+        const data = {
+            status_category: 'single',
+            status_type: 'completed',
+            requester_id: requesterId
+        };
+        if (isAuth) {
+            dispatch(meetingStatus(data)).then(res => {
+                //console.log('response', res);
+            });
+        }
+
+        localStorage.removeItem('twilioacesstoken');
+        dispatch(twilioLogout());
+    };
 
     return (
         <>
+            {hasJoinedRoom ? (
+                <div className='d-lg-none d-xl-none d-flex p-3 footerDetails bg-white'>
+                    <div className='exit py-2 ml-auto d-flex align-items-center'>
+                        <button className='btn small-size gray8 p-0' onClick={leaveRoom}>
+                            <i className='fa fa-sign-out pr-1 font16' aria-hidden='true'></i>Exit Room
+                        </button>
+                    </div>
+                </div>
+            ) : (
+                ''
+            )}
             <div className='container'>
                 {!isAuth && (
                     <div className='row'>
@@ -234,7 +277,11 @@ const VideoChat = props => {
                 </div>
             )}
 
-            {hasJoinedRoom ? <Footer room={activeRoom} setHasJoinedRoom={setHasJoinedRoom} /> : ''}
+            {hasJoinedRoom ? (
+                <Footer room={activeRoom} setHasJoinedRoom={setHasJoinedRoom} requesterId={requesterId} />
+            ) : (
+                ''
+            )}
         </>
     );
 };

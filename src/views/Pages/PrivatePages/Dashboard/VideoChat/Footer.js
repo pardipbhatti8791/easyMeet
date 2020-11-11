@@ -4,12 +4,10 @@ import { useSelector, useDispatch } from 'react-redux';
 
 const Footer = props => {
     const room = props.room;
-
+    const { requesterId } = props;
     const dispatch = useDispatch();
     const userInfo = useSelector(state => state.auth.user);
-    // const userId = userInfo.id;
     const isAuth = useSelector(state => state.auth.isAuthenticated);
-    // const availibility = userInfo.availibility.meeter_availibility;
 
     const [localAudio, setLocalAudio] = useState(true);
     const [localVideo, setLocalVideo] = useState(true);
@@ -27,13 +25,14 @@ const Footer = props => {
         props.setHasJoinedRoom(false);
         const data = {
             status_category: 'single',
-            status_type: 'completed'
-            //       requester_id: userId
+            status_type: 'completed',
+            requester_id: requesterId
         };
-
-        dispatch(meetingStatus(data)).then(res => {
-            //console.log('response', res);
-        });
+        if (isAuth) {
+            dispatch(meetingStatus(data)).then(res => {
+                //console.log('response', res);
+            });
+        }
 
         localStorage.removeItem('twilioacesstoken');
         dispatch(twilioLogout());

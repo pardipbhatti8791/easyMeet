@@ -8,7 +8,6 @@ const initState = {
     meeting_spinner: true,
     meeting_list: null,
     meeting_error: null
-
 };
 
 /**
@@ -104,9 +103,9 @@ export default createReducer(initState, {
     [meeting.GET_METER_DATA_SPINNER_OFF]: setSpinnerOff,
     [meeting.GET_METER_DATA_SUCCESS]: setMeeterData,
     [meeting.GET_METER_DATA_FAILED]: setMeeterFailed,
-    
+
     [meeting.GET_MEETING_DATA_SPINNER_ON]: setMeetingSpinnerOn,
     [meeting.GET_MEETING_DATA_SPINNER_OFF]: setMeetingSpinnerOff,
     [meeting.GET_MEETING_DATA_SUCCESS]: setMeetingData,
-    [meeting.GET_MEETING_DATA_FAILED]: setMeetingFailed,
+    [meeting.GET_MEETING_DATA_FAILED]: setMeetingFailed
 });
