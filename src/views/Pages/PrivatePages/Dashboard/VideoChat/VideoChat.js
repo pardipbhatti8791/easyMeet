@@ -33,7 +33,7 @@ const VideoChat = props => {
         // eslint-disable-next-line no-undef
         var plaintext = decrypted.toString(CryptoJS.enc.Utf8);
         const { data } = await gpAxios.post('/generate-token-decode', { token: plaintext });
-        console.log('data', data.requesterId);
+
         if (
             data.hasOwnProperty('twillioToken') &&
             data.hasOwnProperty('roomName') &&
@@ -76,7 +76,7 @@ const VideoChat = props => {
         };
         const localParticipant = room.localParticipant;
         if (isAuth) {
-            dispatch(meetingStatus(data)).then(res => {});
+            // dispatch(meetingStatus(data)).then(res => {});
         }
 
         setActiveRoom(room);
@@ -207,9 +207,9 @@ const VideoChat = props => {
             requester_id: requesterId
         };
         if (isAuth) {
-            dispatch(meetingStatus(data)).then(res => {
-                //console.log('response', res);
-            });
+            // dispatch(meetingStatus(data)).then(res => {
+            //     //console.log('response', res);
+            // });
         }
 
         localStorage.removeItem('twilioacesstoken');

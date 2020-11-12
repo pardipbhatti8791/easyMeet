@@ -5,6 +5,7 @@ const MeeterDetails = props => {
     const { data } = props;
 
     const availabilty = accessFromObject(data, 'availibility');
+
     return (
         <Fragment>
             <div className='media personal-details media-body text-center d-block mb-4'>
@@ -24,12 +25,16 @@ const MeeterDetails = props => {
                     {accessFromObject(data, 'meeter_bio')}
                 </a>
                 <span className='small-size d-block opacity-6 mt-1'>
-                    {accessFromObject(availabilty, 'meeter_availibility') === 'yes' &&
-                    accessFromObject(availabilty, 'available_for').hours <= 72
+                    {accessFromObject(availabilty, 'meeter_availibility') === 'yes'
                         ? `Available for ${accessFromObject(availabilty, 'available_for').hours} hours and ${
                               accessFromObject(availabilty, 'available_for').minutes
-                          }`
-                        : 'Not Available'}
+                          } minutes`
+                        : accessFromObject(availabilty, 'meeter_availibility') === 'no' &&
+                          accessFromObject(availabilty, 'available_ago')
+                        ? `Available ${accessFromObject(availabilty, 'available_ago').hours} hours and ${
+                              accessFromObject(availabilty, 'available_ago').minutes
+                          } minutes ago`
+                        : ''}
                 </span>
             </div>
             <div className='mb-4'>

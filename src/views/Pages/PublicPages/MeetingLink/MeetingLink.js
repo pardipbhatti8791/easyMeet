@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import ThePublicHeader from '~/containers/PublicLayouts/PublicHeader';
 import { getMeeterData, meetingRequest } from '../../../../redux/meetings/action';
 
+import defaultImg from '../../../../assets/images/EasyMeetBig.svg';
 import RenderComponent from '../../../../utils/renderComponent';
 import MeeterDetails from './children/MeeterDetails';
 import PhoneInput from 'react-phone-input-2';
@@ -47,6 +48,9 @@ function MeetingLink(props) {
         };
         dispatch(meetingRequest(data, history));
     };
+    const addDefaultSrc = e => {
+        e.target.src = defaultImg;
+    };
     return (
         <>
             <ThePublicHeader />
@@ -65,8 +69,8 @@ function MeetingLink(props) {
                         <div className='col-6 bg-white'>
                             <div className='meeterProfileSignUp text-left'>
                                 <div className='MeeterBrandContainer pb-4'>
-                                    <a className='navbar-brand m-0 px-0 pt-0 pb-2 d-block' href='index.html'>
-                                        <img src='/assets/images/EasyMeetBig.svg' alt='logo' />
+                                    <a className='navbar-brand m-0 px-0 pt-0 pb-2 d-block' href='/sign-up'>
+                                        <img src='/assets/images/EasyMeetBig.svg' alt='logo' onError={addDefaultSrc} />
                                     </a>
                                     <span className='Brandtext opacity-8'>Never schedule a meeting again.</span>
                                 </div>
