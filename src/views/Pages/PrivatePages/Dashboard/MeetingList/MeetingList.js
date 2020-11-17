@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getMeetingList } from '~/redux/meetings/action';
 import MeeterList from './children/MeeterList';
@@ -7,6 +7,7 @@ import { CustomLoader } from '../../../../../utils/Loader';
 
 function MeetingList() {
     const dispatch = useDispatch();
+
     useEffect(() => {
         dispatch(getMeetingList());
     }, []);

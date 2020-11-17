@@ -112,9 +112,11 @@ export const updateProfilePicture = data => async dispatch => {
             type: [meeting.UPLOAD_PROFILE_IMGAE_DATA_SUCESS]
         });
         return meetingData;
+        console.log('update profile pic', meetingData);
         dispatch(loadUser());
     } catch (e) {
-        console.log(e);
+        console.log(e.response.data.message);
+        alert(e.response.data.message);
         dispatch({
             type: [meeting.GET_MEETING_DATA_SPINNER_OFF]
         });

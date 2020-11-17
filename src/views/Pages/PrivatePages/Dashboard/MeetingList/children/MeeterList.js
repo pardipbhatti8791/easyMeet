@@ -17,12 +17,12 @@ import { gpAxios } from '../../../../../../utils/gpAxios';
 const MeeterList = props => {
     const dispatch = useDispatch();
     const { data } = props;
+    const [keyword, setKeyword] = useState('');
     const total_req = accessFromObject(data, 'total_pending');
     const meetings = accessFromArray(data, 'mettings');
-
     const userInfo = useSelector(state => state.auth.user);
     const roomInfo = useSelector(state => state.rooms);
-
+    const [filtered, setFiltered] = useState(null);
     const roomName = Math.floor(Math.random() * 1000000 + 1);
     const userEmail = userInfo.meeter_email;
 
@@ -61,6 +61,13 @@ const MeeterList = props => {
         };
         dispatch(notifyAll(data));
     };
+    const onKeywordChange = e => {
+        setKeyword(e.target.value);
+        let filteredValue = meetings.filter(requester => {
+            return requester.requester_email.indexOf(keyword) > -1 || requester.requester_name.indexOf(keyword) > -1;
+        });
+        setFiltered(filteredValue);
+    };
     // const onClickNotifyAll = () => {
     //     const data = {
     //         status_category: 'multiple',
@@ -93,6 +100,7 @@ const MeeterList = props => {
                                         type='text'
                                         className='form-control small-size'
                                         placeholder='Search by name or email'
+                                        onChange={e => onKeywordChange(e)}
                                     />
                                 </div>
                             </div>
@@ -130,56 +138,115 @@ const MeeterList = props => {
             <section>
                 <div className='container'>
                     {Array.isArray(meetings) === true ? (
-                        meetings.map((requester, index) => (
-                            <div key={index} className='requster-container bg-white w-100 mt-3'>
-                                <div className='row mx-0'>
-                                    <div className='media text-left mr-auto'>
-                                        <div
-                                            className='align-self-start text-center mr-3 avatar-container bg-white medium-size'
-                                            style={{ paddingTop: '30px' }}>
-                                            <span>{requester.requester_name.substr(0, 1).toUpperCase()} </span>
+                        keyword === '' ? (
+                            meetings.map((requester, index) => (
+                                <div key={index} className='requster-container bg-white w-100 mt-3'>
+                                    <div className='row mx-0'>
+                                        <div className='media text-left mr-auto'>
+                                            <div
+                                                className='align-self-start text-center mr-3 avatar-container bg-white medium-size'
+                                                style={{ paddingTop: '30px' }}>
+                                                <span>{requester.requester_name.substr(0, 1).toUpperCase()} </span>
+                                            </div>
+                                            <div className='media-body align-self-center'>
+                                                <h2 className='my-0 requesterName'>{requester.requester_name}</h2>
+                                                <span className='url-room small-size'>{requester.requester_email}</span>
+                                            </div>
                                         </div>
-                                        <div className='media-body align-self-center'>
-                                            <h2 className='my-0 requesterName'>{requester.requester_name}</h2>
-                                            <span className='url-room small-size'>{requester.requester_email}</span>
-                                        </div>
-                                    </div>
-                                    <div className='ml-auto'>
-                                        <div className='bulk-action text-right pr-0'>
-                                            {/* <button
+                                        <div className='ml-auto'>
+                                            <div className='bulk-action text-right pr-0'>
+                                                {/* <button
                                                 className='btn default-btn small-size bg-white  ml-3'
                                                 onClick={onJoinRoomClick}>
                                                 Join Room
                                             </button> */}
 
-                                            <button
-                                                className='btn default-btn small-size bg-white notify ml-3'
-                                                value={requester.requester_id}
-                                                onClick={e => {
-                                                    onClickNotify(requester.requester_id, requester.requester_email);
-                                                }}>
-                                                <i className='fa fa-bell-o mr-1' aria-hidden='true' />
-                                                Notify
-                                            </button>
+                                                <button
+                                                    className='btn default-btn small-size bg-white notify ml-3'
+                                                    value={requester.requester_id}
+                                                    onClick={e => {
+                                                        onClickNotify(
+                                                            requester.requester_id,
+                                                            requester.requester_email
+                                                        );
+                                                    }}>
+                                                    <i className='fa fa-bell-o mr-1' aria-hidden='true' />
+                                                    Notify
+                                                </button>
 
-                                            <button
-                                                className='btn default-btn small-size bg-white reject'
-                                                value={requester.requester_id}
-                                                onClick={e => onClickReject(e.target.value)}>
-                                                <i className='fa fa-times mr-1' aria-hidden='true' />
-                                                Reject
-                                            </button>
+                                                <button
+                                                    className='btn default-btn small-size bg-white reject'
+                                                    value={requester.requester_id}
+                                                    onClick={e => onClickReject(e.target.value)}>
+                                                    <i className='fa fa-times mr-1' aria-hidden='true' />
+                                                    Reject
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
+                                    <div className='request-summary text-left col-9 pr-0 mt-3'>
+                                        <h3 className='small-size mb-0'>Request Summary:</h3>
+                                        <span className='small-size' style={{ opacity: '0.6' }}>
+                                            {requester.summary}
+                                        </span>
+                                    </div>
                                 </div>
-                                <div className='request-summary text-left col-9 pr-0 mt-3'>
-                                    <h3 className='small-size mb-0'>Request Summary:</h3>
-                                    <span className='small-size' style={{ opacity: '0.6' }}>
-                                        {requester.summary}
-                                    </span>
+                            ))
+                        ) : (
+                            filtered.map((requester, index) => (
+                                <div key={index} className='requster-container bg-white w-100 mt-3'>
+                                    <div className='row mx-0'>
+                                        <div className='media text-left mr-auto'>
+                                            <div
+                                                className='align-self-start text-center mr-3 avatar-container bg-white medium-size'
+                                                style={{ paddingTop: '30px' }}>
+                                                <span>{requester.requester_name.substr(0, 1).toUpperCase()} </span>
+                                            </div>
+                                            <div className='media-body align-self-center'>
+                                                <h2 className='my-0 requesterName'>{requester.requester_name}</h2>
+                                                <span className='url-room small-size'>{requester.requester_email}</span>
+                                            </div>
+                                        </div>
+                                        <div className='ml-auto'>
+                                            <div className='bulk-action text-right pr-0'>
+                                                {/* <button
+                                                    className='btn default-btn small-size bg-white  ml-3'
+                                                    onClick={onJoinRoomClick}>
+                                                    Join Room
+                                                </button> */}
+
+                                                <button
+                                                    className='btn default-btn small-size bg-white notify ml-3'
+                                                    value={requester.requester_id}
+                                                    onClick={e => {
+                                                        onClickNotify(
+                                                            requester.requester_id,
+                                                            requester.requester_email
+                                                        );
+                                                    }}>
+                                                    <i className='fa fa-bell-o mr-1' aria-hidden='true' />
+                                                    Notify
+                                                </button>
+
+                                                <button
+                                                    className='btn default-btn small-size bg-white reject'
+                                                    value={requester.requester_id}
+                                                    onClick={e => onClickReject(e.target.value)}>
+                                                    <i className='fa fa-times mr-1' aria-hidden='true' />
+                                                    Reject
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className='request-summary text-left col-9 pr-0 mt-3'>
+                                        <h3 className='small-size mb-0'>Request Summary:</h3>
+                                        <span className='small-size' style={{ opacity: '0.6' }}>
+                                            {requester.summary}
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
-                        ))
+                            ))
+                        )
                     ) : (
                         <div className='row justify-content-center'>
                             <div className='col-lg-6 col-sm-12 px-2'>

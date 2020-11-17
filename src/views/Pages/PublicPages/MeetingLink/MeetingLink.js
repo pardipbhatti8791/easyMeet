@@ -46,7 +46,9 @@ function MeetingLink(props) {
             summary: formData.summary,
             device_token: 'dasdkfjasdkf'
         };
-        dispatch(meetingRequest(data, history));
+        dispatch(meetingRequest(data, history)).then(res => {
+            alert(res.data.message);
+        });
     };
     const addDefaultSrc = e => {
         e.target.src = defaultImg;
@@ -139,6 +141,7 @@ function MeetingLink(props) {
                                         <div className='form-group'>
                                             <label htmlFor='meeter_phone'></label>
                                             <PhoneInput
+                                                country={'us'}
                                                 inputProps={{
                                                     name: 'phone',
                                                     required: true
