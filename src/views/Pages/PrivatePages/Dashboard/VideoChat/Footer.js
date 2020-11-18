@@ -29,9 +29,9 @@ const Footer = props => {
             requester_id: requesterId
         };
         if (isAuth) {
-            // dispatch(meetingStatus(data)).then(res => {
-            //     //console.log('response', res);
-            // });
+            dispatch(meetingStatus(data)).then(res => {
+                //console.log('response', res);
+            });
         }
 
         localStorage.removeItem('twilioacesstoken');

@@ -76,7 +76,7 @@ const VideoChat = props => {
         };
         const localParticipant = room.localParticipant;
         if (isAuth) {
-            // dispatch(meetingStatus(data)).then(res => {});
+            dispatch(meetingStatus(data)).then(res => {});
         }
 
         setActiveRoom(room);
@@ -207,15 +207,22 @@ const VideoChat = props => {
             requester_id: requesterId
         };
         if (isAuth) {
-            // dispatch(meetingStatus(data)).then(res => {
-            //     //console.log('response', res);
-            // });
+            dispatch(meetingStatus(data)).then(res => {
+                console.log('response', res);
+            });
         }
 
         localStorage.removeItem('twilioacesstoken');
         dispatch(twilioLogout());
     };
 
+    let remoteMediaContainer = isRemote ? (
+        <div
+            className='media mainRoomMedia personal-details media-body text-center d-block mb-4 remotevideodiv'
+            ref={remoteMedia}></div>
+    ) : (
+        ''
+    );
     return (
         <>
             {hasJoinedRoom ? (
@@ -254,10 +261,10 @@ const VideoChat = props => {
                     <div className='container mainRoom'>
                         <div className='row justify-content-center align-items-center h-100'>
                             <div>
-                                <div
+                                {/* <div
                                     className='media mainRoomMedia personal-details media-body text-center d-block mb-4 remotevideodiv'
-                                    ref={remoteMedia}></div>
-
+                                    ref={remoteMedia}></div> */}
+                                {remoteMediaContainer}
                                 {isRemote ? (
                                     ''
                                 ) : (

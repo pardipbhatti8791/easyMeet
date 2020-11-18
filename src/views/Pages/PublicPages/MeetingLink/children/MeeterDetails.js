@@ -30,7 +30,7 @@ const MeeterDetails = props => {
                               accessFromObject(availabilty, 'available_for').minutes
                           } minutes`
                         : accessFromObject(availabilty, 'meeter_availibility') === 'no' &&
-                          accessFromObject(availabilty, 'available_ago')
+                          !Array.isArray(accessFromObject(availabilty, 'available_ago'))
                         ? `Available ${accessFromObject(availabilty, 'available_ago').hours} hours and ${
                               accessFromObject(availabilty, 'available_ago').minutes
                           } minutes ago`
