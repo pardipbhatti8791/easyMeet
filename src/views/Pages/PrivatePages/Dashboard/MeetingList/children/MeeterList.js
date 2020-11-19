@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { notifyAll } from '~/redux/boarding/action';
 import { getAccessToken } from '../../../../../../redux/rooms/action';
+import { getMeetingList } from '../../../../../../redux/meetings/action';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { accessFromObject } from '../../../../../../utils/accessFromObject';
@@ -59,12 +60,17 @@ const MeeterList = props => {
             status_type: 'reject',
             requester_id: value
         };
-        dispatch(notifyAll(data));
+        dispatch(notifyAll(data)).then(res => {
+            dispatch(getMeetingList());
+        });
     };
     const onKeywordChange = e => {
         setKeyword(e.target.value);
         let filteredValue = meetings.filter(requester => {
-            return requester.requester_email.indexOf(keyword) > -1 || requester.requester_name.indexOf(keyword) > -1;
+            return (
+                requester.requester_email.indexOf(e.target.value) > -1 ||
+                requester.requester_name.indexOf(e.target.value) > -1
+            );
         });
         setFiltered(filteredValue);
     };

@@ -18,6 +18,7 @@ const VideoChat = props => {
     const [requesterId, setRequesterId] = useState(null);
 
     const isAuth = useSelector(state => state.auth.isAuthenticated);
+    const userInfo = useSelector(state => state.auth.user);
 
     const localMedia = useRef(null);
     const remoteMedia = useRef(null);
@@ -43,7 +44,29 @@ const VideoChat = props => {
             set_twilioRoom(data.roomName);
             setRequesterId(data.requesterId);
             if (isAuth) {
-                joinRoom(data.roomName, data.twillioToken, data.requesterId);
+                const userEmail = userInfo.meeter_email;
+                if (userEmail != data.hostEmail) {
+                    console.log('userEmail', userEmail, 'and hostemail', data.hostEmail);
+
+                    dispatch(getAccessToken(data.roomName, data.requesterEmail))
+                        .then(res => {
+                            const accessToken = res.data.data.result.access_token;
+                            dispatch(getMeetingRoomStatus(data.roomName))
+                                .then(res => {
+                                    joinRoom(data.roomName, accessToken);
+                                })
+                                .catch(err => {
+                                    alert('Room not exist');
+                                    localStorage.removeItem('twilioacesstoken');
+                                    dispatch(twilioLogout());
+                                });
+                        })
+                        .catch(e => {
+                            alert('Unauthorized');
+                        });
+                } else {
+                    joinRoom(data.roomName, data.twillioToken, data.requesterId);
+                }
             }
         }
     };
@@ -84,11 +107,11 @@ const VideoChat = props => {
         setHasJoinedRoom(true);
 
         // Log your Client's LocalParticipant in the Room
-        //console.log(`Connected to the Room as LocalParticipant "${localParticipant.identity}"`);
+        // console.log(`Connected to the Room as LocalParticipant "${localParticipant.identity}"`);
 
         // Log any Participants already connected to the Room
         room.participants.forEach(participant => {
-            //console.log(`Participant "${participant.identity}" is connected to the Room`);
+            // console.log(`Participant "${participant.identity}" is connected to the Room`);
             setIsRemote(true);
         });
 
@@ -161,7 +184,6 @@ const VideoChat = props => {
         //local media tracks attaching to dom
         createLocalVideoTrack()
             .then(track => {
-                const localMediaContainer = localMedia.current;
                 // console.log('attaching local media', track);
                 localMedia.current.appendChild(track.attach());
             })
