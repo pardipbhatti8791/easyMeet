@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import axios from 'axios';
 import { twilioLogout, meetingStatus, getAccessToken, getMeetingRoomStatus } from '../../../../../redux/rooms/action';
 import { useDispatch, useSelector } from 'react-redux';
+import PublicPage from './PublicPage';
 import Footer from './Footer';
 import { queryString } from '../../../../../utils/qs';
 import { gpAxios } from '../../../../../utils/gpAxios';
@@ -90,7 +90,6 @@ const VideoChat = props => {
                 roomJoined(room, requesterId);
             });
     };
-
     const roomJoined = (room, requesterId) => {
         const data = {
             status_category: 'single',
@@ -107,7 +106,7 @@ const VideoChat = props => {
         setHasJoinedRoom(true);
 
         // Log your Client's LocalParticipant in the Room
-        // console.log(`Connected to the Room as LocalParticipant "${localParticipant.identity}"`);
+        //console.log(`Connected to the Room as LocalParticipant "${localParticipant.identity}"`);
 
         // Log any Participants already connected to the Room
         room.participants.forEach(participant => {
@@ -181,10 +180,9 @@ const VideoChat = props => {
         //     });
         // };
 
-        //local media tracks attaching to dom
+        //  local media tracks attaching to dom
         createLocalVideoTrack()
             .then(track => {
-                // console.log('attaching local media', track);
                 localMedia.current.appendChild(track.attach());
             })
             .then(err => {
@@ -213,7 +211,6 @@ const VideoChat = props => {
         }
     };
     const leaveRoom = () => {
-        activeRoom.disconnect();
         activeRoom.on('disconnected', () => {
             activeRoom.localParticipant.tracks.forEach(publication => {
                 publication.track.stop();
@@ -222,6 +219,7 @@ const VideoChat = props => {
             });
         });
 
+        activeRoom.disconnect();
         setHasJoinedRoom(false);
         const data = {
             status_category: 'single',
@@ -245,6 +243,7 @@ const VideoChat = props => {
     ) : (
         ''
     );
+
     return (
         <>
             {hasJoinedRoom ? (
@@ -262,16 +261,27 @@ const VideoChat = props => {
                 {!isAuth && (
                     <div className='row'>
                         <div className='col-sm-12 mt-5 justify-content-center align-items-center'>
-                            {twilioToken === null ? (
-                                hasJoinedRoom ? (
-                                    ''
-                                ) : (
-                                    <button className='btn btn-primary' onClick={startVideo}>
-                                        Start Call
-                                    </button>
-                                )
-                            ) : (
+                            {hasJoinedRoom ? (
                                 ''
+                            ) : (
+                                <button className='btn btn-primary' onClick={startVideo}>
+                                    Start Call
+                                </button>
+                                // <div
+                                //     className='img-wrapper-outer d-flex align-items-center'
+                                //     style={{ backgroundImage: { bg } }}>
+                                //     <div className='img-wrapper-inner text-center'>
+                                //         <div className='vedio-play-wrapper d-flex align-items-center justify-content-center'>
+                                //             <div className='vedio-background-wrapper d-flex align-items-center justify-content-center'>
+                                //                 <figure className='mb-0'>
+                                //                     <img src={videoicon} />
+                                //                 </figure>
+                                //             </div>
+                                //         </div>
+                                //         <h2 className='img-heading mt-3'>start call</h2>
+                                //     </div>
+                                // </div>
+                                //<PublicPage />
                             )}
                         </div>
                     </div>

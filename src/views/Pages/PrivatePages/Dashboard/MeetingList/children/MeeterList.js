@@ -49,7 +49,7 @@ const MeeterList = props => {
                         video_meeting_url: `https://easymeet.io/video-chat/?signature=${encrypted}`
                     };
                     dispatch(notifyAll(data1));
-                    //window.location.href = `/video-chat/${encrypted}`;
+
                     window.location.href = `/video-chat/?signature=${encrypted}`;
                 });
         });

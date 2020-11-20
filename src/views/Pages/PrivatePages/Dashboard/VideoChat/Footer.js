@@ -13,14 +13,16 @@ const Footer = props => {
     const [localVideo, setLocalVideo] = useState(true);
 
     const leaveRoom = () => {
-        room.disconnect();
-        room.on('disconnected', () => {
+        room.on('disconnected', room => {
+            // Detach the local media elements
             room.localParticipant.tracks.forEach(publication => {
                 publication.track.stop();
                 const attachedElements = publication.track.detach();
-                attachedElements.forEach(element => element.stop());
+
+                attachedElements.forEach(element => element.remove());
             });
         });
+        room.disconnect();
 
         props.setHasJoinedRoom(false);
         const data = {

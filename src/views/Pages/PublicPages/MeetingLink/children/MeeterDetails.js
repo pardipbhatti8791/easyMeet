@@ -1,11 +1,13 @@
 import React, { Fragment } from 'react';
 import { accessFromObject } from '../../../../../utils/accessFromObject';
-
+import defaultImg from '../../.././../../assets/images/photo.png';
 const MeeterDetails = props => {
     const { data } = props;
 
     const availabilty = accessFromObject(data, 'availibility');
-
+    const addDefaultSrc = e => {
+        e.target.src = defaultImg;
+    };
     return (
         <Fragment>
             <div className='media personal-details media-body text-center d-block mb-4'>
@@ -18,6 +20,7 @@ const MeeterDetails = props => {
                                 : accessFromObject(data, 'meeter_image_slug')
                         }
                         alt='photo'
+                        onError={addDefaultSrc}
                     />
                 </div>
                 <h2 className='requesterName mt-3 mb-1 mb-0'>{accessFromObject(data, 'meeter_fullname')}</h2>
