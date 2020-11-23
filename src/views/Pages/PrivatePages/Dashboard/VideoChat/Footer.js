@@ -1,44 +1,15 @@
 import React, { useState } from 'react';
-import { twilioLogout, meetingStatus } from '../../../../../redux/rooms/action';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const Footer = props => {
-    const room = props.room;
-    const { requesterId } = props;
-    const dispatch = useDispatch();
+    console.log('footer data is', props.data);
+    const { room } = props.data;
     const userInfo = useSelector(state => state.auth.user);
     const isAuth = useSelector(state => state.auth.isAuthenticated);
 
     const [localAudio, setLocalAudio] = useState(true);
     const [localVideo, setLocalVideo] = useState(true);
 
-    const leaveRoom = () => {
-        room.on('disconnected', room => {
-            // Detach the local media elements
-            room.localParticipant.tracks.forEach(publication => {
-                publication.track.stop();
-                const attachedElements = publication.track.detach();
-
-                attachedElements.forEach(element => element.remove());
-            });
-        });
-        room.disconnect();
-
-        props.setHasJoinedRoom(false);
-        const data = {
-            status_category: 'single',
-            status_type: 'completed',
-            requester_id: requesterId
-        };
-        if (isAuth) {
-            dispatch(meetingStatus(data)).then(res => {
-                //console.log('response', res);
-            });
-        }
-
-        localStorage.removeItem('twilioacesstoken');
-        dispatch(twilioLogout());
-    };
     const localAudioMute = () => {
         room.localParticipant.audioTracks.forEach(publication => {
             if (localAudio == true) {
@@ -55,9 +26,11 @@ const Footer = props => {
             if (localVideo == true) {
                 publication.track.disable();
                 setLocalVideo(false);
+                props.data.setLocalCamera(false);
             } else {
                 publication.track.enable();
                 setLocalVideo(true);
+                props.data.setLocalCamera(true);
             }
         });
     };
@@ -174,7 +147,7 @@ const Footer = props => {
                         </div>
 
                         <div className='exit py-2 d-flex align-items-center sm-none'>
-                            <button className='btn small-size gray8 p-0' onClick={leaveRoom}>
+                            <button className='btn small-size gray8 p-0' onClick={props.leaveRoom}>
                                 <i className='fa fa-sign-out pr-3 font16' aria-hidden='true'></i>Exit Room
                             </button>
                         </div>

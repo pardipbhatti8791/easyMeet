@@ -8,6 +8,7 @@ const MeeterDetails = props => {
     const addDefaultSrc = e => {
         e.target.src = defaultImg;
     };
+    console.log('availability', availabilty);
     return (
         <Fragment>
             <div className='media personal-details media-body text-center d-block mb-4'>

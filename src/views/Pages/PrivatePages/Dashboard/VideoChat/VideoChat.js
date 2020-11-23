@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { twilioLogout, meetingStatus, getAccessToken, getMeetingRoomStatus } from '../../../../../redux/rooms/action';
+import { meetingStatus, getAccessToken, getMeetingRoomStatus } from '../../../../../redux/rooms/action';
 import { useDispatch, useSelector } from 'react-redux';
 import PublicPage from './PublicPage';
 import Footer from './Footer';
@@ -12,16 +12,18 @@ const VideoChat = props => {
     const [hasJoinedRoom, setHasJoinedRoom] = useState(false);
     const [activeRoom, setActiveRoom] = useState(null);
     const [isRemote, setIsRemote] = useState(false);
-    const [twilioToken, set_twilioToken] = useState(null);
     const [twilioRoom, set_twilioRoom] = useState(null);
     const [requester, set_requester] = useState(null);
     const [requesterId, setRequesterId] = useState(null);
-
     const isAuth = useSelector(state => state.auth.isAuthenticated);
     const userInfo = useSelector(state => state.auth.user);
 
     const localMedia = useRef(null);
     const remoteMedia = useRef(null);
+
+    const footerData = {
+        room: activeRoom
+    };
 
     useEffect(() => {
         checkToken();
@@ -57,8 +59,6 @@ const VideoChat = props => {
                                 })
                                 .catch(err => {
                                     alert('Room not exist');
-                                    localStorage.removeItem('twilioacesstoken');
-                                    dispatch(twilioLogout());
                                 });
                         })
                         .catch(e => {
@@ -163,26 +163,10 @@ const VideoChat = props => {
             });
         });
 
-        //Handle Remote Media Unmute Events
-
-        // room.participants.forEach(participant => {
-        //     participant.tracks.forEach(publication => {
-        //         if (publication.isSubscribed) {
-        //             handleTrackEnabled(publication.track);
-        //         }
-        //         publication.on('subscribed', handleTrackEnabled);
-        //     });
-        // });
-
-        // const handleTrackEnabled = track => {
-        //     track.on('enabled', () => {
-        //         console.log('enabled video track');
-        //     });
-        // };
-
-        //  local media tracks attaching to dom
+        // local media tracks attaching to dom
         createLocalVideoTrack()
             .then(track => {
+                //removeTracks(track);
                 localMedia.current.appendChild(track.attach());
             })
             .then(err => {
@@ -191,24 +175,20 @@ const VideoChat = props => {
     };
 
     const startVideo = () => {
-        if (twilioToken == null) {
-            dispatch(getAccessToken(twilioRoom, requester))
-                .then(res => {
-                    const accessToken = res.data.data.result.access_token;
-                    dispatch(getMeetingRoomStatus(twilioRoom))
-                        .then(res => {
-                            joinRoom(twilioRoom, accessToken);
-                        })
-                        .catch(err => {
-                            alert('Room not exist');
-                            localStorage.removeItem('twilioacesstoken');
-                            dispatch(twilioLogout());
-                        });
-                })
-                .catch(e => {
-                    alert('Unauthorized');
-                });
-        }
+        dispatch(getAccessToken(twilioRoom, requester))
+            .then(res => {
+                const accessToken = res.data.data.result.access_token;
+                dispatch(getMeetingRoomStatus(twilioRoom))
+                    .then(res => {
+                        joinRoom(twilioRoom, accessToken);
+                    })
+                    .catch(err => {
+                        alert('Room not exist');
+                    });
+            })
+            .catch(e => {
+                alert('Unauthorized');
+            });
     };
     const leaveRoom = () => {
         activeRoom.on('disconnected', () => {
@@ -230,10 +210,8 @@ const VideoChat = props => {
             dispatch(meetingStatus(data)).then(res => {
                 console.log('response', res);
             });
+            // window.location.href = '/dashboard';
         }
-
-        localStorage.removeItem('twilioacesstoken');
-        dispatch(twilioLogout());
     };
 
     let remoteMediaContainer = isRemote ? (
@@ -257,36 +235,9 @@ const VideoChat = props => {
             ) : (
                 ''
             )}
-            <div className='container'>
-                {!isAuth && (
-                    <div className='row'>
-                        <div className='col-sm-12 mt-5 justify-content-center align-items-center'>
-                            {hasJoinedRoom ? (
-                                ''
-                            ) : (
-                                <button className='btn btn-primary' onClick={startVideo}>
-                                    Start Call
-                                </button>
-                                // <div
-                                //     className='img-wrapper-outer d-flex align-items-center'
-                                //     style={{ backgroundImage: { bg } }}>
-                                //     <div className='img-wrapper-inner text-center'>
-                                //         <div className='vedio-play-wrapper d-flex align-items-center justify-content-center'>
-                                //             <div className='vedio-background-wrapper d-flex align-items-center justify-content-center'>
-                                //                 <figure className='mb-0'>
-                                //                     <img src={videoicon} />
-                                //                 </figure>
-                                //             </div>
-                                //         </div>
-                                //         <h2 className='img-heading mt-3'>start call</h2>
-                                //     </div>
-                                // </div>
-                                //<PublicPage />
-                            )}
-                        </div>
-                    </div>
-                )}
-            </div>
+
+            {!isAuth && <div className='conatiner'>{hasJoinedRoom ? '' : <PublicPage startVideo={startVideo} />}</div>}
+
             {hasJoinedRoom ? (
                 <div className='bgdark withSideBar meetRoom waitingHost'>
                     <div className='host text-right  d-none d-lg-block videodiv flex-item' ref={localMedia}></div>
@@ -316,11 +267,7 @@ const VideoChat = props => {
                 </div>
             )}
 
-            {hasJoinedRoom ? (
-                <Footer room={activeRoom} setHasJoinedRoom={setHasJoinedRoom} requesterId={requesterId} />
-            ) : (
-                ''
-            )}
+            {hasJoinedRoom ? <Footer data={footerData} leaveRoom={leaveRoom} /> : ''}
         </>
     );
 };
