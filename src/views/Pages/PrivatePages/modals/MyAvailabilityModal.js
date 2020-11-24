@@ -109,6 +109,7 @@ const MyAvailabilityModal = props => {
                                     id='radio-2'
                                     name='radio'
                                     type='radio'
+                                    defaultChecked
                                     value='30 minutes'
                                     onChange={e => changeAvailabilityDuration(e.target.value)}
                                 />

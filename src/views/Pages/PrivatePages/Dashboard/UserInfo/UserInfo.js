@@ -16,6 +16,7 @@ function UserInfo() {
     const [openBioPopUp, setOpenBioPopUp] = useState(false);
     const [loader, setLoader] = useState(false);
     const [editBio, setEditBio] = useState({ value: '' });
+    const [showMore, setShowMore] = useState(true);
 
     const userInfo = useSelector(state => state.auth.user);
     const {
@@ -55,6 +56,14 @@ function UserInfo() {
     const addDefaultSrc = e => {
         e.target.src = defaultImg;
     };
+    let minorString;
+    let majorString = userInfo.meeter_bio;
+
+    if (userInfo.meeter_bio.length > 250) {
+        //console.log(userInfo.meeter_bio.substring(0, 500));
+        minorString = userInfo.meeter_bio.substring(0, 250);
+    }
+    console.log('att', minorString);
     return (
         <>
             <section className='personal-details bg-white pb-4'>
@@ -79,8 +88,29 @@ function UserInfo() {
                                     Click to edit your bio <i className='fa fa-pencil' aria-hidden='true'></i>
                                 </a>
                                 <p style={{ pointer: 'cursor' }} className='edit-bio small-size' href='#'>
-                                    {userInfo.meeter_bio}
+                                    {/* {userInfo.meeter_bio} */}
+                                    {showMore && userInfo.meeter_bio.length > 250 ? minorString : majorString}{' '}
+                                    {userInfo.meeter_bio.length > 250 ? (
+                                        showMore ? (
+                                            <a
+                                                style={{ cursor: 'pointer' }}
+                                                className='url-room small-size'
+                                                onClick={() => setShowMore(!showMore)}>
+                                                Show more..
+                                            </a>
+                                        ) : (
+                                            <a
+                                                style={{ cursor: 'pointer' }}
+                                                className='url-room small-size'
+                                                onClick={() => setShowMore(!showMore)}>
+                                                Show less..
+                                            </a>
+                                        )
+                                    ) : (
+                                        ''
+                                    )}
                                 </p>
+
                                 <Modal
                                     show={openBioPopUp}
                                     onHide={() => setOpenBioPopUp(false)}

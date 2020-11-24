@@ -266,9 +266,10 @@ const MeeterList = props => {
                                 <div
                                     className='createdURL text-center mb-2'
                                     onClick={() => copyToClipBoard(`easymeet.io/meet/${userInfo.meeter_meet_slug}`)}>
-                                    easymeet.io/meet/{userInfo.meeter_meet_slug}
+                                    easymeet.io/meet/{userInfo.meeter_meet_slug}{' '}
+                                    <img className='pr-1' src={copyImage} alt='Copy' />{' '}
                                 </div>
-                                <div className='row icons mb-4'>
+                                {/* <div className='row icons mb-4'>
                                     <div className='col mx-2 px-0'>
                                         <a className='px-1 py-2' href='#'>
                                             <img className='pr-1' src={copyImage} alt='Copy' /> <span>Copy</span>{' '}
@@ -297,7 +298,7 @@ const MeeterList = props => {
                                             <img className='pr-1' src={envelop} alt='Email' /> <span>Email</span>{' '}
                                         </a>
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                     )}

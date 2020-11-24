@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import muteVideo from '../../../../../assets/images/mutevideo.png';
 
 const Footer = props => {
     console.log('footer data is', props.data);
@@ -26,11 +27,9 @@ const Footer = props => {
             if (localVideo == true) {
                 publication.track.disable();
                 setLocalVideo(false);
-                props.data.setLocalCamera(false);
             } else {
                 publication.track.enable();
                 setLocalVideo(true);
-                props.data.setLocalCamera(true);
             }
         });
     };
@@ -132,16 +131,19 @@ const Footer = props => {
                         <div className='mic py-2 mr-4 pr-4 d-flex align-items-center borderRight'>
                             <button className='btn mr-2' onClick={localAudioMute}>
                                 {localAudio ? (
-                                    <i className='fa fa-microphone-slash red' aria-hidden='true'></i>
+                                    <i className='fa fa-microphone' aria-hidden='true'></i>
                                 ) : (
-                                    <i className='fa fa-microphone hide' aria-hidden='true'></i>
+                                    <i className='fa fa-microphone-slash red' aria-hidden='true'></i>
                                 )}
                             </button>
                             <button className='btn' onClick={localVideoMute}>
                                 {localVideo ? (
                                     <i className='fa fa-video-camera' aria-hidden='true'></i>
                                 ) : (
-                                    <i className='fa fa-video-camera hide' aria-hidden='true'></i>
+                                    // <i className='fa fa-video-camera hide' aria-hidden='true'></i>
+                                    <i>
+                                        <img src={muteVideo} style={{ width: '17px' }} />
+                                    </i>
                                 )}
                             </button>
                         </div>
