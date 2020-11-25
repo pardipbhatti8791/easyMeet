@@ -16,6 +16,7 @@ const VideoChat = React.lazy(() => import('./views/Pages/PrivatePages/Dashboard/
 const DefaultLayout = React.lazy(() => import('./containers/PrivateLayouts/TheLayout'));
 const ForgetPassword = React.lazy(() => import('./views/Pages/PublicPages/ForgetPassword/ForgetPassword'));
 const ResetPassword = React.lazy(() => import('./views/Pages/PublicPages/ResetPassword/ResetPassword'));
+const MeetingRequestSend = React.lazy(() => import('./views/Pages/PublicPages/MeetingLink/MeetingRequestSend'));
 const loading = () => (
     <div className='animated fadeIn pt-3 text-center'>
         <div className='sk-spinner sk-spinner-pulse'></div>
@@ -38,6 +39,7 @@ const App = () => {
                     <Switch>
                         <Route path='/video-chat/:signature?' component={VideoChat} />
                         <Route path='/meet/:slug' component={MeetingLink} />
+                        <Route path='/request-send-sucess' component={MeetingRequestSend} />
                         <Route exact path='/login' component={Login} />
                         <Route exact path='/sign-up' component={SignUp} />
                         <Route exact path='/forget-password' component={ForgetPassword} />

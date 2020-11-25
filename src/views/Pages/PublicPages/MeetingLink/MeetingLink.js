@@ -9,6 +9,7 @@ import defaultImg from '../../../../assets/images/EasyMeetBig.svg';
 import RenderComponent from '../../../../utils/renderComponent';
 import MeeterDetails from './children/MeeterDetails';
 import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 
 function MeetingLink(props) {
     const [phoneNumber, setPhoneNumber] = useState('');
@@ -47,7 +48,7 @@ function MeetingLink(props) {
             device_token: 'dasdkfjasdkf'
         };
         dispatch(meetingRequest(data, history)).then(res => {
-            alert(res.data.message);
+            window.location.href = '/request-send-sucess';
         });
     };
     const addDefaultSrc = e => {

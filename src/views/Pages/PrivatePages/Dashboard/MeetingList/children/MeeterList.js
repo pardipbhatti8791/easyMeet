@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { accessFromObject } from '../../../../../../utils/accessFromObject';
 import { accessFromArray } from '../../../../../../utils/accessFromArray';
 
-import copyImage from '~/assets/images/Copy.png';
+import copyImage from '~/assets/images/copyicon.png';
 import facebook from '~/assets/images/facebook.png';
 import twitter from '~/assets/images/twitter.png';
 import linkedin from '~/assets/images/linkedin.png';

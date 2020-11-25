@@ -8,6 +8,7 @@ import { updateAvailability } from '~/redux/boarding/action';
 import { checkAvailability } from '~/redux/boarding/action';
 import { closeModal, openModal } from '../../../../../redux/global_modal/actions';
 import noPhoto from '~/assets/images/photo.png';
+import copyImage from '../../../../../assets/images/copyicon.png';
 import { copyToClipBoard } from '../../../../../utils/copyToCilpBoard';
 
 function UserInfo() {
@@ -63,9 +64,10 @@ function UserInfo() {
         //console.log(userInfo.meeter_bio.substring(0, 500));
         minorString = userInfo.meeter_bio.substring(0, 250);
     }
-    console.log('att', minorString);
+
     return (
         <>
+            {' '}
             <section className='personal-details bg-white pb-4'>
                 <div className='container'>
                     <div className='row'>
@@ -145,15 +147,11 @@ function UserInfo() {
                                     </div>
                                 </Modal>
                                 <span
-                                    className='url-room small-size'
+                                    className='mb-0 url-room small-size '
                                     style={{ cursor: 'pointer' }}
                                     onClick={() => copyToClipBoard('easymeet.io/meet/' + userInfo.meeter_meet_slug)}>
                                     easymeet.io/meet/{userInfo.meeter_meet_slug}{' '}
-                                    <i
-                                        onClick={() => copyToClipBoard('easymeet.io/meet/' + userInfo.meeter_meet_slug)}
-                                        className='fa fa-clone'
-                                        aria-hidden='true'
-                                    />
+                                    <img className='pr-1' src={copyImage} />
                                 </span>
                             </div>
                         </div>

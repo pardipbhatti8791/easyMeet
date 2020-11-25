@@ -563,6 +563,16 @@ span.field-icon {
   line-height: 80px;
   font-size: .6rem;
 }
+.empty-icon{
+  width: 80px;
+  height: 80px;
+  background: #FFFFFF;
+  opacity: 0.6;
+  border: 1px solid #000000;
+  border-radius: 50%;
+  line-height: 80px;
+  font-size: .6rem;
+}
 
 /*===============================
  dashboard-5
