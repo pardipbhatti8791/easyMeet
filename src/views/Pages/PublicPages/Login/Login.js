@@ -1,26 +1,19 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { useForm } from 'react-hook-form';
-
 import { loginUser } from '~/redux/auth/actions';
-
 import ThePublicHeader from '~/containers/PublicLayouts/PublicHeader';
-
 const Login = props => {
     const { history } = props;
-
     const dispatch = useDispatch();
     const auth = useSelector(state => state.auth);
     const { loading } = auth;
-
     /**
      * * @useForm hooks
      */
     const { register, handleSubmit, errors, watch, formState } = useForm({
         mode: 'onChange'
     });
-
     /**
      *
      * @param value
@@ -28,14 +21,13 @@ const Login = props => {
     const login = value => {
         dispatch(loginUser(value.email, value.password, history));
     };
-
     return (
         <>
             <ThePublicHeader />
             <section className='free-sign-up mt-5'>
                 <div className='container'>
                     <div className='row justify-content-center'>
-                        <div className='col-4 px-2'>
+                        <div className='col-md-6 col-12  col-xl-4'>
                             <div className='main-title pt-3 pb-4'>
                                 <h2 className='widget-title mb-3'>Sign in</h2>
                                 <p>Please enter email and password to login</p>
@@ -73,7 +65,6 @@ const Login = props => {
                                         <p className='customErrors text-danger mt-2'>{errors.email.message}</p>
                                     )}
                                 </div>
-
                                 <div className='form-group password-input'>
                                     <label htmlFor='exampleInputPassword1'>Password</label>
                                     <input
@@ -89,7 +80,6 @@ const Login = props => {
                                         <p className='customErrors text-danger mt-2'>Please enter password</p>
                                     )}
                                 </div>
-
                                 <button type='submit' className='btn btn-primary w-100'>
                                     {loading ? 'Signing in...' : 'Sign In'}
                                 </button>
@@ -107,5 +97,4 @@ const Login = props => {
         </>
     );
 };
-
 export default Login;

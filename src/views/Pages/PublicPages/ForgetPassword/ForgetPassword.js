@@ -3,26 +3,23 @@ import { useDispatch, useSelector } from 'react-redux';
 import { forgetPassword } from '../../../../redux/auth/actions';
 import ThePublicHeader from '~/containers/PublicLayouts/PublicHeader';
 import { useForm } from 'react-hook-form';
-
 const ForgetPassword = () => {
     const { register, handleSubmit, errors } = useForm({
         mode: 'onChange'
     });
     const dispatch = useDispatch();
-
     const onSubmit = formData => {
         const email = formData.email;
         dispatch(forgetPassword(email)).then(res => {
             alert('Reset mail sent');
         });
     };
-
     return (
         <section className='free-sign-up h-100 w-100'>
             <ThePublicHeader />
             <div className='container h-100'>
                 <div className='row h-100 justify-content-center align-items-center'>
-                    <div className='col-md-4 col-sm-12 p-4 forgotpass m-1 bg-white text-center'>
+                    <div className='col-md-6 col-12 col-xl-4  p-4 forgotpass m-1 bg-white text-center'>
                         <div className='forgotsign'>
                             <div className='m-auto'>!</div>
                         </div>
@@ -64,7 +61,7 @@ const ForgetPassword = () => {
                                     <p className='customErrors text-danger mt-2'>{errors.email.message}</p>
                                 )}
                             </div>
-                            <span className='medium-size text-left' style={{ color: '#ff2828' }}></span>
+                            <span className='medium-size text-left' style={{ color: '#FF2828' }}></span>
                             <button type='submit' className='btn btn-primary w-100 medium-size mb-3 mt-2'>
                                 Submit
                             </button>

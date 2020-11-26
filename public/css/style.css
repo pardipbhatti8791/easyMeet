@@ -309,9 +309,15 @@ body {
   border-color: #eeeeee;
   font-size: 0.86rem;
 }
-.password-input {
+.password-input{
   position: relative;
-}
+  }
+  .password-input .fa{
+    position: absolute;
+    top: 50%;
+    right: 0.75rem;
+    transform: translateY(-50%);
+  }
 span.field-icon {
   position: absolute;
   display: inline-block;
