@@ -208,7 +208,7 @@ const VideoChat = props => {
         };
         if (isAuth) {
             dispatch(meetingStatus(data)).then(res => {
-                console.log('response', res);
+                // console.log('response', res);
             });
             // window.location.href = '/dashboard';
         }
