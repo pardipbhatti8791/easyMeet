@@ -73,7 +73,7 @@ const MyAvailabilityModal = props => {
             <div className='modal-body pb-0'>
                 <div className='avilability ml-auto text-left'>
                     <span className='small-size'>Your Availability Status</span>
-                    <div className='align-self-center row d-flex mx-0 my-2'>
+                    <div className='align-self-center row d-flex mx-0 my-2 show'>
                         <div className='button b2 modal-available-btnwrapper' id='button-10'>
                             <RadioGroup value={'yes'} onChange={onChange} horizontal>
                                 <RadioButton value='yes'>Available</RadioButton>

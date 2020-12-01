@@ -60,8 +60,14 @@ function MeetingLink(props) {
             <div className='meeterProfile'>
                 <div className='container'>
                     <div className='row'>
-                        <div className='col-6 pl-0'>
+                        <div className='col-md-6'>
                             <div className='personal-details py-5 boxShadowNon'>
+                                <div className='MeeterBrandContainer pb-4 mob-meter-brand-logo'>
+                                    <a className='navbar-brand m-0 px-0 pt-0 pb-2 d-block' href='/sign-up'>
+                                        <img src='/assets/images/EasyMeetBig.svg' alt='logo' onError={addDefaultSrc} />
+                                    </a>
+                                    <span className='Brandtext opacity-8'>Never schedule a meeting again.</span>
+                                </div>
                                 <RenderComponent
                                     component={MeeterDetails}
                                     spinner={meeter_spinner}
@@ -69,16 +75,16 @@ function MeetingLink(props) {
                                 />
                             </div>
                         </div>
-                        <div className='col-6 bg-white'>
+                        <div className='col-md-6 bg-white'>
                             <div className='meeterProfileSignUp text-left'>
-                                <div className='MeeterBrandContainer pb-4'>
+                                <div className='MeeterBrandContainer pb-4 mob-hide'>
                                     <a className='navbar-brand m-0 px-0 pt-0 pb-2 d-block' href='/sign-up'>
                                         <img src='/assets/images/EasyMeetBig.svg' alt='logo' onError={addDefaultSrc} />
                                     </a>
                                     <span className='Brandtext opacity-8'>Never schedule a meeting again.</span>
                                 </div>
-                                <div className='MeeterLine'></div>
-                                <div className='MeeterDetails pr-3'>
+                                <div className='MeeterLine mob-hide'></div>
+                                <div className='MeeterDetails'>
                                     <h3 className='mb-3'>Some details before you meet:</h3>
                                     <form className='mb-4' onSubmit={handleSubmit(handleRegister)} autoComplete='off'>
                                         <div className='form-group'>
@@ -187,6 +193,22 @@ function MeetingLink(props) {
                                             Request a meeting
                                         </button>
                                     </form>
+                                </div>
+                                <div className='meeterProfileMsg custom-meeterProfileMsg px-2 py-3 text-center'>
+                                    <h2 className='opacity-8'>
+                                        Use EasyMeet <br />
+                                        to host meetings yourself!
+                                    </h2>
+                                    <p className='opacity-6 mb-0'>
+                                        dolor sit amet, consectetur adipiscing elit,sed do eiusmod
+                                    </p>
+
+                                    <button
+                                        type='button'
+                                        className='btn btn-primary medium-size'
+                                        onClick={() => (window.location.href = '/sign-up')}>
+                                        Sign up as a host
+                                    </button>
                                 </div>
                             </div>
                         </div>

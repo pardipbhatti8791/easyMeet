@@ -18,7 +18,7 @@ const MeeterDetails = props => {
 
     return (
         <Fragment>
-            <div className='media personal-details media-body text-center d-block mb-4'>
+            <div className='media personal-details custom-personal-details media-body text-center d-block mb-4'>
                 <div>
                     <img
                         className='text-center default-opacity m-auto avatar-container'
@@ -74,11 +74,11 @@ const MeeterDetails = props => {
                         : ''}
                 </span>
             </div>
-            <div className='mb-4'>
+            <div className='mb-4 custom-content'>
                 <span className='requesterMsg'>{accessFromObject(data, 'meeter_fullname')}</span>{' '}
                 <span className='requesterMsg opacity-8'>wants to meet with you when you're both free.</span>
             </div>
-            <div>
+            <div className='custom-content'>
                 <p className='small-size opacity-6 mb-0'>
                     Simply fill the information required and you'll get notified whenever{' '}
                     {accessFromObject(data, 'meeter_fullname')} is free to <br />
@@ -91,9 +91,9 @@ const MeeterDetails = props => {
                 </p>
                 <div className='MeeterProfileArrow'>&#187;</div>
             </div>
-            <div className='meeterProfileMsg px-2 py-3'>
+            <div className='meeterProfileMsg px-2 py-3 personal-meeting-profile'>
                 <h2 className='opacity-8'>Use EasyMeet to host meetings yourself!</h2>
-                <span className='opacity-6'>dolor sit amet, consectetur adipiscing elit, sed do eiusmod</span>
+                <p className='opacity-6 mb-0'>dolor sit amet, consectetur adipiscing elit, sed do eiusmod</p>
 
                 <button
                     type='button'

@@ -70,19 +70,31 @@ function UserInfo() {
             {' '}
             <section className='personal-details bg-white pb-4'>
                 <div className='container'>
-                    <div className='row'>
-                        <div className='media text-left'>
-                            <div>
-                                <img
-                                    id='openDrag'
-                                    className='mb-1 align-self-center text-center mr-3 default-opacity avatar-container'
-                                    src={userInfo.meeter_image_slug === '' ? noPhoto : userInfo.meeter_image_slug}
-                                    alt='photo'
-                                    onError={addDefaultSrc}
-                                    onClick={() => {
-                                        dispatch(openModal('AvatarModal', { open: true }));
-                                    }}
-                                />
+                    <div className='row m-0'>
+                        <div className='media text-left personal-profile'>
+                            <div className='profile-wrapper'>
+                                <figure className='mb-0'>
+                                    <img
+                                        id='openDrag'
+                                        className='mb-1 align-self-center text-center mr-3 default-opacity avatar-container'
+                                        src={userInfo.meeter_image_slug === '' ? noPhoto : userInfo.meeter_image_slug}
+                                        alt='photo'
+                                        onError={addDefaultSrc}
+                                        onClick={() => {
+                                            dispatch(openModal('AvatarModal', { open: true }));
+                                        }}
+                                    />
+                                </figure>
+
+                                <div className='meeting-room align-self-center mr-3'>
+                                    <button
+                                        className='btn btn-default meeting-btn bg-white small-size'
+                                        onClick={() => {
+                                            // window.location.href = '/video-chat';
+                                        }}>
+                                        <i className='fa fa-camera' aria-hidden='true' /> Meeting Room
+                                    </button>
+                                </div>
                             </div>
                             <div className='media-body align-self-center'>
                                 <h2 className='mt-0'> {userInfo.meeter_fullname}</h2>
@@ -169,10 +181,16 @@ function UserInfo() {
                                 </div>
                                 <div className='button b2 available_btnWrapper' id='button-10'>
                                     <RadioGroup value={meeter_availibility} onChange={onChange} horizontal>
-                                        <RadioButton value='yes' className='radiobtn'>
+                                        <RadioButton
+                                            value='yes'
+                                            pointColor='#336600'
+                                            className='radiobtn custm-sucess-btn'
+                                            style={{ backgroundColor: 'red' }}>
                                             Available
                                         </RadioButton>
-                                        <RadioButton value='no'>Not Available</RadioButton>
+                                        <RadioButton value='no' pointColor='#336600'>
+                                            Not Available
+                                        </RadioButton>
                                     </RadioGroup>
                                 </div>
                             </div>

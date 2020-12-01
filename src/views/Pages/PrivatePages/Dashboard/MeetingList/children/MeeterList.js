@@ -94,13 +94,13 @@ const MeeterList = props => {
             <section className='search mt-2'>
                 <div className='container'>
                     <div className='row'>
-                        <div className='col-6 px-0'>
-                            <div className='row'>
-                                <span className='col-3 align-self-center small-size text-left pr-0'>
+                        <div className='col-md-7'>
+                            <div className='d-md-flex align-items-center custom-search-request'>
+                                <div className='small-size  mr-2 text-left'>
                                     <span>{total_req === 'Invalid key' ? '0' : total_req}</span>{' '}
                                     {total_req > 1 ? 'Pending Requests' : 'Pending Request'}
-                                </span>
-                                <div className='form-group has-search col-6 mb-0 px-0 py-0'>
+                                </div>
+                                <div className='form-group has-search mb-0'>
                                     <span className='fa fa-search form-control-feedback' />
                                     <input
                                         type='text'
@@ -146,20 +146,34 @@ const MeeterList = props => {
                     {Array.isArray(meetings) === true ? (
                         keyword === '' ? (
                             meetings.map((requester, index) => (
-                                <div key={index} className='requster-container bg-white w-100 mt-3'>
-                                    <div className='row mx-0'>
-                                        <div className='media text-left mr-auto'>
-                                            <div
-                                                className='align-self-start text-center mr-3 avatar-container bg-white medium-size'
-                                                style={{ paddingTop: '30px' }}>
-                                                <span>{requester.requester_name.substr(0, 1).toUpperCase()} </span>
-                                            </div>
-                                            <div className='media-body align-self-center'>
-                                                <h2 className='my-0 requesterName'>{requester.requester_name}</h2>
-                                                <span className='url-room small-size'>{requester.requester_email}</span>
+                                <div key={index} className='requster-container requster-category bg-white w-100 mt-3'>
+                                    <div className='row'>
+                                        <div className='col-md-8'>
+                                            <div className='request-category-inner'>
+                                                <div className='request-category-img d-flex'>
+                                                    <figure className='mb-0'>
+                                                        <span>
+                                                            {requester.requester_name.substr(0, 1).toUpperCase()}{' '}
+                                                        </span>
+                                                    </figure>
+                                                    <div className='request-category-inner-text text-left'>
+                                                        <h2 className='my-0 requesterName'>
+                                                            {requester.requester_name}
+                                                        </h2>
+                                                        <span className='url-room small-size'>
+                                                            {requester.requester_email}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div className='request-summary text-left mt-3'>
+                                                    <h3 className='small-size mb-0'>Request Summary:</h3>
+                                                    <p className='small-size' style={{ opacity: '0.6' }}>
+                                                        {requester.summary}
+                                                    </p>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div className='ml-auto'>
+                                        <div className='col-md-4'>
                                             <div className='bulk-action text-right pr-0'>
                                                 {/* <button
                                                 className='btn default-btn small-size bg-white  ml-3'
@@ -168,7 +182,7 @@ const MeeterList = props => {
                                             </button> */}
 
                                                 <button
-                                                    className='btn default-btn small-size bg-white notify ml-3'
+                                                    className='btn default-btn small-size bg-white notify mr-2'
                                                     value={requester.requester_id}
                                                     onClick={e => {
                                                         onClickNotify(
@@ -189,12 +203,6 @@ const MeeterList = props => {
                                                 </button>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className='request-summary text-left col-9 pr-0 mt-3'>
-                                        <h3 className='small-size mb-0'>Request Summary:</h3>
-                                        <span className='small-size' style={{ opacity: '0.6' }}>
-                                            {requester.summary}
-                                        </span>
                                     </div>
                                 </div>
                             ))
@@ -213,35 +221,31 @@ const MeeterList = props => {
                                                 <span className='url-room small-size'>{requester.requester_email}</span>
                                             </div>
                                         </div>
-                                        <div className='ml-auto'>
-                                            <div className='bulk-action text-right pr-0'>
-                                                {/* <button
+
+                                        <div className='bulk-action text-right pr-0'>
+                                            {/* <button
                                                     className='btn default-btn small-size bg-white  ml-3'
                                                     onClick={onJoinRoomClick}>
                                                     Join Room
                                                 </button> */}
 
-                                                <button
-                                                    className='btn default-btn small-size bg-white notify ml-3'
-                                                    value={requester.requester_id}
-                                                    onClick={e => {
-                                                        onClickNotify(
-                                                            requester.requester_id,
-                                                            requester.requester_email
-                                                        );
-                                                    }}>
-                                                    <i className='fa fa-bell-o mr-1' aria-hidden='true' />
-                                                    Notify
-                                                </button>
+                                            <button
+                                                className='btn default-btn small-size bg-white notify ml-3'
+                                                value={requester.requester_id}
+                                                onClick={e => {
+                                                    onClickNotify(requester.requester_id, requester.requester_email);
+                                                }}>
+                                                <i className='fa fa-bell-o mr-1' aria-hidden='true' />
+                                                Notify
+                                            </button>
 
-                                                <button
-                                                    className='btn default-btn small-size bg-white reject'
-                                                    value={requester.requester_id}
-                                                    onClick={e => onClickReject(e.target.value)}>
-                                                    <i className='fa fa-times mr-1' aria-hidden='true' />
-                                                    Reject
-                                                </button>
-                                            </div>
+                                            <button
+                                                className='btn default-btn small-size bg-white reject'
+                                                value={requester.requester_id}
+                                                onClick={e => onClickReject(e.target.value)}>
+                                                <i className='fa fa-times mr-1' aria-hidden='true' />
+                                                Reject
+                                            </button>
                                         </div>
                                     </div>
                                     <div className='request-summary text-left col-9 pr-0 mt-3'>
@@ -264,6 +268,7 @@ const MeeterList = props => {
                                     </p>
                                 </div>
                                 <div
+                                    style={{ cursor: 'pointer' }}
                                     className='createdURL text-center mb-2'
                                     onClick={() => copyToClipBoard(`easymeet.io/meet/${userInfo.meeter_meet_slug}`)}>
                                     easymeet.io/meet/{userInfo.meeter_meet_slug}{' '}

@@ -309,15 +309,16 @@ body {
   border-color: #eeeeee;
   font-size: 0.86rem;
 }
+
 .password-input{
-  position: relative;
-  }
-  .password-input .fa{
-    position: absolute;
-    top: 50%;
-    right: 0.75rem;
-    transform: translateY(-50%);
-  }
+position: relative;
+}
+.password-input .fa{
+  position: absolute;
+  top: 50%;
+  right: 0.75rem;
+  transform: translateY(-50%);
+}
 span.field-icon {
   position: absolute;
   display: inline-block;
@@ -717,14 +718,14 @@ span.field-icon {
   margin-top: 1.2rem;
  }
  .meeterProfileSignUp {
-  padding: 4rem 0 0 1.8rem;
+  padding: 4rem 0 0 1rem;
  }
  .MeeterLine {
   background: #FFFFFF;
   border-bottom: 1px solid #EEEEEE;
   border-radius: 5px;
-  margin-left: -45px;
-  margin-right: -15px;
+  margin-left: -2rem;
+  margin-right: -0.9rem;
  }
 .MeeterBrandContainer .navbar-brand {
   font-size: 2.25rem;
@@ -1896,4 +1897,195 @@ element.style {
       max-width: 120px;
       height: 120px;
   }
+}
+
+/* shilpa css */
+.requster-category {
+  border: 1px solid #EEEEEE;
+    border-radius: 4px;
+    padding: 12px 16px;
+    position: relative;
+    
+}
+.requster-category .bulk-action{
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  margin: 0 !important;
+}
+.request-category-inner .request-category-img{
+  
+}
+
+.request-category-inner .request-category-img figure{
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  border: 1px solid #00000099;
+  border-radius: 50%;
+  margin-right: 16px;
+}
+.request-category-inner .request-category-inner-text .requesterName{
+  font-size: 14px;
+  line-height: 22px;
+  color: #000000;
+}
+.request-category-inner .request-category-inner-text .url-room{
+  color: #017AFF;
+  font-size: 12px;
+}
+.request-category-inner .request-summary{
+  padding-left: 56px;
+}
+.custom-search-request .small-size{
+    flex:0 0 20%;
+}
+.custom-search-request .form-group{
+  flex:0 0 80%;
+}
+/* header css */
+.custom-toggle{
+  background: #FFFFFF;
+  border: 1px solid #EEEEEE !important;
+  box-sizing: border-box;
+  border-radius: 5px;
+}
+@media only screen and (min-width:991px){
+ 
+  .personal-profile .profile-wrapper .meeting-room{
+    display:none;
+  }
+  .mob-availbtn-wrapper{
+    display: none;
+  }
+}
+
+@media only screen and (max-width:991px){
+  .custom-mob-nav .navbar-brand{
+    margin-right: 0.2rem;
+  }
+  .personal-profile{
+    display:block;
+  }
+  .personal-profile .profile-wrapper{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .custom-search-request .small-size{
+    flex:0 0 30%;
+}
+.custom-search-request .form-group{
+  flex:0 0 70%;
+}
+ 
+}
+@media only screen and (min-width:767px){
+  .custom-meeterProfileMsg h2 br{
+    display: none;
+  }
+  .meeterProfileMsg.custom-meeterProfileMsg{
+    display:none;
+  }
+  .mob-meter-brand-logo{
+    display:none;
+  }
+  .desktop-hide{
+    display: none;
+  }
+}
+
+@media only screen and (max-width:767px){
+  
+  .profile-serach-wrapper{
+    padding: 10px 0;
+  }
+  .profile-serach-wrapper .small-size{
+      margin-bottom: 8px;
+  }
+  .requster-category{
+    padding: 12px 12px 0;
+  }
+  .requster-category .bulk-action {
+    padding: 16px 0;
+    background: #fff;
+    justify-content: space-around;
+    display: flex;
+    position: unset;
+    border-top: 1px solid #EEEEEE;
+  }
+  .requster-category .bulk-action .btn{
+    border: 0;
+    padding:0;
+  }
+  .personal-meeting-profile{
+    display:none;
+  }
+  .meeterProfileSignUp {
+    padding: 0 0 2em;
+  }
+  .meeterProfileSignUp{
+
+  }
+  .mob-hide{
+    display: none;
+  }
+  .personal-details{
+    padding: 2rem 0 1rem!important;
+  }
+  .meeterProfileSignUp .MeeterDetails textarea{
+    height: 80px;
+  }
+  .meeterProfileMsg.custom-meeterProfileMsg h2{
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 25px;
+  }
+  .mob-meter-brand-logo .navbar-brand{
+    line-height: 1;
+  }
+  .mob-meter-brand-logo .navbar-brand img{
+    width: 90px;
+  }
+  .custom-personal-details{
+    padding: 16px 0 10px !important;
+    margin-bottom: 16px !important;
+  }
+  .custom-content{
+    margin-bottom: 10px !important;
+  }
+  .custom-content p{
+    margin-bottom: 0;
+    line-height: 1.6;
+  }
+  .custom-content br{
+    display: none;
+  }
+  .meeterProfileSignUp .MeeterDetails{
+    padding-top: 15px;
+  }
+  .meeterProfileSignUp .MeeterDetails .form-group{
+    padding-top: 0;
+    margin-bottom: 16px;
+  }
+  .request-category-inner  .request-summary{
+    padding-left: 0;
+  }
+  .custom-search-request .small-size{
+    margin-bottom: 4px;
+  }
+  .navbar-collapse{
+    margin-top: .50rem;
+  }
+  
+}
+
+
+
+.mob-availbtn-wrapper button {
+  display: block;
+  margin: 0 auto;
+  background: transparent;
+  border: 0;
+  font-size: 12px;
 }
