@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateAvailability } from '../../redux/boarding/action';
 import img from '../../assets/images/EasyMeet.svg';
 import { closeModal, openModal } from '../../redux/global_modal/actions';
-//import mobimg from '../../assets/images/mob-logo.svg';
+import mobimg from '../../assets/images/mob-logo.svg';
 
 function ThePrivateHeader() {
     const [menuActive, setMenuActive] = useState(false);
@@ -31,7 +31,7 @@ function ThePrivateHeader() {
                         <img src={img} onError={addDefaultSrc} alt='EasyMeet' />
                     </Link>
                     <Link className='navbar-brand desktop-hide' href='index.html' to={`/`}>
-                        {/* <img src={mobimg} onError={addDefaultSrc} alt='EasyMeet' /> */}
+                        <img src={mobimg} onError={addDefaultSrc} alt='EasyMeet' />
                     </Link>
                     {meeter_availibility === 'yes' ? (
                         <div className='mob-availbtn-wrapper' style={{ fontSize: '12px' }}>

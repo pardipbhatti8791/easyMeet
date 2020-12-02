@@ -151,6 +151,7 @@ const SignUp = props => {
                                         <input
                                             type='password'
                                             id='passInput'
+                                            className={errors.password ? 'form-control mt-2' : 'form-control'}
                                             className='form-control'
                                             id='exampleInputPassword1'
                                             placeholder='Password'
@@ -178,7 +179,7 @@ const SignUp = props => {
                                                 passwordVisible === 'password' ? 'fa fa-eye-slash' : 'fa fa-eye'
                                             }></span>
                                         {errors.password && (
-                                            <p className='customErrors text-danger mt-2'>{errors.password.message}</p>
+                                            <p className='customErrors text-danger'>{errors.password.message}</p>
                                         )}
                                     </div>
                                 </div>
