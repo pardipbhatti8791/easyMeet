@@ -58,14 +58,16 @@ const ResetPassword = props => {
                                     name='password'
                                     ref={register({ required: true })}
                                 />
-                                {errors.password && (
-                                    <p className='customErrors text-danger mt-2'>Please enter password</p>
-                                )}
+
                                 <span
                                     toggle='#input-pwd'
-                                    className='fa fa-fw fa-eye field-icon toggle-password'
+                                    style={{ paddingTop: '10px', marginTop: '10px' }}
+                                    className={
+                                        passwordShown ? 'fa fa-fw fa-eye field-icon toggle-password' : 'fa fa-eye-slash'
+                                    }
                                     onClick={togglePasswordVisiblity}></span>
                             </div>
+                            {errors.password && <p className='customErrors text-danger mt-2'>Please enter password</p>}
                             <div className='form-group password-input mb-3'>
                                 <label>Confirm New Password</label>
                                 <input
@@ -75,14 +77,20 @@ const ResetPassword = props => {
                                     name='confirmPassword'
                                     ref={register({ required: true })}
                                 />
-                                {errors.confirmPassword && (
-                                    <p className='customErrors text-danger mt-2'>Please enter confirm password</p>
-                                )}
+
                                 <span
+                                    style={{ paddingTop: '10px', marginTop: '10px' }}
                                     toggle='#input-pwd'
-                                    className='fa fa-fw fa-eye field-icon toggle-password'
-                                    onClick={togglePasswordVisiblity1}></span>
+                                    onClick={togglePasswordVisiblity1}
+                                    className={
+                                        confirmPasswordShown
+                                            ? 'fa fa-fw fa-eye field-icon toggle-password'
+                                            : 'fa fa-eye-slash'
+                                    }></span>
                             </div>
+                            {errors.confirmPassword && (
+                                <p className='customErrors text-danger mt-2'>Please enter confirm password</p>
+                            )}
                             {passwordMatched == false ? (
                                 <span className='medium-size text-left' style={{ color: '#FF2828' }}>
                                     New Password and Confirm Password do not match

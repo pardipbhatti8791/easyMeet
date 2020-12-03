@@ -71,7 +71,7 @@ const MyAvailabilityModal = props => {
             </div>
             <div className='MeeterLine mx-0'></div>
             <div className='modal-body pb-0'>
-                <div className='avilability ml-auto text-left'>
+                <div className='avilability ml-auto text-left availabilityRadioButton'>
                     <span className='small-size'>Your Availability Status</span>
                     <div className='align-self-center row d-flex mx-0 my-2 show'>
                         <div className='button b2 modal-available-btnwrapper' id='button-10'>

@@ -178,10 +178,10 @@ const SignUp = props => {
                                             className={
                                                 passwordVisible === 'password' ? 'fa fa-eye-slash' : 'fa fa-eye'
                                             }></span>
-                                        {errors.password && (
-                                            <p className='customErrors text-danger'>{errors.password.message}</p>
-                                        )}
                                     </div>
+                                    {errors.password && (
+                                        <p className='customErrors text-danger'>{errors.password.message}</p>
+                                    )}
                                 </div>
                                 <button type='submit' className='btn btn-primary w-100'>
                                     {loading ? 'Signing up...' : 'Continue'}
