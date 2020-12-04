@@ -73,7 +73,6 @@ get meeting room status from twilio
 @params roomName
 */
 export const getMeetingRoomStatus = roomName => async => {
-    console.log('room status');
     try {
         const response = gpAxios.get(`/check-room-status?room_name=${roomName}`);
         return response;

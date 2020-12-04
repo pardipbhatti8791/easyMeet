@@ -20,7 +20,7 @@ const VideoChat = props => {
 
     const localMedia = useRef(null);
     const remoteMedia = useRef(null);
-
+    let systemTracks;
     const footerData = {
         room: activeRoom
     };
@@ -48,8 +48,6 @@ const VideoChat = props => {
             if (isAuth) {
                 const userEmail = userInfo.meeter_email;
                 if (userEmail != data.hostEmail) {
-                    console.log('userEmail', userEmail, 'and hostemail', data.hostEmail);
-
                     dispatch(getAccessToken(data.roomName, data.requesterEmail))
                         .then(res => {
                             const accessToken = res.data.data.result.access_token;
@@ -77,6 +75,9 @@ const VideoChat = props => {
             video: { width: 1920, height: 1080 }
         })
             .then(localTracks => {
+                //console.log('sysTrack', localTracks);
+                systemTracks = localTracks[1];
+
                 return connect(
                     accessToken,
                     {
@@ -163,15 +164,32 @@ const VideoChat = props => {
             });
         });
 
-        // local media tracks attaching to dom
-        createLocalVideoTrack()
-            .then(track => {
-                //removeTracks(track);
-                localMedia.current.appendChild(track.attach());
-            })
-            .then(err => {
-                //  console.log(err);
+        const handleTrackDisabled = track => {
+            track.on('disabled', () => {
+                /* Hide the associated <video> element and show an avatar image. */
+                console.log('remote mute their video');
             });
+        };
+
+        room.participants.forEach(participant => {
+            participant.tracks.forEach(publication => {
+                if (publication.isSubscribed) {
+                    handleTrackDisabled(publication.track);
+                }
+                publication.on('subscribed', handleTrackDisabled);
+            });
+        });
+
+        localMedia.current.appendChild(systemTracks.attach());
+        // local media tracks attaching to dom
+        // createLocalVideoTrack()
+        //     .then(track => {
+        //         //removeTracks(track);
+        //         localMedia.current.appendChild(track.attach());
+        //     })
+        //     .then(err => {
+        //         //  console.log(err);
+        //     });
     };
 
     const startVideo = () => {
@@ -191,12 +209,15 @@ const VideoChat = props => {
             });
     };
     const leaveRoom = () => {
-        activeRoom.on('disconnected', () => {
-            activeRoom.localParticipant.tracks.forEach(publication => {
-                publication.track.stop();
+        activeRoom.on('disconnected', room => {
+            room.localParticipant.tracks.forEach(publication => {
                 const attachedElements = publication.track.detach();
-                attachedElements.forEach(element => element.stop());
+                attachedElements.forEach(element => element.remove());
             });
+        });
+        activeRoom.localParticipant.videoTracks.forEach(publication => {
+            publication.track.stop();
+            publication.unpublish();
         });
 
         activeRoom.disconnect();

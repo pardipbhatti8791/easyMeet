@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import muteVideo from '../../../../../assets/images/mutevideo.png';
 
 const Footer = props => {
-    console.log('footer data is', props.data);
     const { room } = props.data;
     const userInfo = useSelector(state => state.auth.user);
     const isAuth = useSelector(state => state.auth.isAuthenticated);
