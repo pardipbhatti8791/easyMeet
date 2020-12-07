@@ -8,6 +8,7 @@ import { updateAvailability } from '~/redux/boarding/action';
 import { checkAvailability } from '~/redux/boarding/action';
 import { closeModal, openModal } from '../../../../../redux/global_modal/actions';
 import noPhoto from '~/assets/images/photo.png';
+import md5 from 'md5';
 import copyImage from '../../../../../assets/images/copyicon.png';
 import { copyToClipBoard } from '../../../../../utils/copyToCilpBoard';
 
@@ -23,7 +24,7 @@ function UserInfo() {
     const {
         availibility: { meeter_availibility, available_for }
     } = userInfo;
-
+    let gravatarImage = md5(userInfo.meeter_email.toLowerCase().trim());
     useEffect(() => {
         dispatch(checkAvailability(userInfo.id));
         setEditBio({ value: userInfo.meeter_bio });
@@ -55,7 +56,7 @@ function UserInfo() {
         }
     };
     const addDefaultSrc = e => {
-        e.target.src = defaultImg;
+        e.target.src = `https://www.gravatar.com/avatar/${gravatarImage}?d=mp`;
     };
     let minorString;
     let majorString = userInfo.meeter_bio;
@@ -77,7 +78,12 @@ function UserInfo() {
                                     <img
                                         id='openDrag'
                                         className='mb-1 align-self-center text-center mr-3 default-opacity avatar-container'
-                                        src={userInfo.meeter_image_slug === '' ? noPhoto : userInfo.meeter_image_slug}
+                                        src={
+                                            userInfo.meeter_image_slug === ''
+                                                ? `https://www.gravatar.com/avatar/${gravatarImage}?d=mp`
+                                                : userInfo.meeter_image_slug
+                                        }
+                                        s
                                         alt='photo'
                                         onError={addDefaultSrc}
                                         onClick={() => {

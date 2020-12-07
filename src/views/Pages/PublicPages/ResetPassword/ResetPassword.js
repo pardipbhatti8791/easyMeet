@@ -32,6 +32,7 @@ const ResetPassword = props => {
             dispatch(resetPassword(data))
                 .then(res => {
                     alert(res.data.message, 'res');
+                    window.location.href = '/login';
                 })
                 .catch(err => console.log(err, 'err'));
             setPasswordMatched(true);

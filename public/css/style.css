@@ -1724,28 +1724,63 @@ footer .footerDetails > div {
   #home .howItWorksSteps  {
     text-align: center!important;
   }
+
+   .about .aboutTitle,
+   .about .aboutImg,
+   .howItWorksSteps  {
+    text-align: center!important;
+  }
+  .howItWorksSteps{
+    text-align: center!important;
+  }
   #home .about .aboutTitle {
+    margin: auto;
+    margin-bottom: 2rem;
+  }
+
+   .about .aboutTitle {
     margin: auto;
     margin-bottom: 2rem;
   }
   #home .about .aboutTitle .font40 {
     font-size: 2rem;
   }
+  .about .aboutTitle .font40 {
+    font-size: 2rem;
+  }
   #home .about .aboutTitle .idea {
+    width: 100%;
+  }
+  .about .aboutTitle .idea {
     width: 100%;
   }
   #home .howItWorks .col-md-6 {
     padding-right: 15px!important;
     padding-left: 15px!important;
   }
+  .howItWorks .col-md-6 {
+    padding-right: 15px!important;
+    padding-left: 15px!important;
+  }
   #home .howItWorksSteps {
+    padding-top: 1.5rem;
+  }
+  .howItWorksSteps {
     padding-top: 1.5rem;
   }
   #home .howItWorksSteps .font24 {
     font-size: 1.125rem;
     margin-bottom: 1rem!important;
   }
+  .howItWorksSteps .font24 {
+    font-size: 1.125rem;
+    margin-bottom: 1rem!important;
+  }
   #home .howItWorks .howItWorkstitle {
+    padding-bottom: 0;
+    padding-top: 2.5rem;
+  }
+  .howItWorks .howItWorkstitle {
     padding-bottom: 0;
     padding-top: 2.5rem;
   }
@@ -1755,20 +1790,42 @@ footer .footerDetails > div {
     margin-bottom: -148%!important;
     width: 90%;
   }
+     .howItWorks .text-left img,
+   .howItWorks .text-right img  {
+    margin: 0!important;
+    margin-bottom: -148%!important;
+    width: 90%;
+  }
   #home .howItWorks .text-right .stepImg,
   #home .howItWorks .text-left .stepImg {
+    margin-bottom: -123%!important;
+  }
+   .howItWorks .text-right .stepImg,
+   .howItWorks .text-left .stepImg {
     margin-bottom: -123%!important;
   }
   #home .howItWorks .text-right .step4Img {
     margin-bottom: -188%!important;
   }
+   .howItWorks .text-right .step4Img {
+    margin-bottom: -188%!important;
+  }
   #home .howItWorks .step4Container {
+    padding-bottom: 14rem!important;
+  }
+  .howItWorks .step4Container {
     padding-bottom: 14rem!important;
   }
   #home footer .startNow .font40 {
     font-size: 2rem;
   }
+  footer .startNow .font40 {
+    font-size: 2rem;
+  }
   #home footer .startNow .btn-primary {
+    padding: .9rem 3rem!important;
+  }
+  footer .startNow .btn-primary {
     padding: .9rem 3rem!important;
   }
 }

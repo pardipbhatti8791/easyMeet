@@ -17,6 +17,8 @@ const DefaultLayout = React.lazy(() => import('./containers/PrivateLayouts/TheLa
 const ForgetPassword = React.lazy(() => import('./views/Pages/PublicPages/ForgetPassword/ForgetPassword'));
 const ResetPassword = React.lazy(() => import('./views/Pages/PublicPages/ResetPassword/ResetPassword'));
 const MeetingRequestSend = React.lazy(() => import('./views/Pages/PublicPages/MeetingLink/MeetingRequestSend'));
+const HomePage = React.lazy(() => import('./views/Pages/PublicPages/HomePage/HomePage'));
+
 const loading = () => (
     <div className='animated fadeIn pt-3 text-center'>
         <div className='sk-spinner sk-spinner-pulse'></div>
@@ -43,7 +45,8 @@ const App = () => {
                         <Route exact path='/login' component={Login} />
                         <Route exact path='/sign-up' component={SignUp} />
                         <Route exact path='/forget-password' component={ForgetPassword} />
-                        <PublicRoute exact path='/reset-password/:token?' component={ResetPassword} />
+                        <Route exact path='/home' component={HomePage} />
+                        <Route exact path='/reset-password/:token?' component={ResetPassword} />
                         <ProtectedRoute path='/' component={DefaultLayout} />
                     </Switch>
                 </React.Suspense>

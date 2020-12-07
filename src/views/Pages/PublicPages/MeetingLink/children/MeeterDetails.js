@@ -1,13 +1,23 @@
 import React, { Fragment, useState } from 'react';
 import { accessFromObject } from '../../../../../utils/accessFromObject';
 import defaultImg from '../../.././../../assets/images/photo.png';
+import md5 from 'md5';
 const MeeterDetails = props => {
     const { data } = props;
     const [showMore, setShowMore] = useState(true);
+    let gravatarImage;
+    if (accessFromObject(data, 'meeter_email') != undefined) {
+        gravatarImage = md5(
+            accessFromObject(data, 'meeter_email')
+                .toLowerCase()
+                .trim()
+        );
+    }
     const availabilty = accessFromObject(data, 'availibility');
     const addDefaultSrc = e => {
-        e.target.src = defaultImg;
+        e.target.src = `https://www.gravatar.com/avatar/${gravatarImage}?d=mp`;
     };
+
     let minorString;
     let majorString = accessFromObject(data, 'meeter_bio');
     if (majorString != undefined) {
@@ -24,7 +34,7 @@ const MeeterDetails = props => {
                         className='text-center default-opacity m-auto avatar-container'
                         src={
                             accessFromObject(data, 'meeter_image_slug') === ''
-                                ? '../../../../assets/images/photo.png'
+                                ? `https://www.gravatar.com/avatar/${gravatarImage}?d=mp`
                                 : accessFromObject(data, 'meeter_image_slug')
                         }
                         alt='photo'
@@ -81,8 +91,7 @@ const MeeterDetails = props => {
             <div className='custom-content'>
                 <p className='small-size opacity-6 mb-0'>
                     Simply fill the information required and you'll get notified whenever{' '}
-                    {accessFromObject(data, 'meeter_fullname')} is free to <br />
-                    take a meeting.
+                    {accessFromObject(data, 'meeter_fullname')} is free to take a meeting.
                 </p>
                 <br />
                 <p className='small-size opacity-6'>
@@ -93,7 +102,7 @@ const MeeterDetails = props => {
             </div>
             <div className='meeterProfileMsg px-2 py-3 personal-meeting-profile'>
                 <h2 className='opacity-8'>Use EasyMeet to host meetings yourself!</h2>
-                <p className='opacity-6 mb-0'>dolor sit amet, consectetur adipiscing elit, sed do eiusmod</p>
+                <p className='opacity-6 mb-0'>Not having to schedule meetings is a superpower</p>
 
                 <button
                     type='button'
