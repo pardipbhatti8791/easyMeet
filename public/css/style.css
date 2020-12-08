@@ -1363,6 +1363,14 @@ span.field-icon {
 .howItWorks .text-right img {
   margin-right: -178px;
 }
+
+/*start responsive css */
+@media only screen and (max-width:1024px){
+  .aboutTitle{
+    width: 100%;
+  }
+}
+/*end responsive css */
 /*===============================
  forgot password
  =================================*/
@@ -1621,9 +1629,6 @@ footer .footerDetails > div {
   .avilability {
     display: none;
   }
-  .availabilityRadioButton{
-    display:block;
-  }
   .meeting-requists {
     margin-top: 3rem;
   }
@@ -1716,116 +1721,59 @@ footer .footerDetails > div {
     display: block;
   }
   /*home*/
-  #home .about .col-md-8 {
+  .about .col-md-8 {
     padding-right: 15px!important;
   }
-  #home .about .aboutTitle,
-  #home .about .aboutImg,
-  #home .howItWorksSteps  {
+  .about .aboutTitle,
+  .about .aboutImg,
+  .howItWorksSteps  {
     text-align: center!important;
   }
-
-   .about .aboutTitle,
-   .about .aboutImg,
-   .howItWorksSteps  {
-    text-align: center!important;
-  }
-  .howItWorksSteps{
-    text-align: center!important;
-  }
-  #home .about .aboutTitle {
+  .about .aboutTitle {
     margin: auto;
     margin-bottom: 2rem;
   }
-
-   .about .aboutTitle {
-    margin: auto;
-    margin-bottom: 2rem;
-  }
-  #home .about .aboutTitle .font40 {
+ .about .aboutTitle .font40 {
     font-size: 2rem;
   }
-  .about .aboutTitle .font40 {
-    font-size: 2rem;
-  }
-  #home .about .aboutTitle .idea {
+ .about .aboutTitle .idea {
     width: 100%;
-  }
-  .about .aboutTitle .idea {
-    width: 100%;
-  }
-  #home .howItWorks .col-md-6 {
-    padding-right: 15px!important;
-    padding-left: 15px!important;
   }
   .howItWorks .col-md-6 {
     padding-right: 15px!important;
     padding-left: 15px!important;
   }
-  #home .howItWorksSteps {
+ .howItWorksSteps {
     padding-top: 1.5rem;
   }
-  .howItWorksSteps {
-    padding-top: 1.5rem;
-  }
-  #home .howItWorksSteps .font24 {
+ .howItWorksSteps .font24 {
     font-size: 1.125rem;
     margin-bottom: 1rem!important;
   }
-  .howItWorksSteps .font24 {
-    font-size: 1.125rem;
-    margin-bottom: 1rem!important;
-  }
-  #home .howItWorks .howItWorkstitle {
+ .howItWorks .howItWorkstitle {
     padding-bottom: 0;
     padding-top: 2.5rem;
   }
-  .howItWorks .howItWorkstitle {
-    padding-bottom: 0;
-    padding-top: 2.5rem;
-  }
-  #home .howItWorks .text-left img,
-  #home .howItWorks .text-right img  {
+ .howItWorks .text-left img,
+  .howItWorks .text-right img  {
     margin: 0!important;
     margin-bottom: -148%!important;
     width: 90%;
   }
-     .howItWorks .text-left img,
-   .howItWorks .text-right img  {
-    margin: 0!important;
-    margin-bottom: -148%!important;
-    width: 90%;
-  }
-  #home .howItWorks .text-right .stepImg,
-  #home .howItWorks .text-left .stepImg {
+  .howItWorks .text-right .stepImg,
+  .howItWorks .text-left .stepImg {
     margin-bottom: -123%!important;
   }
-   .howItWorks .text-right .stepImg,
-   .howItWorks .text-left .stepImg {
-    margin-bottom: -123%!important;
-  }
-  #home .howItWorks .text-right .step4Img {
+ .howItWorks .text-right .step4Img {
     margin-bottom: -188%!important;
   }
-   .howItWorks .text-right .step4Img {
-    margin-bottom: -188%!important;
-  }
-  #home .howItWorks .step4Container {
+ .howItWorks .step4Container {
     padding-bottom: 14rem!important;
   }
-  .howItWorks .step4Container {
-    padding-bottom: 14rem!important;
-  }
-  #home footer .startNow .font40 {
+ footer .startNow .font40 {
     font-size: 2rem;
   }
-  footer .startNow .font40 {
-    font-size: 2rem;
-  }
-  #home footer .startNow .btn-primary {
-    padding: .9rem 3rem!important;
-  }
-  footer .startNow .btn-primary {
+ footer .startNow .btn-primary {
     padding: .9rem 3rem!important;
   }
 }
@@ -1852,7 +1800,7 @@ footer .footerDetails > div {
   .extend {
     width: 160px;
   }
-  #home footer .terms ul li {
+ footer .terms ul li {
     padding: 0 .5rem!important;
   }
 }
@@ -2010,6 +1958,7 @@ element.style {
   box-sizing: border-box;
   border-radius: 5px;
 }
+
 @media only screen and (min-width:991px){
  
   .personal-profile .profile-wrapper .meeting-room{
@@ -2019,7 +1968,6 @@ element.style {
     display: none;
   }
 }
-
 @media only screen and (max-width:991px){
   .custom-mob-nav .navbar-brand{
     margin-right: 0.2rem;
@@ -2137,15 +2085,4 @@ element.style {
   .navbar-collapse{
     margin-top: .50rem;
   }
-  
-}
-
-
-
-.mob-availbtn-wrapper button {
-  display: block;
-  margin: 0 auto;
-  background: transparent;
-  border: 0;
-  font-size: 12px;
 }

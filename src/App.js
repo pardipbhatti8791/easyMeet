@@ -39,7 +39,7 @@ const App = () => {
                 <ModalManager />
                 <React.Suspense fallback={loading()}>
                     <Switch>
-                        <Route path='/video-chat/:signature?' component={VideoChat} />
+                        <Route path='/video-chat/:signature' component={VideoChat} />
                         <Route path='/meet/:slug' component={MeetingLink} />
                         <Route path='/request-send-sucess' component={MeetingRequestSend} />
                         <Route exact path='/login' component={Login} />

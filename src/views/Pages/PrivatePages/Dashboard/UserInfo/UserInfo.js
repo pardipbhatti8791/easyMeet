@@ -98,7 +98,8 @@ function UserInfo() {
                                         onClick={() => {
                                             // window.location.href = '/video-chat';
                                         }}>
-                                        <i className='fa fa-camera' aria-hidden='true' /> Meeting Room
+                                        <i className='mr-2 fa fa-camera' aria-hidden='true' />
+                                        Join Meeting Room
                                     </button>
                                 </div>
                             </div>

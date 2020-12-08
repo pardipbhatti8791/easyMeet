@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { notifyAll } from '~/redux/boarding/action';
-import { getAccessToken } from '../../../../../../redux/rooms/action';
+import { getAccessToken, createRoom } from '../../../../../../redux/rooms/action';
 import { getMeetingList } from '../../../../../../redux/meetings/action';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -27,31 +27,42 @@ const MeeterList = props => {
     const roomName = Math.floor(Math.random() * 1000000 + 1);
     const userEmail = userInfo.meeter_email;
 
+    // const onClickNotify = (requester_id, requester_email) => {
+    //     dispatch(getAccessToken(roomName, userEmail)).then(res => {
+    //         gpAxios
+    //             .post('/generate-token', {
+    //                 twillioToken: res.data.data.result.access_token,
+    //                 hostEmail: userEmail,
+    //                 roomName: roomName,
+    //                 requesterEmail: requester_email,
+    //                 requesterId: requester_id
+    //             })
+    //             .then(newResp => {
+    //                 const { data } = newResp;
+
+    //                 // eslint-disable-next-line no-undef
+    //                 var encrypted = CryptoJS.AES.encrypt(data.token, 'guguilovu');
+    //                 const data1 = {
+    //                     status_category: 'single',
+    //                     status_type: 'accept',
+    //                     requester_id: requester_id,
+    //                     video_meeting_url: `https://easymeet.io/video-chat/?signature=${encrypted}`
+    //                 };
+    //                 dispatch(notifyAll(data1));
+
+    //                 window.location.href = `/video-chat/?signature=${encrypted}`;
+    //             });
+    //     });
+    // };
+
     const onClickNotify = (requester_id, requester_email) => {
-        dispatch(getAccessToken(roomName, userEmail)).then(res => {
-            gpAxios
-                .post('/generate-token', {
-                    twillioToken: res.data.data.result.access_token,
-                    hostEmail: userEmail,
-                    roomName: roomName,
-                    requesterEmail: requester_email,
-                    requesterId: requester_id
-                })
-                .then(newResp => {
-                    const { data } = newResp;
-
-                    // eslint-disable-next-line no-undef
-                    var encrypted = CryptoJS.AES.encrypt(data.token, 'guguilovu');
-                    const data1 = {
-                        status_category: 'single',
-                        status_type: 'accept',
-                        requester_id: requester_id,
-                        video_meeting_url: `https://easymeet.io/video-chat/?signature=${encrypted}`
-                    };
-                    dispatch(notifyAll(data1));
-
-                    window.location.href = `/video-chat/?signature=${encrypted}`;
-                });
+        const data = {
+            requester_id: requester_id,
+            video_meeting_url: 'https://easymeet.io/video-chat/'
+        };
+        dispatch(createRoom(data)).then(res => {
+            console.log('res from create room is', res.data.data.result.room_link);
+            window.location.href = res.data.data.result.room_link;
         });
     };
     const onClickReject = value => {

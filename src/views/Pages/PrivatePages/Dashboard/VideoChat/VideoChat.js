@@ -1,26 +1,31 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { meetingStatus, getAccessToken, getMeetingRoomStatus } from '../../../../../redux/rooms/action';
+import {
+    meetingStatus,
+    getAccessToken,
+    getMeetingRoomStatus,
+    getRoom,
+    hostAvailable
+} from '../../../../../redux/rooms/action';
 import { useDispatch, useSelector } from 'react-redux';
-import PublicPage from './PublicPage';
-import Footer from './Footer';
-import { queryString } from '../../../../../utils/qs';
-import { gpAxios } from '../../../../../utils/gpAxios';
 
-const { connect, createLocalTracks, createLocalVideoTrack, isSupported } = require('twilio-video');
+import Footer from './Footer';
+
+const { connect, createLocalTracks } = require('twilio-video');
 const VideoChat = props => {
     const dispatch = useDispatch();
     const [hasJoinedRoom, setHasJoinedRoom] = useState(false);
     const [activeRoom, setActiveRoom] = useState(null);
     const [isRemote, setIsRemote] = useState(false);
-    const [twilioRoom, set_twilioRoom] = useState(null);
-    const [requester, set_requester] = useState(null);
-    const [requesterId, setRequesterId] = useState(null);
+    const [urlData, setUrlData] = useState(null);
+    const [requesterEmail, setRequesterEmail] = useState(null);
     const isAuth = useSelector(state => state.auth.isAuthenticated);
     const userInfo = useSelector(state => state.auth.user);
+    const roomInfo = useSelector(state => state.rooms);
 
     const localMedia = useRef(null);
     const remoteMedia = useRef(null);
     let systemTracks;
+
     const footerData = {
         room: activeRoom
     };
@@ -30,46 +35,81 @@ const VideoChat = props => {
     }, []);
 
     const checkToken = async () => {
-        const { signature } = await queryString(props.location.search);
-        // eslint-disable-next-line no-undef
-        const decrypted = CryptoJS.AES.decrypt(signature, 'guguilovu');
-        // eslint-disable-next-line no-undef
-        var plaintext = decrypted.toString(CryptoJS.enc.Utf8);
-        const { data } = await gpAxios.post('/generate-token-decode', { token: plaintext });
+        let signature = props.match.params.signature;
 
-        if (
-            data.hasOwnProperty('twillioToken') &&
-            data.hasOwnProperty('roomName') &&
-            data.hasOwnProperty('requesterId')
-        ) {
-            set_requester(data.requesterEmail);
-            set_twilioRoom(data.roomName);
-            setRequesterId(data.requesterId);
-            if (isAuth) {
-                const userEmail = userInfo.meeter_email;
-                if (userEmail != data.hostEmail) {
-                    dispatch(getAccessToken(data.roomName, data.requesterEmail))
-                        .then(res => {
-                            const accessToken = res.data.data.result.access_token;
-                            dispatch(getMeetingRoomStatus(data.roomName))
-                                .then(res => {
-                                    joinRoom(data.roomName, accessToken);
-                                })
-                                .catch(err => {
-                                    alert('Room not exist');
-                                });
-                        })
-                        .catch(e => {
-                            alert('Unauthorized');
-                        });
+        setUrlData(signature);
+        dispatch(getRoom(signature)).then(res => {
+            setRequesterEmail(res.data.data.meeting_requester.requester_email);
+            if (res.data.status === true) {
+                if (isAuth) {
+                    dispatch(getAccessToken(signature, userInfo.meeter_email)).then(res => {
+                        let accessToken = res.data.data.result.access_token;
+                        joinRoom(signature, accessToken);
+                    });
                 } else {
-                    joinRoom(data.roomName, data.twillioToken, data.requesterId);
+                    let requester_email = res.data.data.meeting_requester.requester_email;
+
+                    dispatch(getAccessToken(signature, requester_email)).then(res => {
+                        let accessToken = res.data.data.result.access_token;
+                        dispatch(getMeetingRoomStatus(signature))
+                            .then(res => {
+                                //  hostAvaiable = true;
+                                joinRoom(signature, accessToken);
+                            })
+                            .catch(err => {
+                                console.log('room not exist');
+
+                                dispatch(hostAvailable(false));
+                            });
+                    });
                 }
+            } else {
+                alert('Room not exist');
             }
-        }
+        });
     };
 
-    const joinRoom = (roomName, accessToken, requesterId) => {
+    // const checkToken = async () => {
+    //     const { signature } = await queryString(props.location.search);
+    //     // eslint-disable-next-line no-undef
+    //     const decrypted = CryptoJS.AES.decrypt(signature, 'guguilovu');
+    //     // eslint-disable-next-line no-undef
+    //     var plaintext = decrypted.toString(CryptoJS.enc.Utf8);
+    //     const { data } = await gpAxios.post('/generate-token-decode', { token: plaintext });
+
+    //     if (
+    //         data.hasOwnProperty('twillioToken') &&
+    //         data.hasOwnProperty('roomName') &&
+    //         data.hasOwnProperty('requesterId')
+    //     ) {
+    //         set_requester(data.requesterEmail);
+    //         set_twilioRoom(data.roomName);
+    //         setRequesterId(data.requesterId);
+    //         if (isAuth) {
+    //             const userEmail = userInfo.meeter_email;
+    //             if (userEmail != data.hostEmail) {
+    //                 dispatch(getAccessToken(data.roomName, data.requesterEmail))
+    //                     .then(res => {
+    //                         const accessToken = res.data.data.result.access_token;
+    //                         dispatch(getMeetingRoomStatus(data.roomName))
+    //                             .then(res => {
+    //                                 joinRoom(data.roomName, accessToken);
+    //                             })
+    //                             .catch(err => {
+    //                                 alert('Room not exist');
+    //                             });
+    //                     })
+    //                     .catch(e => {
+    //                         alert('Unauthorized');
+    //                     });
+    //             } else {
+    //                 joinRoom(data.roomName, data.twillioToken, data.requesterId);
+    //             }
+    //         }
+    //     }
+    // };
+
+    const joinRoom = (roomName, accessToken) => {
         createLocalTracks({
             audio: true,
             video: { width: 1920, height: 1080 }
@@ -88,17 +128,18 @@ const VideoChat = props => {
             })
             .then(room => {
                 // console.log(`Connected to Room: ${room.name}`);
-                roomJoined(room, requesterId);
+                roomJoined(room);
             });
     };
-    const roomJoined = (room, requesterId) => {
-        const data = {
-            status_category: 'single',
-            status_type: 'in_meeting',
-            requester_id: requesterId
-        };
-        const localParticipant = room.localParticipant;
+    const roomJoined = room => {
         if (isAuth) {
+            const data = {
+                status_category: 'single',
+                status_type: 'in_meeting',
+                requester_id: userInfo.id
+            };
+            const localParticipant = room.localParticipant;
+
             dispatch(meetingStatus(data)).then(res => {});
         }
 
@@ -192,22 +233,22 @@ const VideoChat = props => {
         //     });
     };
 
-    const startVideo = () => {
-        dispatch(getAccessToken(twilioRoom, requester))
-            .then(res => {
-                const accessToken = res.data.data.result.access_token;
-                dispatch(getMeetingRoomStatus(twilioRoom))
-                    .then(res => {
-                        joinRoom(twilioRoom, accessToken);
-                    })
-                    .catch(err => {
-                        alert('Room not exist');
-                    });
-            })
-            .catch(e => {
-                alert('Unauthorized');
-            });
-    };
+    // const startVideo = () => {
+    //     dispatch(getAccessToken(signature, requester))
+    //         .then(res => {
+    //             const accessToken = res.data.data.result.access_token;
+    //             dispatch(getMeetingRoomStatus(twilioRoom))
+    //                 .then(res => {
+    //                     joinRoom(signature, accessToken);
+    //                 })
+    //                 .catch(err => {
+    //                     alert('Room not exist');
+    //                 });
+    //         })
+    //         .catch(e => {
+    //             alert('Unauthorized');
+    //         });
+    // };
     const leaveRoom = () => {
         activeRoom.on('disconnected', room => {
             room.localParticipant.tracks.forEach(publication => {
@@ -222,18 +263,35 @@ const VideoChat = props => {
 
         activeRoom.disconnect();
         setHasJoinedRoom(false);
-        const data = {
-            status_category: 'single',
-            status_type: 'completed',
-            requester_id: requesterId
-        };
         if (isAuth) {
+            const data = {
+                status_category: 'single',
+                status_type: 'completed',
+                requester_id: userInfo.id
+            };
+
             dispatch(meetingStatus(data)).then(res => {
                 // console.log('response', res);
             });
             // window.location.href = '/dashboard';
         }
     };
+
+    if (roomInfo.hostAvailable == false) {
+        let clear = setInterval(() => {
+            dispatch(getMeetingRoomStatus(urlData)).then(res => {
+                dispatch(hostAvailable(true));
+                stopfunction();
+                dispatch(getAccessToken(urlData, requesterEmail)).then(res => {
+                    joinRoom(urlData, res.data.data.result.access_token);
+                });
+            });
+            //console.log('paramyer to roomcheck', urlData);
+        }, 3000);
+        const stopfunction = () => {
+            clearInterval(clear);
+        };
+    }
 
     let remoteMediaContainer = isRemote ? (
         <div
@@ -257,8 +315,31 @@ const VideoChat = props => {
                 ''
             )}
 
-            {!isAuth && <div className='conatiner'>{hasJoinedRoom ? '' : <PublicPage startVideo={startVideo} />}</div>}
-
+            {/* {!isAuth && (
+                <div className='conatiner'>
+                    {hasJoinedRoom && roomExist != false ? '' : <PublicPage startVideo={startVideo} />}
+                </div>
+            )} */}
+            {roomInfo.hostAvailable ? (
+                ''
+            ) : (
+                <div className='bggray withSideBar meetRoom waitingHost'>
+                    <div className='host text-right  d-none d-lg-block videodiv flex-item' ref={localMedia}></div>
+                    <div className='container mainRoom'>
+                        <div className='row justify-content-center align-items-center h-100'>
+                            <div>
+                                <div className='media mainRoomMedia personal-details media-body text-center d-block mb-4'>
+                                    <div className='text-center default-opacity m-auto avatar-container'></div>
+                                    <h2 className='font36 mt-4 mb-2 mb-0'>Waiting for the host.</h2>
+                                    <p className='edit-bio medium-size gray8' href='#'>
+                                        Host is available and must join the room soon
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
             {hasJoinedRoom ? (
                 <div className='bgdark withSideBar meetRoom waitingHost'>
                     <div className='host text-right  d-none d-lg-block videodiv flex-item' ref={localMedia}></div>

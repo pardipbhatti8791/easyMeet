@@ -1,4 +1,4 @@
-import { SET_TOKEN_SUCCESS } from './type';
+import { SET_TOKEN_SUCCESS, HOST_AVAILABLE } from './type';
 import { TWILIO_LOGOUT } from './type';
 import { gpAxios } from '../../utils/gpAxios';
 import { apiPaths } from '../../utils/apiPaths';
@@ -78,5 +78,41 @@ export const getMeetingRoomStatus = roomName => async => {
         return response;
     } catch (err) {
         console.log(err.response.data.errors);
+    }
+};
+
+/*
+genrate meeting link
+@params requester_id and meeting URL
+
+
+*/
+
+export const createRoom = data => async => {
+    try {
+        const response = gpAxios.post('/create_room', data);
+        return response;
+    } catch (err) {
+        console.log(err.response.data.errors);
+    }
+};
+
+export const getRoom = data => async => {
+    try {
+        const response = gpAxios.get(`/get_room?room_name=${data}`);
+        return response;
+    } catch (err) {
+        console.log(err.response.data.errors);
+    }
+};
+
+export const hostAvailable = data => async dispatch => {
+    try {
+        dispatch({
+            type: HOST_AVAILABLE,
+            payload: data
+        });
+    } catch (e) {
+        console.log(e);
     }
 };
