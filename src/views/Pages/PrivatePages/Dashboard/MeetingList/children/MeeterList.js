@@ -18,6 +18,7 @@ import { gpAxios } from '../../../../../../utils/gpAxios';
 const MeeterList = props => {
     const dispatch = useDispatch();
     const { data } = props;
+
     const [keyword, setKeyword] = useState('');
     const total_req = accessFromObject(data, 'total_pending');
     const meetings = accessFromArray(data, 'mettings');
@@ -26,7 +27,7 @@ const MeeterList = props => {
     const [filtered, setFiltered] = useState(null);
     const roomName = Math.floor(Math.random() * 1000000 + 1);
     const userEmail = userInfo.meeter_email;
-
+    let requester_id_list = [];
     // const onClickNotify = (requester_id, requester_email) => {
     //     dispatch(getAccessToken(roomName, userEmail)).then(res => {
     //         gpAxios
@@ -62,7 +63,7 @@ const MeeterList = props => {
         };
         dispatch(createRoom(data)).then(res => {
             console.log('res from create room is', res.data.data.result.room_link);
-            window.location.href = res.data.data.result.room_link;
+            // window.location.href = res.data.data.result.room_link;
         });
     };
     const onClickReject = value => {
@@ -85,13 +86,29 @@ const MeeterList = props => {
         });
         setFiltered(filteredValue);
     };
-    // const onClickNotifyAll = () => {
-    //     const data = {
-    //         status_category: 'multiple',
-    //         status_type: 'accept'
-    //     };
-    //     dispatch(notifyAll(data));
-    // };
+    const onClickNotifyAll = () => {
+        // const data = {
+        //     status_category: 'multiple',
+        //     status_type: 'accept'
+        // };
+        //dispatch(notifyAll(data));
+        if (Array.isArray(meetings) === true) {
+            meetings.map(requester => {
+                console.log('data is', requester.requester_id);
+                requester_id_list.push(requester.requester_id);
+                console.log('array is', requester_id_list);
+            });
+        }
+        const data = {
+            requester_id: requester_id_list,
+            video_meeting_url: 'https://easymeet.io/video-chat/'
+        };
+        console.log('requester id before room', requester_id_list);
+        dispatch(createRoom(data)).then(res => {
+            console.log('response on notifyall', res);
+        });
+    };
+
     // const onClickRejectAll = () => {
     //     const data = {
     //         status_category: 'multiple',
@@ -105,7 +122,7 @@ const MeeterList = props => {
             <section className='search mt-2'>
                 <div className='container'>
                     <div className='row'>
-                        <div className='col-md-7'>
+                        <div className='col-md-6'>
                             <div className='d-md-flex align-items-center custom-search-request'>
                                 <div className='small-size  mr-2 text-left'>
                                     <span>{total_req === 'Invalid key' ? '0' : total_req}</span>{' '}
@@ -122,7 +139,7 @@ const MeeterList = props => {
                                 </div>
                             </div>
                         </div>
-                        {/* <div className='col-6 mr-auto bulk-action text-right pr-0'>
+                        <div className='col-md-6 mr-auto bulk-action text-right pr-0'>
                             <span className='col-3 align-self-center small-size text-left pr-0'>Bulk Actions:</span>
                             <div className='notifyBtnContainer d-inline-block'>
                                 <button
@@ -132,7 +149,7 @@ const MeeterList = props => {
                                     <i className='fa fa-bell-o mr-1' aria-hidden='true' />
                                     Notify All
                                 </button>
-                                <span
+                                {/* <span
                                     id='notifyPopup'
                                     className='popuptext bg-white small-size text-left default-opacity'>
                                     We just notified all your requestors.
@@ -142,13 +159,13 @@ const MeeterList = props => {
                                     <span id='dismiss' className='text-right small-size blue d-inline-block w-100 mt-1'>
                                         Dismiss
                                     </span>
-                                </span>
+                                </span> */}
                             </div>
-                            <button className='btn default-btn small-size bg-white reject' onClick={onClickRejectAll}>
+                            {/* <button className='btn default-btn small-size bg-white reject' onClick={onClickRejectAll}>
                                 <i className='fa fa-times mr-1' aria-hidden='true' />
                                 Reject All
-                            </button>
-                        </div> */}
+                            </button> */}
+                        </div>
                     </div>
                 </div>
             </section>
