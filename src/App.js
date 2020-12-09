@@ -7,7 +7,7 @@ import ProtectedRoute from './routing/ProtectedRoute';
 import PublicRoute from './routing/PublicRoute';
 import { loadUser } from './redux/auth/actions';
 import ModalManager from './redux/global_modal/manager';
-
+import HostWaiting from './views/Pages/PrivatePages/Dashboard/VideoChat/HostWaiting';
 // Containers
 const Login = React.lazy(() => import('./views/Pages/PublicPages/Login/Login'));
 const SignUp = React.lazy(() => import('./views/Pages/PublicPages/Register/SignUp'));
@@ -46,7 +46,9 @@ const App = () => {
                         <Route exact path='/sign-up' component={SignUp} />
                         <Route exact path='/forget-password' component={ForgetPassword} />
                         <Route exact path='/home' component={HomePage} />
+                        <Route exact path='/HostWaiting' component={HostWaiting} />
                         <Route exact path='/reset-password/:token?' component={ResetPassword} />
+
                         <ProtectedRoute path='/' component={DefaultLayout} />
                     </Switch>
                 </React.Suspense>

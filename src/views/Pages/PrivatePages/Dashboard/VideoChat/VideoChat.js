@@ -7,9 +7,8 @@ import {
     hostAvailable
 } from '../../../../../redux/rooms/action';
 import { useDispatch, useSelector } from 'react-redux';
-
 import Footer from './Footer';
-
+import HostWaiting from './HostWaiting';
 const { connect, createLocalTracks } = require('twilio-video');
 const VideoChat = props => {
     const dispatch = useDispatch();
@@ -40,6 +39,7 @@ const VideoChat = props => {
         setUrlData(signature);
         dispatch(getRoom(signature)).then(res => {
             setRequesterEmail(res.data.data.meeting_requester.requester_email);
+
             if (res.data.status === true) {
                 if (isAuth) {
                     dispatch(getAccessToken(signature, userInfo.meeter_email)).then(res => {
@@ -320,26 +320,7 @@ const VideoChat = props => {
                     {hasJoinedRoom && roomExist != false ? '' : <PublicPage startVideo={startVideo} />}
                 </div>
             )} */}
-            {roomInfo.hostAvailable ? (
-                ''
-            ) : (
-                <div className='bggray withSideBar meetRoom waitingHost'>
-                    <div className='host text-right  d-none d-lg-block videodiv flex-item' ref={localMedia}></div>
-                    <div className='container mainRoom'>
-                        <div className='row justify-content-center align-items-center h-100'>
-                            <div>
-                                <div className='media mainRoomMedia personal-details media-body text-center d-block mb-4'>
-                                    <div className='text-center default-opacity m-auto avatar-container'></div>
-                                    <h2 className='font36 mt-4 mb-2 mb-0'>Waiting for the host.</h2>
-                                    <p className='edit-bio medium-size gray8' href='#'>
-                                        Host is available and must join the room soon
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
+            {roomInfo.hostAvailable ? '' : <HostWaiting />}
             {hasJoinedRoom ? (
                 <div className='bgdark withSideBar meetRoom waitingHost'>
                     <div className='host text-right  d-none d-lg-block videodiv flex-item' ref={localMedia}></div>

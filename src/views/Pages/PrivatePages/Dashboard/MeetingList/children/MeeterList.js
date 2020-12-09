@@ -27,6 +27,7 @@ const MeeterList = props => {
     const [filtered, setFiltered] = useState(null);
     const roomName = Math.floor(Math.random() * 1000000 + 1);
     const userEmail = userInfo.meeter_email;
+
     let requester_id_list = [];
     // const onClickNotify = (requester_id, requester_email) => {
     //     dispatch(getAccessToken(roomName, userEmail)).then(res => {
@@ -57,13 +58,18 @@ const MeeterList = props => {
     // };
 
     const onClickNotify = (requester_id, requester_email) => {
+        requester_id_list = [];
+        console.log('requester list before notify', requester_id_list);
+        requester_id_list.push(requester_id);
         const data = {
-            requester_id: requester_id,
+            requester_id: requester_id_list,
+            meeter_id: userInfo.id,
             video_meeting_url: 'https://easymeet.io/video-chat/'
         };
         dispatch(createRoom(data)).then(res => {
-            console.log('res from create room is', res.data.data.result.room_link);
-            // window.location.href = res.data.data.result.room_link;
+            console.log('ress', res);
+            //console.log('res from create room is', res.data.data.result.room_link);
+            //window.location.href = res.data.data.result.room_link;
         });
     };
     const onClickReject = value => {
@@ -92,6 +98,7 @@ const MeeterList = props => {
         //     status_type: 'accept'
         // };
         //dispatch(notifyAll(data));
+        requester_id_list = [];
         if (Array.isArray(meetings) === true) {
             meetings.map(requester => {
                 console.log('data is', requester.requester_id);
@@ -101,6 +108,7 @@ const MeeterList = props => {
         }
         const data = {
             requester_id: requester_id_list,
+            meeter_id: userInfo.id,
             video_meeting_url: 'https://easymeet.io/video-chat/'
         };
         console.log('requester id before room', requester_id_list);
