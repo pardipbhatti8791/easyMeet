@@ -9,7 +9,7 @@ function MeetingList() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(getMeetingList());
+        dispatch(getMeetingList(1));
     }, []);
 
     const meeting = useSelector(state => state.meeting);

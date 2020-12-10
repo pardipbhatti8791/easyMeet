@@ -78,7 +78,7 @@ export const setMeetingListPage = page => async dispatch => {
  * @param UserKey
  * @returns {function(*): Promise<AxiosResponse<any>>}
  */
-export const getMeetingList = () => async dispatch => {
+export const getMeetingList = page => async dispatch => {
     dispatch({
         type: [meeting.GET_MEETING_DATA_SPINNER_ON]
     });
@@ -86,9 +86,8 @@ export const getMeetingList = () => async dispatch => {
         type: [meeting.GET_MEETING_DATA_INIT]
     });
     try {
-        ('show-meetings?meeting_status=all&keywords=&page=&limit=');
         // const meetingData = await gpAxios.get(`${apiPaths.get_meeting_list}`);
-        const meetingData = await gpAxios.get(`show-meetings?meeting_status=all&keywords=&page=&all&limit=`);
+        const meetingData = await gpAxios.get(`show-meetings?meeting_status=all&keywords=&page=${page}all&limit=`);
         //    console.log(meetingData.data.data.result.mettings);
         dispatch({
             type: [meeting.GET_MEETING_DATA_SPINNER_OFF]
