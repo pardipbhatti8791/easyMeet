@@ -90,12 +90,13 @@ export const setMeetingSpinnerOff = (state, payload) => ({
 
 export const setMeetingData = (state, payload) => {
     if (state.meeting_list !== null) {
-        console.log('condition work', state);
         return {
             ...state,
             meeting_list: {
-                ...state.meeting_list,
-                ...payload
+                mettings: [...state.meeting_list.mettings, ...payload.mettings],
+                current_page: payload.current_page,
+                next_page: payload.next_page,
+                total_pages: payload.total_pages
             }
         };
     }

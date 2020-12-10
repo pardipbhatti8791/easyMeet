@@ -55,7 +55,7 @@ const MeeterList = props => {
             requester_id: value
         };
         dispatch(notifyAll(data)).then(res => {
-            dispatch(getMeetingList());
+            dispatch(getMeetingList(1));
         });
     };
     const onKeywordChange = e => {
@@ -100,7 +100,6 @@ const MeeterList = props => {
     // };
 
     const getMoreData = () => {
-        console.log('hited');
         if (next_page == 0) {
             setHasMore(false);
         }
@@ -161,7 +160,7 @@ const MeeterList = props => {
                 </div>
             </section>
             <InfiniteScroll
-                dataLength={10} //This is important field to render the next data
+                dataLength={20} //This is important field to render the next data
                 next={getMoreData}
                 hasMore={hasMore}
                 loader={<h4>Loading...</h4>}
