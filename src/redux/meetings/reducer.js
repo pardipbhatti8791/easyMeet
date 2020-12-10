@@ -7,7 +7,8 @@ const initState = {
     meeter_error: null,
     meeting_spinner: true,
     meeting_list: null,
-    meeting_error: null
+    meeting_error: null,
+    meeting_page: 1
 };
 
 /**
@@ -82,10 +83,36 @@ export const setMeetingSpinnerOff = (state, payload) => ({
  * @param payload
  * @returns {{meeting_list: *, meeting_spinner: boolean}}
  */
-export const setMeetingData = (state, payload) => ({
-    ...state,
-    meeting_list: payload
-});
+// export const setMeetingData = (state, payload) => ({
+//     ...state,
+//     meeting_list: payload
+// });
+
+export const setMeetingData = (state, payload) => {
+    if (state.meeting_list !== null) {
+        console.log('condition work', state);
+        return {
+            ...state,
+            meeting_list: {
+                ...state.meeting_list,
+                ...payload
+            }
+        };
+    }
+    return {
+        ...state,
+        meeting_list: payload
+    };
+};
+
+// export const setMeetingData = (state, payload) => {
+//     if (state.meeting_list != null) {
+//         return {
+//             ...state,
+//             meeting_list: { ...state, payload }
+//         };
+//     }
+// };
 
 /**
  *
@@ -98,6 +125,11 @@ export const setMeetingFailed = (state, payload) => ({
     meeting_error: payload
 });
 
+export const meetingListPage = (state, payload) => ({
+    ...state,
+    meeting_page: payload
+});
+
 export default createReducer(initState, {
     [meeting.GET_METER_DATA_SPINNER_ON]: setSpinnerOn,
     [meeting.GET_METER_DATA_SPINNER_OFF]: setSpinnerOff,
@@ -107,5 +139,7 @@ export default createReducer(initState, {
     [meeting.GET_MEETING_DATA_SPINNER_ON]: setMeetingSpinnerOn,
     [meeting.GET_MEETING_DATA_SPINNER_OFF]: setMeetingSpinnerOff,
     [meeting.GET_MEETING_DATA_SUCCESS]: setMeetingData,
-    [meeting.GET_MEETING_DATA_FAILED]: setMeetingFailed
+    [meeting.GET_MEETING_DATA_FAILED]: setMeetingFailed,
+
+    [meeting.MEETING_LIST_PAGE]: meetingListPage
 });

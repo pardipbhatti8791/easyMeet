@@ -13,6 +13,7 @@ function MeetingList() {
     }, []);
 
     const meeting = useSelector(state => state.meeting);
+
     const { meeting_spinner, meeting_list } = meeting;
 
     return (

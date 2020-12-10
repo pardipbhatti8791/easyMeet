@@ -66,6 +66,13 @@ const setMeetingData = data => {
     };
 };
 
+export const setMeetingListPage = page => async dispatch => {
+    dispatch({
+        type: [meeting.MEETING_LIST_PAGE],
+        payload: page
+    });
+};
+
 /**
  *
  * @param UserKey
@@ -79,7 +86,9 @@ export const getMeetingList = () => async dispatch => {
         type: [meeting.GET_MEETING_DATA_INIT]
     });
     try {
-        const meetingData = await gpAxios.get(`${apiPaths.get_meeting_list}`);
+        ('show-meetings?meeting_status=all&keywords=&page=&limit=');
+        // const meetingData = await gpAxios.get(`${apiPaths.get_meeting_list}`);
+        const meetingData = await gpAxios.get(`show-meetings?meeting_status=all&keywords=&page=&all&limit=`);
         //    console.log(meetingData.data.data.result.mettings);
         dispatch({
             type: [meeting.GET_MEETING_DATA_SPINNER_OFF]

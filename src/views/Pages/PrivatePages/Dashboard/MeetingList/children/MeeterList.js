@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { notifyAll } from '~/redux/boarding/action';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import { getAccessToken, createRoom } from '../../../../../../redux/rooms/action';
-import { getMeetingList } from '../../../../../../redux/meetings/action';
+import { getMeetingList, setMeetingListPage } from '../../../../../../redux/meetings/action';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { accessFromObject } from '../../../../../../utils/accessFromObject';
@@ -18,8 +19,8 @@ import { gpAxios } from '../../../../../../utils/gpAxios';
 const MeeterList = props => {
     const dispatch = useDispatch();
     const { data } = props;
-
     const [keyword, setKeyword] = useState('');
+    const [request_sent_id, set_request_sent_id] = useState(null);
     const total_req = accessFromObject(data, 'total_pending');
     const meetings = accessFromArray(data, 'mettings');
     const userInfo = useSelector(state => state.auth.user);
@@ -27,39 +28,10 @@ const MeeterList = props => {
     const [filtered, setFiltered] = useState(null);
     const roomName = Math.floor(Math.random() * 1000000 + 1);
     const userEmail = userInfo.meeter_email;
-
     let requester_id_list = [];
-    // const onClickNotify = (requester_id, requester_email) => {
-    //     dispatch(getAccessToken(roomName, userEmail)).then(res => {
-    //         gpAxios
-    //             .post('/generate-token', {
-    //                 twillioToken: res.data.data.result.access_token,
-    //                 hostEmail: userEmail,
-    //                 roomName: roomName,
-    //                 requesterEmail: requester_email,
-    //                 requesterId: requester_id
-    //             })
-    //             .then(newResp => {
-    //                 const { data } = newResp;
-
-    //                 // eslint-disable-next-line no-undef
-    //                 var encrypted = CryptoJS.AES.encrypt(data.token, 'guguilovu');
-    //                 const data1 = {
-    //                     status_category: 'single',
-    //                     status_type: 'accept',
-    //                     requester_id: requester_id,
-    //                     video_meeting_url: `https://easymeet.io/video-chat/?signature=${encrypted}`
-    //                 };
-    //                 dispatch(notifyAll(data1));
-
-    //                 window.location.href = `/video-chat/?signature=${encrypted}`;
-    //             });
-    //     });
-    // };
 
     const onClickNotify = (requester_id, requester_email) => {
         requester_id_list = [];
-        console.log('requester list before notify', requester_id_list);
         requester_id_list.push(requester_id);
         const data = {
             requester_id: requester_id_list,
@@ -70,6 +42,7 @@ const MeeterList = props => {
             console.log('ress', res);
             //console.log('res from create room is', res.data.data.result.room_link);
             //window.location.href = res.data.data.result.room_link;
+            set_request_sent_id(requester_id);
         });
     };
     const onClickReject = value => {
@@ -79,7 +52,7 @@ const MeeterList = props => {
             requester_id: value
         };
         dispatch(notifyAll(data)).then(res => {
-            dispatch(getMeetingList());
+            dispatch(getMeetingList(1));
         });
     };
     const onKeywordChange = e => {
@@ -101,9 +74,7 @@ const MeeterList = props => {
         requester_id_list = [];
         if (Array.isArray(meetings) === true) {
             meetings.map(requester => {
-                console.log('data is', requester.requester_id);
                 requester_id_list.push(requester.requester_id);
-                console.log('array is', requester_id_list);
             });
         }
         const data = {
@@ -111,7 +82,7 @@ const MeeterList = props => {
             meeter_id: userInfo.id,
             video_meeting_url: 'https://easymeet.io/video-chat/'
         };
-        console.log('requester id before room', requester_id_list);
+
         dispatch(createRoom(data)).then(res => {
             console.log('response on notifyall', res);
         });
@@ -177,6 +148,17 @@ const MeeterList = props => {
                     </div>
                 </div>
             </section>
+            {/* <InfiniteScroll
+                dataLength={items.length} //This is important field to render the next data
+                next={fetchData}
+                hasMore={true}
+                loader={<h4>Loading...</h4>}
+                endMessage={
+                    <p style={{ textAlign: 'center' }}>
+                        <b>Yay! You have seen it all</b>
+                    </p>
+                }></InfiniteScroll> */}
+
             <section>
                 <div className='container'>
                     {Array.isArray(meetings) === true ? (
@@ -216,19 +198,27 @@ const MeeterList = props => {
                                                 onClick={onJoinRoomClick}>
                                                 Join Room
                                             </button> */}
-
-                                                <button
-                                                    className='btn default-btn small-size bg-white notify mr-2'
-                                                    value={requester.requester_id}
-                                                    onClick={e => {
-                                                        onClickNotify(
-                                                            requester.requester_id,
-                                                            requester.requester_email
-                                                        );
-                                                    }}>
-                                                    <i className='fa fa-bell-o mr-1' aria-hidden='true' />
-                                                    Notify
-                                                </button>
+                                                {request_sent_id == requester.requester_id ? (
+                                                    <button
+                                                        className='btn default-btn small-size bg-white notify mr-2'
+                                                        value={requester.requester_id}>
+                                                        <i className='fa fa-check mr-1' aria-hidden='true' />
+                                                        Sent
+                                                    </button>
+                                                ) : (
+                                                    <button
+                                                        className='btn default-btn small-size bg-white notify mr-2'
+                                                        value={requester.requester_id}
+                                                        onClick={e => {
+                                                            onClickNotify(
+                                                                requester.requester_id,
+                                                                requester.requester_email
+                                                            );
+                                                        }}>
+                                                        <i className='fa fa-bell-o mr-1' aria-hidden='true' />
+                                                        Notify
+                                                    </button>
+                                                )}
 
                                                 <button
                                                     className='btn default-btn small-size bg-white reject'
