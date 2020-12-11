@@ -1,29 +1,22 @@
-import { SET_TOKEN_SUCCESS, HOST_AVAILABLE } from './type';
-import { TWILIO_LOGOUT } from './type';
+import { HOST_AVAILABLE, SET_MEETING_ROOM } from './type';
 
 const intialState = {
-    // token: localStorage.getItem('twilioacesstoken') != null ? localStorage.getItem('twilioacesstoken') : null
-
-    token: localStorage.getItem('twilioacesstoken') == null ? null : localStorage.getItem('twilioacesstoken'),
-    hostAvailable: true
+    hostAvailable: true,
+    room: localStorage.getItem('room') !== null ? localStorage.getItem('room') : null
 };
 
 export default (state = intialState, actions) => {
     switch (actions.type) {
-        case SET_TOKEN_SUCCESS:
-            return {
-                ...state,
-                token: actions.payload
-            };
-        case TWILIO_LOGOUT:
-            return {
-                ...state,
-                token: null
-            };
         case HOST_AVAILABLE:
             return {
                 ...state,
                 hostAvailable: actions.payload
+            };
+        case SET_MEETING_ROOM:
+            localStorage.setItem('room', actions.payload);
+            return {
+                ...state,
+                room: actions.payload
             };
         default:
             return state;

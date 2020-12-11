@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RadioGroup, RadioButton } from 'react-radio-buttons';
-import defaultImg from '../../../../../assets/images/defaultProfile.png';
 import { updateUserBio } from '~/redux/boarding/action';
 import Modal from 'react-bootstrap/Modal';
 import { updateAvailability } from '~/redux/boarding/action';
 import { checkAvailability } from '~/redux/boarding/action';
+
 import { closeModal, openModal } from '../../../../../redux/global_modal/actions';
-import noPhoto from '~/assets/images/photo.png';
+
 import md5 from 'md5';
 import copyImage from '../../../../../assets/images/copyicon.png';
 import { copyToClipBoard } from '../../../../../utils/copyToCilpBoard';
@@ -19,6 +19,12 @@ function UserInfo() {
     const [loader, setLoader] = useState(false);
     const [editBio, setEditBio] = useState({ value: '' });
     const [showMore, setShowMore] = useState(true);
+    let meetingRoomDisabled = true;
+
+    const room = useSelector(state => state.rooms.room);
+    if (room != null) {
+        meetingRoomDisabled = false;
+    }
 
     const userInfo = useSelector(state => state.auth.user);
     const {
@@ -66,6 +72,12 @@ function UserInfo() {
         minorString = userInfo.meeter_bio.substring(0, 250);
     }
 
+    const onMeetingClick = () => {
+        if (room !== null) {
+            window.location.href = `https://easymeet.io/video-chat/${room}`;
+        }
+    };
+
     return (
         <>
             {' '}
@@ -95,9 +107,8 @@ function UserInfo() {
                                 <div className='meeting-room align-self-center mr-3'>
                                     <button
                                         className='btn btn-default meeting-btn bg-white small-size'
-                                        onClick={() => {
-                                            // window.location.href = '/video-chat';
-                                        }}>
+                                        onClick={onMeetingClick}
+                                        disabled={meetingRoomDisabled}>
                                         <i className='mr-2 fa fa-camera' aria-hidden='true' />
                                         Join Meeting Room
                                     </button>
@@ -180,9 +191,8 @@ function UserInfo() {
                                 <div className='meeting-room align-self-center mr-3'>
                                     <button
                                         className='btn btn-default meeting-btn bg-white small-size'
-                                        onClick={() => {
-                                            // window.location.href = '/video-chat';
-                                        }}>
+                                        onClick={onMeetingClick}
+                                        disabled={meetingRoomDisabled}>
                                         <i className='fa fa-camera' aria-hidden='true' /> Meeting Room
                                     </button>
                                 </div>

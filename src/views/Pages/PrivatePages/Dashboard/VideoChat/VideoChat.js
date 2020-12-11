@@ -16,6 +16,7 @@ const VideoChat = props => {
     const [activeRoom, setActiveRoom] = useState(null);
     const [isRemote, setIsRemote] = useState(false);
     const [urlData, setUrlData] = useState(null);
+    const [requesterId, setRequesterId] = useState(null);
     const [requesterEmail, setRequesterEmail] = useState(null);
     const isAuth = useSelector(state => state.auth.isAuthenticated);
     const userInfo = useSelector(state => state.auth.user);
@@ -35,11 +36,18 @@ const VideoChat = props => {
 
     const checkToken = async () => {
         let signature = props.match.params.signature;
+        if (props.match.params.requester_id) {
+            setRequesterId(props.match.params.requester_id);
+        }
 
         setUrlData(signature);
-        dispatch(getRoom(signature)).then(res => {
+        const roomVerifyData = {
+            signature: signature,
+            requester_id: props.match.params.requester_id
+        };
+        dispatch(getRoom(roomVerifyData)).then(res => {
             setRequesterEmail(res.data.data.meeting_requester.requester_email);
-
+            console.log('rsponse of get room', res);
             if (res.data.status === true) {
                 if (isAuth) {
                     dispatch(getAccessToken(signature, userInfo.meeter_email)).then(res => {
@@ -68,46 +76,6 @@ const VideoChat = props => {
             }
         });
     };
-
-    // const checkToken = async () => {
-    //     const { signature } = await queryString(props.location.search);
-    //     // eslint-disable-next-line no-undef
-    //     const decrypted = CryptoJS.AES.decrypt(signature, 'guguilovu');
-    //     // eslint-disable-next-line no-undef
-    //     var plaintext = decrypted.toString(CryptoJS.enc.Utf8);
-    //     const { data } = await gpAxios.post('/generate-token-decode', { token: plaintext });
-
-    //     if (
-    //         data.hasOwnProperty('twillioToken') &&
-    //         data.hasOwnProperty('roomName') &&
-    //         data.hasOwnProperty('requesterId')
-    //     ) {
-    //         set_requester(data.requesterEmail);
-    //         set_twilioRoom(data.roomName);
-    //         setRequesterId(data.requesterId);
-    //         if (isAuth) {
-    //             const userEmail = userInfo.meeter_email;
-    //             if (userEmail != data.hostEmail) {
-    //                 dispatch(getAccessToken(data.roomName, data.requesterEmail))
-    //                     .then(res => {
-    //                         const accessToken = res.data.data.result.access_token;
-    //                         dispatch(getMeetingRoomStatus(data.roomName))
-    //                             .then(res => {
-    //                                 joinRoom(data.roomName, accessToken);
-    //                             })
-    //                             .catch(err => {
-    //                                 alert('Room not exist');
-    //                             });
-    //                     })
-    //                     .catch(e => {
-    //                         alert('Unauthorized');
-    //                     });
-    //             } else {
-    //                 joinRoom(data.roomName, data.twillioToken, data.requesterId);
-    //             }
-    //         }
-    //     }
-    // };
 
     const joinRoom = (roomName, accessToken) => {
         createLocalTracks({
@@ -220,35 +188,10 @@ const VideoChat = props => {
                 publication.on('subscribed', handleTrackDisabled);
             });
         });
-
-        localMedia.current.appendChild(systemTracks.attach());
         // local media tracks attaching to dom
-        // createLocalVideoTrack()
-        //     .then(track => {
-        //         //removeTracks(track);
-        //         localMedia.current.appendChild(track.attach());
-        //     })
-        //     .then(err => {
-        //         //  console.log(err);
-        //     });
+        localMedia.current.appendChild(systemTracks.attach());
     };
 
-    // const startVideo = () => {
-    //     dispatch(getAccessToken(signature, requester))
-    //         .then(res => {
-    //             const accessToken = res.data.data.result.access_token;
-    //             dispatch(getMeetingRoomStatus(twilioRoom))
-    //                 .then(res => {
-    //                     joinRoom(signature, accessToken);
-    //                 })
-    //                 .catch(err => {
-    //                     alert('Room not exist');
-    //                 });
-    //         })
-    //         .catch(e => {
-    //             alert('Unauthorized');
-    //         });
-    // };
     const leaveRoom = () => {
         activeRoom.on('disconnected', room => {
             room.localParticipant.tracks.forEach(publication => {

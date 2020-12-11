@@ -1,20 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { notifyAll } from '~/redux/boarding/action';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { getAccessToken, createRoom } from '../../../../../../redux/rooms/action';
-import { getMeetingList, setMeetingListPage } from '../../../../../../redux/meetings/action';
-
+import { createRoom } from '../../../../../../redux/rooms/action';
+import { getMeetingList } from '../../../../../../redux/meetings/action';
 import { useDispatch, useSelector } from 'react-redux';
 import { accessFromObject } from '../../../../../../utils/accessFromObject';
 import { accessFromArray } from '../../../../../../utils/accessFromArray';
-
 import copyImage from '~/assets/images/copyicon.png';
-import facebook from '~/assets/images/facebook.png';
-import twitter from '~/assets/images/twitter.png';
-import linkedin from '~/assets/images/linkedin.png';
-import envelop from '~/assets/images/Envelope.png';
 import { copyToClipBoard } from '../../../../../../utils/copyToCilpBoard';
-import { gpAxios } from '../../../../../../utils/gpAxios';
 
 const MeeterList = props => {
     const dispatch = useDispatch();
@@ -25,14 +18,12 @@ const MeeterList = props => {
     const next_page = accessFromObject(data, 'next_page');
     const meetings = accessFromArray(data, 'mettings');
     const userInfo = useSelector(state => state.auth.user);
-    const roomInfo = useSelector(state => state.rooms);
+
     const [filtered, setFiltered] = useState(null);
     const [hasMore, setHasMore] = useState(true);
-    const roomName = Math.floor(Math.random() * 1000000 + 1);
-    const userEmail = userInfo.meeter_email;
 
     let requester_id_list = [];
-
+    let notified_requester = [];
     const onClickNotify = (requester_id, requester_email) => {
         requester_id_list = [];
         requester_id_list.push(requester_id);
@@ -41,11 +32,9 @@ const MeeterList = props => {
             meeter_id: userInfo.id,
             video_meeting_url: 'https://easymeet.io/video-chat/'
         };
+
         dispatch(createRoom(data)).then(res => {
-            console.log('ress', res);
-            //console.log('res from create room is', res.data.data.result.room_link);
-            //window.location.href = res.data.data.result.room_link;
-            set_request_sent_id(requester_id);
+            localStorage.setItem('notify', JSON.stringify(requester_id_list));
         });
     };
     const onClickReject = value => {
@@ -69,11 +58,6 @@ const MeeterList = props => {
         setFiltered(filteredValue);
     };
     const onClickNotifyAll = () => {
-        // const data = {
-        //     status_category: 'multiple',
-        //     status_type: 'accept'
-        // };
-        //dispatch(notifyAll(data));
         requester_id_list = [];
         if (Array.isArray(meetings) === true) {
             meetings.map(requester => {
@@ -87,9 +71,12 @@ const MeeterList = props => {
         };
 
         dispatch(createRoom(data)).then(res => {
-            console.log('response on notifyall', res);
+            localStorage.setItem('notify', JSON.stringify(requester_id_list));
         });
     };
+    if ('notify' in localStorage) {
+        notified_requester = JSON.parse(localStorage.getItem('notify'));
+    }
 
     // const onClickRejectAll = () => {
     //     const data = {
@@ -159,16 +146,7 @@ const MeeterList = props => {
                     </div>
                 </div>
             </section>
-            <InfiniteScroll
-                dataLength={20} //This is important field to render the next data
-                next={getMoreData}
-                hasMore={hasMore}
-                loader={<h4>Loading...</h4>}
-                endMessage={
-                    <p style={{ textAlign: 'center' }}>
-                        <b>Yay! You have seen it all</b>
-                    </p>
-                }>
+            <InfiniteScroll dataLength={20} next={getMoreData} hasMore={hasMore} loader={<h4>Loading...</h4>}>
                 <section>
                     <div className='container'>
                         {Array.isArray(meetings) === true ? (
@@ -210,27 +188,31 @@ const MeeterList = props => {
                                                 onClick={onJoinRoomClick}>
                                                 Join Room
                                             </button> */}
-                                                    {request_sent_id == requester.requester_id ? (
-                                                        <button
-                                                            className='btn default-btn small-size bg-white notify mr-2'
-                                                            value={requester.requester_id}>
-                                                            <i className='fa fa-check mr-1' aria-hidden='true' />
-                                                            Sent
-                                                        </button>
-                                                    ) : (
-                                                        <button
-                                                            className='btn default-btn small-size bg-white notify mr-2'
-                                                            value={requester.requester_id}
-                                                            onClick={e => {
-                                                                onClickNotify(
-                                                                    requester.requester_id,
-                                                                    requester.requester_email
-                                                                );
-                                                            }}>
-                                                            <i className='fa fa-bell-o mr-1' aria-hidden='true' />
-                                                            Notify
-                                                        </button>
-                                                    )}
+                                                    {/* {notified_requester.map((req, i) =>
+                                                        req == requester.requester_id ? 'sent' : 'notify'
+                                                    )} */}
+
+                                                    {/* <button
+                                                        className='btn default-btn small-size bg-white notify mr-2'
+                                                        value={requester.requester_id}>
+                                                        <i className='fa fa-check mr-1' aria-hidden='true' />
+                                                        Sent
+                                                    </button> */}
+
+                                                    <button
+                                                        className='btn default-btn small-size bg-white notify mr-2'
+                                                        id='notifyButton'
+                                                        ref={notifyButton}
+                                                        value={requester.requester_id}
+                                                        onClick={e => {
+                                                            onClickNotify(
+                                                                requester.requester_id,
+                                                                requester.requester_email
+                                                            );
+                                                        }}>
+                                                        <i className='fa fa-bell-o mr-1' aria-hidden='true' />
+                                                        Notify
+                                                    </button>
 
                                                     <button
                                                         className='btn default-btn small-size bg-white reject'

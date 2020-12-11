@@ -8,7 +8,8 @@ const initState = {
     meeting_spinner: true,
     meeting_list: null,
     meeting_error: null,
-    meeting_page: 1
+    meeting_page: 1,
+    notified_users: localStorage.getItem('notify') !== null ? localStorage.getItem('notify') : null
 };
 
 /**
@@ -94,6 +95,7 @@ export const setMeetingData = (state, payload) => {
             ...state,
             meeting_list: {
                 mettings: [...state.meeting_list.mettings, ...payload.mettings],
+                total_pending: payload.total_pending,
                 current_page: payload.current_page,
                 next_page: payload.next_page,
                 total_pages: payload.total_pages

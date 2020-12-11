@@ -1,5 +1,4 @@
-import { SET_TOKEN_SUCCESS, HOST_AVAILABLE } from './type';
-import { TWILIO_LOGOUT } from './type';
+import { SET_TOKEN_SUCCESS, HOST_AVAILABLE, SET_MEETING_ROOM } from './type';
 import { gpAxios } from '../../utils/gpAxios';
 import { apiPaths } from '../../utils/apiPaths';
 
@@ -26,34 +25,6 @@ export const getAccessToken = (roomName, identity) => async dispatch => {
 };
 
 /*
-
-set access token 
-@params token
-*/
-export const setAccessToken = data => async dispatch => {
-    try {
-        dispatch({
-            type: SET_TOKEN_SUCCESS,
-            payload: data
-        });
-    } catch (e) {
-        console.log(e);
-    }
-};
-
-/*
-
-twilio logout
-
-*/
-export const twilioLogout = () => dispatch => {
-    dispatch({
-        type: TWILIO_LOGOUT
-    });
-};
-
-/*
-
 set meeting status
 @params data as meeting status
 */
@@ -88,9 +59,15 @@ genrate meeting link
 
 */
 
-export const createRoom = data => async => {
+export const createRoom = data => async dispatch => {
     try {
         const response = gpAxios.post('/create_room', data);
+        response.then(res => {
+            dispatch({
+                type: SET_MEETING_ROOM,
+                payload: res.data.data.result.meeting_room.name
+            });
+        });
         return response;
     } catch (err) {
         console.log(err.response.data.errors);
@@ -99,7 +76,8 @@ export const createRoom = data => async => {
 
 export const getRoom = data => async => {
     try {
-        const response = gpAxios.get(`/get_room?room_name=${data}`);
+        const response = gpAxios.get(`/get_room?room_name=${data.signature}&?requester_id=${data.requester_id}`);
+
         return response;
     } catch (err) {
         console.log(err.response.data.errors);
