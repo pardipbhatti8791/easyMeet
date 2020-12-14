@@ -28,6 +28,7 @@ function MeetingList() {
                 data={meeting_list}
                 customSpinner={<CustomLoader active />}
             />
+            {/* <MeeterList data={meeting_list} /> */}
         </>
     );
 }

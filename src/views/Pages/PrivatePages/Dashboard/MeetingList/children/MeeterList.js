@@ -19,11 +19,14 @@ const MeeterList = props => {
     const meetings = accessFromArray(data, 'mettings');
     const userInfo = useSelector(state => state.auth.user);
 
+    const [notify, setNotify] = useState(false);
+
     const [filtered, setFiltered] = useState(null);
     const [hasMore, setHasMore] = useState(true);
 
     let requester_id_list = [];
     let notified_requester = [];
+    let id;
     const onClickNotify = (requester_id, requester_email) => {
         requester_id_list = [];
         requester_id_list.push(requester_id);
@@ -82,6 +85,7 @@ const MeeterList = props => {
         notified_requester = JSON.parse(localStorage.getItem('notify'));
     }
 
+    console.log('notified_requester', notified_requester);
     // const onClickRejectAll = () => {
     //     const data = {
     //         status_category: 'multiple',
@@ -157,7 +161,7 @@ const MeeterList = props => {
                     </div>
                 </div>
             </section>
-            <InfiniteScroll dataLength={20} next={getMoreData} hasMore={hasMore} loader={<h4>Loading...</h4>}>
+            <InfiniteScroll dataLength={10} next={getMoreData} hasMore={hasMore} loader={<h4>Loading...</h4>}>
                 <section>
                     <div className='container'>
                         {Array.isArray(meetings) === true ? (
@@ -199,17 +203,21 @@ const MeeterList = props => {
                                                 onClick={onJoinRoomClick}>
                                                 Join Room
                                             </button> */}
-                                                    {/* {notified_requester.map((req, i) =>
-                                                        req == requester.requester_id ? 'sent' : 'notify'
-                                                    )} */}
-
-                                                    {/* <button
-                                                        className='btn default-btn small-size bg-white notify mr-2'
-                                                        value={requester.requester_id}>
-                                                        <i className='fa fa-check mr-1' aria-hidden='true' />
-                                                        Sent
-                                                    </button> */}
-
+                                                    {notified_requester.map((req, i) =>
+                                                        req == requester.requester_id ? (
+                                                            <button
+                                                                className='btn default-btn small-size bg-white notify mr-2'
+                                                                id='notifyButton'
+                                                                value={requester.requester_id}>
+                                                                <i className='fa fa-check mr-1' aria-hidden='true' />
+                                                                Sent
+                                                            </button>
+                                                        ) : notify == false ? (
+                                                            setNotify(true)
+                                                        ) : (
+                                                            ''
+                                                        )
+                                                    )}
                                                     <button
                                                         className='btn default-btn small-size bg-white notify mr-2'
                                                         id='notifyButton'
@@ -260,7 +268,7 @@ const MeeterList = props => {
                                                     onClick={onJoinRoomClick}>
                                                     Join Room
                                                 </button> */}
-
+                                                {}
                                                 <button
                                                     className='btn default-btn small-size bg-white notify ml-3'
                                                     value={requester.requester_id}
