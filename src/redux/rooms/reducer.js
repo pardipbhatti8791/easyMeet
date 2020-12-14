@@ -1,8 +1,9 @@
-import { HOST_AVAILABLE, SET_MEETING_ROOM } from './type';
+import { HOST_AVAILABLE, SET_MEETING_ROOM, SET_PARTICIPANTS } from './type';
 
 const intialState = {
     hostAvailable: true,
-    room: localStorage.getItem('room') !== null ? localStorage.getItem('room') : null
+    room: localStorage.getItem('room') !== null ? localStorage.getItem('room') : null,
+    participants: null
 };
 
 export default (state = intialState, actions) => {
@@ -17,6 +18,11 @@ export default (state = intialState, actions) => {
             return {
                 ...state,
                 room: actions.payload
+            };
+        case SET_PARTICIPANTS:
+            return {
+                ...state,
+                participants: actions.payload
             };
         default:
             return state;

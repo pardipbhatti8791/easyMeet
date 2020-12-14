@@ -79,19 +79,24 @@ export const setMeetingListPage = page => async dispatch => {
  * @returns {function(*): Promise<AxiosResponse<any>>}
  */
 export const getMeetingList = page => async dispatch => {
-    dispatch({
-        type: [meeting.GET_MEETING_DATA_SPINNER_ON]
-    });
+    if (page.load == true) {
+        dispatch({
+            type: [meeting.GET_MEETING_DATA_SPINNER_ON]
+        });
+    }
+
     dispatch({
         type: [meeting.GET_MEETING_DATA_INIT]
     });
     try {
         // const meetingData = await gpAxios.get(`${apiPaths.get_meeting_list}`);
-        const meetingData = await gpAxios.get(`show-meetings?meeting_status=all&keywords=&page=${page}all&limit=`);
+        const meetingData = await gpAxios.get(`show-meetings?meeting_status=all&keywords=&page=${page.page}all&limit=`);
         //    console.log(meetingData.data.data.result.mettings);
-        dispatch({
-            type: [meeting.GET_MEETING_DATA_SPINNER_OFF]
-        });
+        if (page.load == true) {
+            dispatch({
+                type: [meeting.GET_MEETING_DATA_SPINNER_OFF]
+            });
+        }
         dispatch(setMeetingData(meetingData.data.data.result));
     } catch (e) {
         console.log(e);

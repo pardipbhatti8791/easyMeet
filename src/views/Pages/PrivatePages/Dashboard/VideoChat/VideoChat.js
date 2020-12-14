@@ -4,7 +4,8 @@ import {
     getAccessToken,
     getMeetingRoomStatus,
     getRoom,
-    hostAvailable
+    hostAvailable,
+    setParticipants
 } from '../../../../../redux/rooms/action';
 import { useDispatch, useSelector } from 'react-redux';
 import Footer from './Footer';
@@ -25,9 +26,10 @@ const VideoChat = props => {
     const localMedia = useRef(null);
     const remoteMedia = useRef(null);
     let systemTracks;
-
+    let participants;
     const footerData = {
-        room: activeRoom
+        room: activeRoom,
+        participants: participants
     };
 
     useEffect(() => {
@@ -45,6 +47,7 @@ const VideoChat = props => {
             signature: signature,
             requester_id: props.match.params.requester_id
         };
+
         dispatch(getRoom(roomVerifyData)).then(res => {
             setRequesterEmail(res.data.data.meeting_requester.requester_email);
             console.log('rsponse of get room', res);
@@ -219,6 +222,17 @@ const VideoChat = props => {
             // window.location.href = '/dashboard';
         }
     };
+    setInterval(() => {
+        const roomData = {
+            signature: props.match.params.signature,
+            requester_id: props.match.params.requester_id
+        };
+        dispatch(getRoom(roomData)).then(res => {
+            participants = res.data.data.meeting_participant;
+            console.log(res.data.data.meeting_participant);
+            dispatch(setParticipants(res.data.data.meeting_participant));
+        });
+    }, 10000);
 
     if (roomInfo.hostAvailable == false) {
         let clear = setInterval(() => {
@@ -230,7 +244,7 @@ const VideoChat = props => {
                 });
             });
             //console.log('paramyer to roomcheck', urlData);
-        }, 3000);
+        }, 10000);
         const stopfunction = () => {
             clearInterval(clear);
         };

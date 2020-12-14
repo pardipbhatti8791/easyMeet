@@ -6,7 +6,8 @@ const Footer = props => {
     const { room } = props.data;
     const userInfo = useSelector(state => state.auth.user);
     const isAuth = useSelector(state => state.auth.isAuthenticated);
-
+    const roomInfo = useSelector(state => state.rooms.particiapnts);
+    // console.log('room info is', roomInfo);
     const [localAudio, setLocalAudio] = useState(true);
     const [localVideo, setLocalVideo] = useState(true);
 

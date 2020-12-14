@@ -44,7 +44,11 @@ const MeeterList = props => {
             requester_id: value
         };
         dispatch(notifyAll(data)).then(res => {
-            dispatch(getMeetingList(1));
+            const page = {
+                page: 1,
+                load: true
+            };
+            dispatch(getMeetingList(page));
         });
     };
     const onKeywordChange = e => {
@@ -87,11 +91,18 @@ const MeeterList = props => {
     // };
 
     const getMoreData = () => {
+        console.log('get more called');
         if (next_page == 0) {
             setHasMore(false);
+            console.log('set has to 0');
         }
         if (next_page != undefined && next_page != 0) {
-            dispatch(getMeetingList(next_page));
+            const page = {
+                page: next_page,
+                load: true
+            };
+            console.log('calling api');
+            dispatch(getMeetingList(page));
         }
     };
     return (
@@ -202,7 +213,6 @@ const MeeterList = props => {
                                                     <button
                                                         className='btn default-btn small-size bg-white notify mr-2'
                                                         id='notifyButton'
-                                                        ref={notifyButton}
                                                         value={requester.requester_id}
                                                         onClick={e => {
                                                             onClickNotify(

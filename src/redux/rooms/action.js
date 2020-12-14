@@ -1,4 +1,4 @@
-import { SET_TOKEN_SUCCESS, HOST_AVAILABLE, SET_MEETING_ROOM } from './type';
+import { SET_TOKEN_SUCCESS, HOST_AVAILABLE, SET_MEETING_ROOM, SET_PARTICIPANTS } from './type';
 import { gpAxios } from '../../utils/gpAxios';
 import { apiPaths } from '../../utils/apiPaths';
 
@@ -76,7 +76,7 @@ export const createRoom = data => async dispatch => {
 
 export const getRoom = data => async => {
     try {
-        const response = gpAxios.get(`/get_room?room_name=${data.signature}&?requester_id=${data.requester_id}`);
+        const response = gpAxios.get(`/get_room?room_name=${data.signature}&requester_id=${data.requester_id}`);
 
         return response;
     } catch (err) {
@@ -91,6 +91,18 @@ export const hostAvailable = data => async dispatch => {
             payload: data
         });
     } catch (e) {
+        console.log(e);
+    }
+};
+
+export const setParticipants = data => async dispatch => {
+    
+    try {
+        dispatch({
+            type: SET_PARTICIPANTS,
+            payload: data
+        });
+    } catch (err) {
         console.log(e);
     }
 };
