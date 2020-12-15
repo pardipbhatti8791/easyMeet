@@ -1,72 +1,118 @@
 import React, { useState, useRef, useEffect } from 'react';
-import axios from 'axios';
-import { twilioLogout, meetingStatus, getAccessToken, getMeetingRoomStatus } from '../../../../../redux/rooms/action';
+import {
+    meetingStatus,
+    getAccessToken,
+    getMeetingRoomStatus,
+    getRoom,
+    hostAvailable,
+    setParticipants
+} from '../../../../../redux/rooms/action';
 import { useDispatch, useSelector } from 'react-redux';
 import Footer from './Footer';
-import { queryString } from '../../../../../utils/qs';
-
-const { connect, createLocalTracks, createLocalVideoTrack, isSupported } = require('twilio-video');
+import HostWaiting from './HostWaiting';
+const { connect, createLocalTracks } = require('twilio-video');
 const VideoChat = props => {
     const dispatch = useDispatch();
     const [hasJoinedRoom, setHasJoinedRoom] = useState(false);
     const [activeRoom, setActiveRoom] = useState(null);
     const [isRemote, setIsRemote] = useState(false);
-    const [twilioToken, set_twilioToken] = useState(null);
-    const [twilioRoom, set_twilioRoom] = useState(null);
-    const [requester, set_requester] = useState(null);
-
+    const [urlData, setUrlData] = useState(null);
+    const [requesterId, setRequesterId] = useState(null);
+    const [requesterEmail, setRequesterEmail] = useState(null);
     const isAuth = useSelector(state => state.auth.isAuthenticated);
+    const userInfo = useSelector(state => state.auth.user);
+    const roomInfo = useSelector(state => state.rooms);
 
     const localMedia = useRef(null);
     const remoteMedia = useRef(null);
+    let systemTracks;
+    let participants;
+    const footerData = {
+        room: activeRoom,
+        participants: participants,
+        requester_id: props.match.params.requester_id,
+        requester_email: requesterEmail
+    };
 
     useEffect(() => {
         checkToken();
     }, []);
 
     const checkToken = async () => {
-        const singnature = await queryString(props.location.search);
-
-        // eslint-disable-next-line no-undef
-        const decrypted = CryptoJS.AES.decrypt(singnature.room, 'guguilovu');
-        // eslint-disable-next-line no-undef
-        var plaintext = decrypted.toString(CryptoJS.enc.Utf8);
-
-        const { data } = await axios.post('http://localhost:4000/verify/', { token: plaintext });
-        if (data.hasOwnProperty('twillioToken') && data.hasOwnProperty('roomName')) {
-            set_requester(data.requesterEmail);
-            set_twilioRoom(data.roomName);
-            if (isAuth) {
-                joinRoom(data.roomName, data.twillioToken, data.requesterEmail);
-            }
+        let signature = props.match.params.signature;
+        if (props.match.params.requester_id) {
+            setRequesterId(props.match.params.requester_id);
         }
+
+        setUrlData(signature);
+        const roomVerifyData = {
+            signature: signature,
+            requester_id: props.match.params.requester_id
+        };
+
+        dispatch(getRoom(roomVerifyData)).then(res => {
+            setRequesterEmail(res.data.data.meeting_requester.requester_email);
+            //console.log('rsponse of get room', res);
+            if (res.data.status === true) {
+                if (isAuth) {
+                    dispatch(getAccessToken(signature, userInfo.meeter_email)).then(res => {
+                        let accessToken = res.data.data.result.access_token;
+                        joinRoom(signature, accessToken);
+                    });
+                } else {
+                    let requester_email = res.data.data.meeting_requester.requester_email;
+
+                    dispatch(getAccessToken(signature, requester_email)).then(res => {
+                        let accessToken = res.data.data.result.access_token;
+                        dispatch(getMeetingRoomStatus(signature))
+                            .then(res => {
+                                //  hostAvaiable = true;
+                                joinRoom(signature, accessToken);
+                            })
+                            .catch(err => {
+                                console.log('room not exist');
+
+                                dispatch(hostAvailable(false));
+                            });
+                    });
+                }
+            } else {
+                alert('Room not exist');
+            }
+        });
     };
 
-    const joinRoom = (roomName, accessToken, requesterEmail) => {
+    const joinRoom = (roomName, accessToken) => {
         createLocalTracks({
             audio: true,
             video: { width: 1920, height: 1080 }
         })
             .then(localTracks => {
-                return connect(accessToken, {
-                    name: roomName,
-                    tracks: localTracks
-                });
+                //console.log('sysTrack', localTracks);
+                systemTracks = localTracks[1];
+
+                return connect(
+                    accessToken,
+                    {
+                        name: roomName,
+                        tracks: localTracks
+                    }
+                );
             })
             .then(room => {
                 // console.log(`Connected to Room: ${room.name}`);
-                roomJoined(room, requesterEmail);
+                roomJoined(room);
             });
     };
-
-    const roomJoined = (room, requesterEmail) => {
-        const data = {
-            status_category: 'single',
-            status_type: 'in_meeting',
-            requester_id: requesterEmail
-        };
-        const localParticipant = room.localParticipant;
+    const roomJoined = room => {
         if (isAuth) {
+            const data = {
+                status_category: 'single',
+                status_type: 'in_meeting',
+                requester_id: userInfo.id
+            };
+            const localParticipant = room.localParticipant;
+
             dispatch(meetingStatus(data)).then(res => {});
         }
 
@@ -75,11 +121,11 @@ const VideoChat = props => {
         setHasJoinedRoom(true);
 
         // Log your Client's LocalParticipant in the Room
-        console.log(`Connected to the Room as LocalParticipant "${localParticipant.identity}"`);
+        //console.log(`Connected to the Room as LocalParticipant "${localParticipant.identity}"`);
 
         // Log any Participants already connected to the Room
         room.participants.forEach(participant => {
-            //console.log(`Participant "${participant.identity}" is connected to the Room`);
+            // console.log(`Participant "${participant.identity}" is connected to the Room`);
             setIsRemote(true);
         });
 
@@ -105,7 +151,7 @@ const VideoChat = props => {
 
         // Attach the Participant's Media to a <div> element.
         room.on('participantConnected', participant => {
-            console.log(`Participant "${participant.identity}" connected`);
+            //console.log(`Participant "${participant.identity}" connected`);
             //seIsRemote(true);
             participant.tracks.forEach(publication => {
                 if (publication.isSubscribed) {
@@ -132,85 +178,118 @@ const VideoChat = props => {
             });
         });
 
-        //Handle Remote Media Unmute Events
-
-        // room.participants.forEach(participant => {
-        //     participant.tracks.forEach(publication => {
-        //         if (publication.isSubscribed) {
-        //             handleTrackEnabled(publication.track);
-        //         }
-        //         publication.on('subscribed', handleTrackEnabled);
-        //     });
-        // });
-
-        // const handleTrackEnabled = track => {
-        //     track.on('enabled', () => {
-        //         console.log('enabled video track');
-        //     });
-        // };
-
-        //local media tracks attaching to dom
-        createLocalVideoTrack()
-            .then(track => {
-                const localMediaContainer = localMedia.current;
-                // console.log('attaching local media', track);
-                localMedia.current.appendChild(track.attach());
-            })
-            .then(err => {
-                //  console.log(err);
+        const handleTrackDisabled = track => {
+            track.on('disabled', () => {
+                /* Hide the associated <video> element and show an avatar image. */
+                console.log('remote mute their video');
             });
+        };
+
+        room.participants.forEach(participant => {
+            participant.tracks.forEach(publication => {
+                if (publication.isSubscribed) {
+                    handleTrackDisabled(publication.track);
+                }
+                publication.on('subscribed', handleTrackDisabled);
+            });
+        });
+        // local media tracks attaching to dom
+        localMedia.current.appendChild(systemTracks.attach());
     };
 
-    const startVideo = () => {
-        if (twilioToken == null) {
-            dispatch(getAccessToken(twilioRoom, requester)).then(res => {
-                const accessToken = res.data.data.result.access_token;
-                dispatch(getMeetingRoomStatus(twilioRoom))
-                    .then(res => {
-                        joinRoom(twilioRoom, accessToken);
-                    })
-                    .catch(err => {
-                        alert('Room not exist');
-                        localStorage.removeItem('twilioacesstoken');
-                        dispatch(twilioLogout());
-                    });
-            }).catch(e => {
-                alert('Unauthorized')
-            })
+    const leaveRoom = () => {
+        activeRoom.on('disconnected', room => {
+            room.localParticipant.tracks.forEach(publication => {
+                const attachedElements = publication.track.detach();
+                attachedElements.forEach(element => element.remove());
+            });
+        });
+        activeRoom.localParticipant.videoTracks.forEach(publication => {
+            publication.track.stop();
+            publication.unpublish();
+        });
+
+        activeRoom.disconnect();
+        setHasJoinedRoom(false);
+        if (isAuth) {
+            const data = {
+                status_category: 'single',
+                status_type: 'completed',
+                requester_id: userInfo.id
+            };
+
+            dispatch(meetingStatus(data)).then(res => {
+                // console.log('response', res);
+            });
+            // window.location.href = '/dashboard';
         }
     };
+    setInterval(() => {
+        const roomData = {
+            signature: props.match.params.signature,
+            requester_id: props.match.params.requester_id
+        };
+        dispatch(getRoom(roomData)).then(res => {
+            participants = res.data.data.meeting_participant;
+
+            dispatch(setParticipants(res.data.data.meeting_participant));
+        });
+    }, 10000);
+
+    if (roomInfo.hostAvailable == false) {
+        let clear = setInterval(() => {
+            dispatch(getMeetingRoomStatus(urlData)).then(res => {
+                dispatch(hostAvailable(true));
+                stopfunction();
+                dispatch(getAccessToken(urlData, requesterEmail)).then(res => {
+                    joinRoom(urlData, res.data.data.result.access_token);
+                });
+            });
+            //console.log('paramyer to roomcheck', urlData);
+        }, 10000);
+        const stopfunction = () => {
+            clearInterval(clear);
+        };
+    }
+
+    let remoteMediaContainer = isRemote ? (
+        <div
+            className='media mainRoomMedia personal-details media-body text-center d-block mb-4 remotevideodiv'
+            ref={remoteMedia}></div>
+    ) : (
+        ''
+    );
 
     return (
         <>
-            <div className='container'>
-                {!isAuth && (
-                    <div className='row'>
-                        <div className='col-sm-12 mt-5 justify-content-center align-items-center'>
-                            {twilioToken === null ? (
-                                hasJoinedRoom ? (
-                                    ''
-                                ) : (
-                                    <button className='btn btn-primary' onClick={startVideo}>
-                                        Start Call
-                                    </button>
-                                )
-                            ) : (
-                                ''
-                            )}
-                        </div>
+            {hasJoinedRoom ? (
+                <div className='d-lg-none d-xl-none d-flex p-3 footerDetails bg-white'>
+                    <div className='exit py-2 ml-auto d-flex align-items-center'>
+                        <button className='btn small-size gray8 p-0' onClick={leaveRoom}>
+                            <i className='fa fa-sign-out pr-1 font16' aria-hidden='true'></i>Exit Room
+                        </button>
                     </div>
-                )}
-            </div>
+                </div>
+            ) : (
+                ''
+            )}
+
+            {/* {!isAuth && (
+                <div className='conatiner'>
+                    {hasJoinedRoom && roomExist != false ? '' : <PublicPage startVideo={startVideo} />}
+                </div>
+            )} */}
+            {roomInfo.hostAvailable ? '' : <HostWaiting />}
             {hasJoinedRoom ? (
                 <div className='bgdark withSideBar meetRoom waitingHost'>
                     <div className='host text-right  d-none d-lg-block videodiv flex-item' ref={localMedia}></div>
                     <div className='container mainRoom'>
                         <div className='row justify-content-center align-items-center h-100'>
                             <div>
-                                <div
+                                {/* <div
                                     className='media mainRoomMedia personal-details media-body text-center d-block mb-4 remotevideodiv'
-                                    ref={remoteMedia}></div>
-
+                                    ref={remoteMedia}></div> */}
+                                {remoteMediaContainer}
                                 {isRemote ? (
                                     ''
                                 ) : (
@@ -230,7 +309,7 @@ const VideoChat = props => {
                 </div>
             )}
 
-            {hasJoinedRoom ? <Footer room={activeRoom} setHasJoinedRoom={setHasJoinedRoom} /> : ''}
+            {hasJoinedRoom ? <Footer data={footerData} leaveRoom={leaveRoom} /> : ''}
         </>
     );
 };

@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RadioGroup, RadioButton } from 'react-radio-buttons';
-import defaultImg from '../../../../../assets/images/defaultProfile.png';
 import { updateUserBio } from '~/redux/boarding/action';
 import Modal from 'react-bootstrap/Modal';
 import { updateAvailability } from '~/redux/boarding/action';
 import { checkAvailability } from '~/redux/boarding/action';
+import moment from 'moment';
+
 import { closeModal, openModal } from '../../../../../redux/global_modal/actions';
-import noPhoto from '~/assets/images/photo.png';
+
+import md5 from 'md5';
+import copyImage from '../../../../../assets/images/copyicon.png';
 import { copyToClipBoard } from '../../../../../utils/copyToCilpBoard';
 
 function UserInfo() {
@@ -16,16 +19,34 @@ function UserInfo() {
     const [openBioPopUp, setOpenBioPopUp] = useState(false);
     const [loader, setLoader] = useState(false);
     const [editBio, setEditBio] = useState({ value: '' });
+    const [showMore, setShowMore] = useState(true);
+    const [time, setTime] = useState(null);
+    const date1 = moment().format();
+    console.log('date 1 is', date1);
+    let meetingRoomDisabled = true;
+
+    const room = useSelector(state => state.rooms.room);
+    if (room != null) {
+        meetingRoomDisabled = false;
+    }
 
     const userInfo = useSelector(state => state.auth.user);
     const {
         availibility: { meeter_availibility, available_for }
     } = userInfo;
+    const date2 = userInfo.availibility.time_availibity_till;
 
+    console.log('date 2 is', userInfo.availibility.time_availibity_till);
+    let gravatarImage = md5(userInfo.meeter_email.toLowerCase().trim());
     useEffect(() => {
         dispatch(checkAvailability(userInfo.id));
         setEditBio({ value: userInfo.meeter_bio });
     }, []);
+
+    // setInterval(() => {
+    //     //console.log(moment().format('MMMM Do YYYY, h:mm:ss a'));
+    //     setTime(moment().format('MMMM Do YYYY, h:mm:ss a'));
+    // }, 1000);
 
     const updateBio = () => {
         const data = {
@@ -53,26 +74,57 @@ function UserInfo() {
         }
     };
     const addDefaultSrc = e => {
-        e.target.src = defaultImg;
+        e.target.src = `https://www.gravatar.com/avatar/${gravatarImage}?d=mp`;
     };
+    let minorString;
+    let majorString = userInfo.meeter_bio;
+
+    if (userInfo.meeter_bio.length > 250) {
+        //console.log(userInfo.meeter_bio.substring(0, 500));
+        minorString = userInfo.meeter_bio.substring(0, 250);
+    }
+
+    const onMeetingClick = () => {
+        if (room !== null) {
+            window.location.href = `https://easymeet.io/video-chat/${room}`;
+        }
+    };
+
     return (
         <>
+            {' '}
             <section className='personal-details bg-white pb-4'>
                 <div className='container'>
-                    <div className='row'>
-                        <div className='media text-left'>
-                            <div className='align-self-center text-center mr-3 default-opacity avatar-container'>
-                                <img
-                                    id='openDrag'
-                                    className='mb-1'
-                                    src={userInfo.meeter_image_slug === '' ? noPhoto : userInfo.meeter_image_slug}
-                                    //src={userInfo.meeter_image_slug}
-                                    alt='photo'
-                                    //onError={addDefaultSrc}
-                                    onClick={() => {
-                                        dispatch(openModal('AvatarModal', { open: true }));
-                                    }}
-                                />
+                    <div className='row m-0'>
+                        <div className='media text-left personal-profile'>
+                            <div className='profile-wrapper'>
+                                <figure className='mb-0'>
+                                    <img
+                                        id='openDrag'
+                                        className='mb-1 align-self-center text-center mr-3 default-opacity avatar-container'
+                                        src={
+                                            userInfo.meeter_image_slug === ''
+                                                ? `https://www.gravatar.com/avatar/${gravatarImage}?d=mp`
+                                                : userInfo.meeter_image_slug
+                                        }
+                                        s
+                                        alt='photo'
+                                        onError={addDefaultSrc}
+                                        onClick={() => {
+                                            dispatch(openModal('AvatarModal', { open: true }));
+                                        }}
+                                    />
+                                </figure>
+
+                                <div className='meeting-room align-self-center mr-3'>
+                                    <button
+                                        className='btn btn-default meeting-btn bg-white small-size'
+                                        onClick={onMeetingClick}
+                                        disabled={meetingRoomDisabled}>
+                                        <i className='mr-2 fa fa-camera' aria-hidden='true' />
+                                        Join Meeting Room
+                                    </button>
+                                </div>
                             </div>
                             <div className='media-body align-self-center'>
                                 <h2 className='mt-0'> {userInfo.meeter_fullname}</h2>
@@ -80,8 +132,29 @@ function UserInfo() {
                                     Click to edit your bio <i className='fa fa-pencil' aria-hidden='true'></i>
                                 </a>
                                 <p style={{ pointer: 'cursor' }} className='edit-bio small-size' href='#'>
-                                    {userInfo.meeter_bio}
+                                    {/* {userInfo.meeter_bio} */}
+                                    {showMore && userInfo.meeter_bio.length > 250 ? minorString : majorString}{' '}
+                                    {userInfo.meeter_bio.length > 250 ? (
+                                        showMore ? (
+                                            <a
+                                                style={{ cursor: 'pointer' }}
+                                                className='url-room small-size'
+                                                onClick={() => setShowMore(!showMore)}>
+                                                Show more..
+                                            </a>
+                                        ) : (
+                                            <a
+                                                style={{ cursor: 'pointer' }}
+                                                className='url-room small-size'
+                                                onClick={() => setShowMore(!showMore)}>
+                                                Show less..
+                                            </a>
+                                        )
+                                    ) : (
+                                        ''
+                                    )}
                                 </p>
+
                                 <Modal
                                     show={openBioPopUp}
                                     onHide={() => setOpenBioPopUp(false)}
@@ -116,15 +189,11 @@ function UserInfo() {
                                     </div>
                                 </Modal>
                                 <span
-                                    className='url-room small-size'
+                                    className='mb-0 url-room small-size '
                                     style={{ cursor: 'pointer' }}
                                     onClick={() => copyToClipBoard('easymeet.io/meet/' + userInfo.meeter_meet_slug)}>
                                     easymeet.io/meet/{userInfo.meeter_meet_slug}{' '}
-                                    <i
-                                        onClick={() => copyToClipBoard('easymeet.io/meet/' + userInfo.meeter_meet_slug)}
-                                        className='fa fa-clone'
-                                        aria-hidden='true'
-                                    />
+                                    <img className='pr-1' src={copyImage} />
                                 </span>
                             </div>
                         </div>
@@ -134,18 +203,23 @@ function UserInfo() {
                                 <div className='meeting-room align-self-center mr-3'>
                                     <button
                                         className='btn btn-default meeting-btn bg-white small-size'
-                                        onClick={() => {
-                                            // window.location.href = '/video-chat';
-                                        }}>
+                                        onClick={onMeetingClick}
+                                        disabled={meetingRoomDisabled}>
                                         <i className='fa fa-camera' aria-hidden='true' /> Meeting Room
                                     </button>
                                 </div>
                                 <div className='button b2 available_btnWrapper' id='button-10'>
                                     <RadioGroup value={meeter_availibility} onChange={onChange} horizontal>
-                                        <RadioButton value='yes' className='radiobtn'>
+                                        <RadioButton
+                                            value='yes'
+                                            pointColor='#336600'
+                                            className='radiobtn custm-sucess-btn'
+                                            style={{ backgroundColor: 'red' }}>
                                             Available
                                         </RadioButton>
-                                        <RadioButton value='no'>Not Available</RadioButton>
+                                        <RadioButton value='no' pointColor='#336600'>
+                                            Not Available
+                                        </RadioButton>
                                     </RadioGroup>
                                 </div>
                             </div>
@@ -156,6 +230,7 @@ function UserInfo() {
                                     <>
                                         Available for <span>{available_for && available_for.hours}</span> hours{' '}
                                         <span>{available_for && available_for.minutes}</span> minutes.
+                                        {time}
                                         {/* <a href='#'>Extend ⯆</a> */}
                                     </>
                                 ) : (

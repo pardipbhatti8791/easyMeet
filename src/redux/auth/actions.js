@@ -41,7 +41,9 @@ export const loginUser = (email, password, history = null) => async dispatch => 
         password: password,
         device_token: 'dfsdfhsfhkdddssjsdfh'
     };
+
     try {
+        //const response = await gpAxios.post('/login', data);
         const response = await gpAxios.post('/login', data);
         setUserToken(response.data.data.result.auth_user_token);
         dispatch({
@@ -151,7 +153,7 @@ export const forgetPassword = email => async dispatch => {
     };
 
     try {
-        const response = await gpAxios.post('/forgot-password', data);
+        const response = await gpAxios.post(apiPaths.user_management.forget_password, data);
         return response;
     } catch (e) {
         errorAlert(e.response.data.errors);

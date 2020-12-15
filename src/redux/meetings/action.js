@@ -66,24 +66,37 @@ const setMeetingData = data => {
     };
 };
 
+export const setMeetingListPage = page => async dispatch => {
+    dispatch({
+        type: [meeting.MEETING_LIST_PAGE],
+        payload: page
+    });
+};
+
 /**
  *
  * @param UserKey
  * @returns {function(*): Promise<AxiosResponse<any>>}
  */
-export const getMeetingList = () => async dispatch => {
-    dispatch({
-        type: [meeting.GET_MEETING_DATA_SPINNER_ON]
-    });
+export const getMeetingList = page => async dispatch => {
+    if (page.load == true) {
+        dispatch({
+            type: [meeting.GET_MEETING_DATA_SPINNER_ON]
+        });
+    }
+
     dispatch({
         type: [meeting.GET_MEETING_DATA_INIT]
     });
     try {
-        const meetingData = await gpAxios.get(`${apiPaths.get_meeting_list}`);
+        // const meetingData = await gpAxios.get(`${apiPaths.get_meeting_list}`);
+        const meetingData = await gpAxios.get(`show-meetings?meeting_status=all&keywords=&page=${page.page}all&limit=`);
         //    console.log(meetingData.data.data.result.mettings);
-        dispatch({
-            type: [meeting.GET_MEETING_DATA_SPINNER_OFF]
-        });
+        if (page.load == true) {
+            dispatch({
+                type: [meeting.GET_MEETING_DATA_SPINNER_OFF]
+            });
+        }
         dispatch(setMeetingData(meetingData.data.data.result));
     } catch (e) {
         console.log(e);
@@ -105,14 +118,18 @@ export const updateProfilePicture = data => async dispatch => {
     dispatch({
         type: [meeting.GET_PROFILE_IMAGE_DATA_INIT]
     });
+
     try {
         const meetingData = await gpAxios.post(apiPaths.user_management.update_profile_pic, data);
         dispatch({
             type: [meeting.UPLOAD_PROFILE_IMGAE_DATA_SUCESS]
         });
+        return meetingData;
+        console.log('update profile pic', meetingData);
         dispatch(loadUser());
     } catch (e) {
-        console.log(e);
+        console.log(e.response.data.message);
+        alert(e.response.data.message);
         dispatch({
             type: [meeting.GET_MEETING_DATA_SPINNER_OFF]
         });

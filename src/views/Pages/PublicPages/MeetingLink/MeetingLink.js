@@ -5,9 +5,11 @@ import { useDispatch } from 'react-redux';
 import ThePublicHeader from '~/containers/PublicLayouts/PublicHeader';
 import { getMeeterData, meetingRequest } from '../../../../redux/meetings/action';
 
+import defaultImg from '../../../../assets/images/EasyMeetBig.svg';
 import RenderComponent from '../../../../utils/renderComponent';
 import MeeterDetails from './children/MeeterDetails';
 import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 
 function MeetingLink(props) {
     const [phoneNumber, setPhoneNumber] = useState('');
@@ -45,7 +47,12 @@ function MeetingLink(props) {
             summary: formData.summary,
             device_token: 'dasdkfjasdkf'
         };
-        dispatch(meetingRequest(data, history));
+        dispatch(meetingRequest(data, history)).then(res => {
+            window.location.href = '/request-send-sucess';
+        });
+    };
+    const addDefaultSrc = e => {
+        e.target.src = defaultImg;
     };
     return (
         <>
@@ -53,8 +60,14 @@ function MeetingLink(props) {
             <div className='meeterProfile'>
                 <div className='container'>
                     <div className='row'>
-                        <div className='col-6 pl-0'>
+                        <div className='col-md-6'>
                             <div className='personal-details py-5 boxShadowNon'>
+                                <div className='MeeterBrandContainer pb-4 mob-meter-brand-logo'>
+                                    <a className='navbar-brand m-0 px-0 pt-0 pb-2 d-block' href='/sign-up'>
+                                        <img src='/assets/images/EasyMeetBig.svg' alt='logo' onError={addDefaultSrc} />
+                                    </a>
+                                    <span className='Brandtext opacity-8'>Never schedule a meeting again.</span>
+                                </div>
                                 <RenderComponent
                                     component={MeeterDetails}
                                     spinner={meeter_spinner}
@@ -62,16 +75,16 @@ function MeetingLink(props) {
                                 />
                             </div>
                         </div>
-                        <div className='col-6 bg-white'>
+                        <div className='col-md-6 bg-white'>
                             <div className='meeterProfileSignUp text-left'>
-                                <div className='MeeterBrandContainer pb-4'>
-                                    <a className='navbar-brand m-0 px-0 pt-0 pb-2 d-block' href='index.html'>
-                                        <img src='/assets/images/EasyMeetBig.svg' alt='logo' />
+                                <div className='MeeterBrandContainer pb-4 mob-hide'>
+                                    <a className='navbar-brand m-0 px-0 pt-0 pb-2 d-block' href='/sign-up'>
+                                        <img src='/assets/images/EasyMeetBig.svg' alt='logo' onError={addDefaultSrc} />
                                     </a>
                                     <span className='Brandtext opacity-8'>Never schedule a meeting again.</span>
                                 </div>
-                                <div className='MeeterLine'></div>
-                                <div className='MeeterDetails pr-3'>
+                                <div className='MeeterLine mob-hide'></div>
+                                <div className='MeeterDetails'>
                                     <h3 className='mb-3'>Some details before you meet:</h3>
                                     <form className='mb-4' onSubmit={handleSubmit(handleRegister)} autoComplete='off'>
                                         <div className='form-group'>
@@ -135,6 +148,7 @@ function MeetingLink(props) {
                                         <div className='form-group'>
                                             <label htmlFor='meeter_phone'></label>
                                             <PhoneInput
+                                                country={'us'}
                                                 inputProps={{
                                                     name: 'phone',
                                                     required: true
@@ -179,6 +193,22 @@ function MeetingLink(props) {
                                             Request a meeting
                                         </button>
                                     </form>
+                                </div>
+                                <div className='meeterProfileMsg custom-meeterProfileMsg px-2 py-3 text-center'>
+                                    <h2 className='opacity-8'>
+                                        Use EasyMeet <br />
+                                        to host meetings yourself!
+                                    </h2>
+                                    <p className='opacity-6 mb-0'>
+                                        dolor sit amet, consectetur adipiscing elit,sed do eiusmod
+                                    </p>
+
+                                    <button
+                                        type='button'
+                                        className='btn btn-primary medium-size'
+                                        onClick={() => (window.location.href = '/sign-up')}>
+                                        Sign up as a host
+                                    </button>
                                 </div>
                             </div>
                         </div>

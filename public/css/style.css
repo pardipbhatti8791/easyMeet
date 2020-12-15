@@ -309,8 +309,15 @@ body {
   border-color: #eeeeee;
   font-size: 0.86rem;
 }
-.password-input {
-  position: relative;
+
+.password-input{
+position: relative;
+}
+.password-input .fa{
+  position: absolute;
+  top: 50%;
+  right: 0.75rem;
+  transform: translateY(-50%);
 }
 span.field-icon {
   position: absolute;
@@ -563,6 +570,16 @@ span.field-icon {
   line-height: 80px;
   font-size: .6rem;
 }
+.empty-icon{
+  width: 80px;
+  height: 80px;
+  background: #FFFFFF;
+  opacity: 0.6;
+  border: 1px solid #000000;
+  border-radius: 50%;
+  line-height: 80px;
+  font-size: .6rem;
+}
 
 /*===============================
  dashboard-5
@@ -701,14 +718,14 @@ span.field-icon {
   margin-top: 1.2rem;
  }
  .meeterProfileSignUp {
-  padding: 4rem 0 0 1.8rem;
+  padding: 4rem 0 0 1rem;
  }
  .MeeterLine {
   background: #FFFFFF;
   border-bottom: 1px solid #EEEEEE;
   border-radius: 5px;
-  margin-left: -45px;
-  margin-right: -15px;
+  margin-left: -2rem;
+  margin-right: -0.9rem;
  }
 .MeeterBrandContainer .navbar-brand {
   font-size: 2.25rem;
@@ -1142,19 +1159,6 @@ span.field-icon {
   width: 124px;
   height: 124px;
 }
-.photo--empty .photo__frame{
-  overflow: hidden;
-    position: absolute;
-    left: 0;
-    top: -10px;
-    width: 100%;
-    height: 100%;
-    background: #fff;
-    z-index: 999;
-    background-image: url(data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='6' ry='6' stroke='%2300000066' stroke-width='4' stroke-dasharray='2%2c 5' stroke-dashoffset='0' stroke-linecap='butt'/%3e%3c/svg%3e);
-    border-radius: 5px;
-    border: none;
-}
 .photo--empty .photo__frame {
   overflow: hidden;
   position: absolute;
@@ -1359,6 +1363,14 @@ span.field-icon {
 .howItWorks .text-right img {
   margin-right: -178px;
 }
+
+/*start responsive css */
+@media only screen and (max-width:1024px){
+  .aboutTitle{
+    width: 100%;
+  }
+}
+/*end responsive css */
 /*===============================
  forgot password
  =================================*/
@@ -1709,59 +1721,59 @@ footer .footerDetails > div {
     display: block;
   }
   /*home*/
-  #home .about .col-md-8 {
+  .about .col-md-8 {
     padding-right: 15px!important;
   }
-  #home .about .aboutTitle,
-  #home .about .aboutImg,
-  #home .howItWorksSteps  {
+  .about .aboutTitle,
+  .about .aboutImg,
+  .howItWorksSteps  {
     text-align: center!important;
   }
-  #home .about .aboutTitle {
+  .about .aboutTitle {
     margin: auto;
     margin-bottom: 2rem;
   }
-  #home .about .aboutTitle .font40 {
+ .about .aboutTitle .font40 {
     font-size: 2rem;
   }
-  #home .about .aboutTitle .idea {
+ .about .aboutTitle .idea {
     width: 100%;
   }
-  #home .howItWorks .col-md-6 {
+  .howItWorks .col-md-6 {
     padding-right: 15px!important;
     padding-left: 15px!important;
   }
-  #home .howItWorksSteps {
+ .howItWorksSteps {
     padding-top: 1.5rem;
   }
-  #home .howItWorksSteps .font24 {
+ .howItWorksSteps .font24 {
     font-size: 1.125rem;
     margin-bottom: 1rem!important;
   }
-  #home .howItWorks .howItWorkstitle {
+ .howItWorks .howItWorkstitle {
     padding-bottom: 0;
     padding-top: 2.5rem;
   }
-  #home .howItWorks .text-left img,
-  #home .howItWorks .text-right img  {
+ .howItWorks .text-left img,
+  .howItWorks .text-right img  {
     margin: 0!important;
     margin-bottom: -148%!important;
     width: 90%;
   }
-  #home .howItWorks .text-right .stepImg,
-  #home .howItWorks .text-left .stepImg {
+  .howItWorks .text-right .stepImg,
+  .howItWorks .text-left .stepImg {
     margin-bottom: -123%!important;
   }
-  #home .howItWorks .text-right .step4Img {
+ .howItWorks .text-right .step4Img {
     margin-bottom: -188%!important;
   }
-  #home .howItWorks .step4Container {
+ .howItWorks .step4Container {
     padding-bottom: 14rem!important;
   }
-  #home footer .startNow .font40 {
+ footer .startNow .font40 {
     font-size: 2rem;
   }
-  #home footer .startNow .btn-primary {
+ footer .startNow .btn-primary {
     padding: .9rem 3rem!important;
   }
 }
@@ -1788,7 +1800,7 @@ footer .footerDetails > div {
   .extend {
     width: 160px;
   }
-  #home footer .terms ul li {
+ footer .terms ul li {
     padding: 0 .5rem!important;
   }
 }
@@ -1843,4 +1855,234 @@ element.style {
   right: 0;
   width: 500px;
   padding: 20px;
+}
+
+.img-wrapper-outer{
+  background-image: url(../images/bg.jpg) !important;
+  background-position:center;
+  background-repeat: no-repeat;
+  height: 100vh;
+  background-size: cover;
+  
+}
+.img-wrapper-outer .img-wrapper-inner{
+  max-width: 200px;
+  border: 1px solid #fff;
+  height: 200px;
+  width: 100%;
+  border-radius: 50%;
+  margin: 0 auto;
+}
+.img-wrapper-outer .img-wrapper-inner .vedio-play-wrapper{
+  width: 100%;
+  border: 1px solid #fff;
+  height: 100%;
+  border-radius: 50%;
+}
+.img-wrapper-outer .vedio-play-wrapper .vedio-background-wrapper{
+  z-index: 99;
+  background: #fff;
+  display: inline-block;
+  max-width: 150px;
+  width: 100%;
+  height: 150px;
+  border-radius: 50%;
+}
+.img-wrapper-outer .img-wrapper-inner .img-heading{
+  font-size: 32px;
+  font-weight: 500;
+  color: #fff;
+  text-transform: capitalize;
+}
+
+@media only screen and (max-width:767px){
+  .img-wrapper-outer .img-wrapper-inner{
+      max-width: 170px;
+      height: 170px;
+
+  }
+  .img-wrapper-outer .vedio-play-wrapper .vedio-background-wrapper{
+      max-width: 120px;
+      height: 120px;
+  }
+}
+
+/* shilpa css */
+.requster-category {
+  border: 1px solid #EEEEEE;
+    border-radius: 4px;
+    padding: 12px 16px;
+    position: relative;
+    
+}
+.requster-category .bulk-action{
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  margin: 0 !important;
+}
+.request-category-inner .request-category-img{
+  
+}
+
+.request-category-inner .request-category-img figure{
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  border: 1px solid #00000099;
+  border-radius: 50%;
+  margin-right: 16px;
+}
+.request-category-inner .request-category-inner-text .requesterName{
+  font-size: 14px;
+  line-height: 22px;
+  color: #000000;
+}
+.request-category-inner .request-category-inner-text .url-room{
+  color: #017AFF;
+  font-size: 12px;
+}
+.request-category-inner .request-summary{
+  padding-left: 56px;
+}
+.custom-search-request .small-size{
+    flex:0 0 20%;
+}
+.custom-search-request .form-group{
+  flex:0 0 80%;
+}
+/* header css */
+.custom-toggle{
+  background: #FFFFFF;
+  border: 1px solid #EEEEEE !important;
+  box-sizing: border-box;
+  border-radius: 5px;
+}
+
+@media only screen and (min-width:991px){
+ 
+  .personal-profile .profile-wrapper .meeting-room{
+    display:none;
+  }
+  .mob-availbtn-wrapper{
+    display: none;
+  }
+}
+@media only screen and (max-width:991px){
+  .custom-mob-nav .navbar-brand{
+    margin-right: 0.2rem;
+  }
+  .personal-profile{
+    display:block;
+  }
+  .personal-profile .profile-wrapper{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .custom-search-request .small-size{
+    flex:0 0 30%;
+}
+.custom-search-request .form-group{
+  flex:0 0 70%;
+}
+ 
+}
+@media only screen and (min-width:767px){
+  .custom-meeterProfileMsg h2 br{
+    display: none;
+  }
+  .meeterProfileMsg.custom-meeterProfileMsg{
+    display:none;
+  }
+  .mob-meter-brand-logo{
+    display:none;
+  }
+  .desktop-hide{
+    display: none;
+  }
+}
+
+@media only screen and (max-width:767px){
+  
+  .profile-serach-wrapper{
+    padding: 10px 0;
+  }
+  .profile-serach-wrapper .small-size{
+      margin-bottom: 8px;
+  }
+  .requster-category{
+    padding: 12px 12px 0;
+  }
+  .requster-category .bulk-action {
+    padding: 16px 0;
+    background: #fff;
+    justify-content: space-around;
+    display: flex;
+    position: unset;
+    border-top: 1px solid #EEEEEE;
+  }
+  .requster-category .bulk-action .btn{
+    border: 0;
+    padding:0;
+  }
+  .personal-meeting-profile{
+    display:none;
+  }
+  .meeterProfileSignUp {
+    padding: 0 0 2em;
+  }
+  .meeterProfileSignUp{
+
+  }
+  .mob-hide{
+    display: none;
+  }
+  .personal-details{
+    padding: 2rem 0 1rem!important;
+  }
+  .meeterProfileSignUp .MeeterDetails textarea{
+    height: 80px;
+  }
+  .meeterProfileMsg.custom-meeterProfileMsg h2{
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 25px;
+  }
+  .mob-meter-brand-logo .navbar-brand{
+    line-height: 1;
+  }
+  .mob-meter-brand-logo .navbar-brand img{
+    width: 90px;
+  }
+  .custom-personal-details{
+    padding: 16px 0 10px !important;
+    margin-bottom: 16px !important;
+  }
+  .custom-content{
+    margin-bottom: 10px !important;
+  }
+  .custom-content p{
+    margin-bottom: 0;
+    line-height: 1.6;
+  }
+  .custom-content br{
+    display: none;
+  }
+  .meeterProfileSignUp .MeeterDetails{
+    padding-top: 15px;
+  }
+  .meeterProfileSignUp .MeeterDetails .form-group{
+    padding-top: 0;
+    margin-bottom: 16px;
+  }
+  .request-category-inner  .request-summary{
+    padding-left: 0;
+  }
+  .custom-search-request .small-size{
+    margin-bottom: 4px;
+  }
+  .navbar-collapse{
+    margin-top: .50rem;
+  }
 }

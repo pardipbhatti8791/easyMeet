@@ -1,44 +1,97 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import { accessFromObject } from '../../../../../utils/accessFromObject';
-
+import defaultImg from '../../.././../../assets/images/photo.png';
+import md5 from 'md5';
 const MeeterDetails = props => {
     const { data } = props;
-
+    const [showMore, setShowMore] = useState(true);
+    let gravatarImage;
+    if (accessFromObject(data, 'meeter_email') != undefined) {
+        gravatarImage = md5(
+            accessFromObject(data, 'meeter_email')
+                .toLowerCase()
+                .trim()
+        );
+    }
     const availabilty = accessFromObject(data, 'availibility');
+    const addDefaultSrc = e => {
+        e.target.src = `https://www.gravatar.com/avatar/${gravatarImage}?d=mp`;
+    };
+
+    let minorString;
+    let majorString = accessFromObject(data, 'meeter_bio');
+    if (majorString != undefined) {
+        if (majorString.length > 250) {
+            minorString = majorString.substring(0, 250);
+        }
+    }
+
     return (
         <Fragment>
-            <div className='media personal-details media-body text-center d-block mb-4'>
-                <div className='text-center default-opacity m-auto avatar-container'>
+            <div className='media personal-details custom-personal-details media-body text-center d-block mb-4'>
+                <div>
                     <img
+                        className='text-center default-opacity m-auto avatar-container'
                         src={
                             accessFromObject(data, 'meeter_image_slug') === ''
-                                ? '../../../../assets/images/photo.png'
+                                ? `https://www.gravatar.com/avatar/${gravatarImage}?d=mp`
                                 : accessFromObject(data, 'meeter_image_slug')
                         }
                         alt='photo'
+                        onError={addDefaultSrc}
                     />
                 </div>
                 <h2 className='requesterName mt-3 mb-1 mb-0'>{accessFromObject(data, 'meeter_fullname')}</h2>
-                <a className='edit-bio small-size' href='#'>
+                {/* <a className='edit-bio small-size' href='#'>
                     {accessFromObject(data, 'meeter_bio')}
-                </a>
+                </a> */}
+                <p className='edit-bio small-size' href='#'>
+                    {majorString != undefined ? (showMore && majorString.length > 250 ? minorString : majorString) : ''}{' '}
+                    {majorString != undefined ? (
+                        majorString.length > 250 ? (
+                            showMore ? (
+                                <a
+                                    style={{ cursor: 'pointer' }}
+                                    className='url-room small-size'
+                                    onClick={() => setShowMore(!showMore)}>
+                                    Show more..
+                                </a>
+                            ) : (
+                                <a
+                                    style={{ cursor: 'pointer' }}
+                                    className='url-room small-size'
+                                    onClick={() => setShowMore(!showMore)}>
+                                    Show less..
+                                </a>
+                            )
+                        ) : (
+                            ''
+                        )
+                    ) : (
+                        ''
+                    )}
+                </p>
                 <span className='small-size d-block opacity-6 mt-1'>
-                    {accessFromObject(availabilty, 'meeter_availibility') === 'yes' &&
-                    accessFromObject(availabilty, 'available_for').hours <= 72
+                    {accessFromObject(availabilty, 'meeter_availibility') === 'yes'
                         ? `Available for ${accessFromObject(availabilty, 'available_for').hours} hours and ${
                               accessFromObject(availabilty, 'available_for').minutes
-                          }`
-                        : 'Not Available'}
+                          } minutes`
+                        : accessFromObject(availabilty, 'meeter_availibility') === 'no' &&
+                          !Array.isArray(accessFromObject(availabilty, 'available_ago'))
+                        ? `Available ${accessFromObject(availabilty, 'available_ago').hours} hours and ${
+                              accessFromObject(availabilty, 'available_ago').minutes
+                          } minutes ago`
+                        : ''}
                 </span>
             </div>
-            <div className='mb-4'>
+            <div className='mb-4 custom-content'>
                 <span className='requesterMsg'>{accessFromObject(data, 'meeter_fullname')}</span>{' '}
                 <span className='requesterMsg opacity-8'>wants to meet with you when you're both free.</span>
             </div>
-            <div>
+            <div className='custom-content'>
                 <p className='small-size opacity-6 mb-0'>
-                    Simply fill the information required and you'll get notified whenever John Doe is free to <br />
-                    take a meeting.
+                    Simply fill the information required and you'll get notified whenever{' '}
+                    {accessFromObject(data, 'meeter_fullname')} is free to take a meeting.
                 </p>
                 <br />
                 <p className='small-size opacity-6'>
@@ -47,11 +100,9 @@ const MeeterDetails = props => {
                 </p>
                 <div className='MeeterProfileArrow'>&#187;</div>
             </div>
-            <div className='meeterProfileMsg px-2 py-3'>
+            <div className='meeterProfileMsg px-2 py-3 personal-meeting-profile'>
                 <h2 className='opacity-8'>Use EasyMeet to host meetings yourself!</h2>
-                <span className='opacity-6'>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                </span>
+                <p className='opacity-6 mb-0'>Not having to schedule meetings is a superpower</p>
 
                 <button
                     type='button'

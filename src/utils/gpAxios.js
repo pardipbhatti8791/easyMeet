@@ -22,6 +22,7 @@ export const gpAxios = axios.create({
  */
 export const setUserToken = token => {
     if (token) {
+        // gpAxios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
         gpAxios.defaults.headers.common['Authorization'] = `Basic ${process.env.REACT_APP_TOKEN}`;
     } else {
         delete gpAxios.defaults.headers.common['User-Key'];

@@ -4,10 +4,8 @@ import { Link, Redirect } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
-
 import { signUpRequest } from '~/redux/auth/actions';
 import { ThePublicHeader } from '~/containers/index';
-
 const SignUp = props => {
     /**
      * * @useForm hooks
@@ -15,18 +13,14 @@ const SignUp = props => {
     const { register, handleSubmit, errors } = useForm({
         mode: 'onChange'
     });
-
     const dispatch = useDispatch();
     const auth = useSelector(state => state.auth);
     const { loading, isAuthenticated } = auth;
-
     const [passwordVisible, setPasswordVisible] = useState('password');
     const [phoneNumber, setPhoneNumber] = useState('');
-
     if (isAuthenticated) {
         return <Redirect to='/onBoarding-one' />;
     }
-
     /*
      * Toggle Password Visibility
      *
@@ -34,7 +28,6 @@ const SignUp = props => {
     const togglePasswordVisibility = e => {
         passwordVisible === 'password' ? setPasswordVisible('text') : setPasswordVisible('password');
     };
-
     /**
      *
      * @param {*} formData
@@ -51,18 +44,16 @@ const SignUp = props => {
         // console.log(data);
         dispatch(signUpRequest(data, history));
     };
-
     return (
         <>
             <ThePublicHeader />
             <section className='free-sign-up mt-5'>
                 <div className='container'>
                     <div className='row justify-content-center'>
-                        <div className='col-4 px-2'>
+                        <div className='col-md-6 col-12  col-xl-4'>
                             <div className='main-title pt-3 pb-4'>
                                 <h1>Sign up for free</h1>
                             </div>
-
                             <form className='mb-4' onSubmit={handleSubmit(handleRegister)} autoComplete='off'>
                                 <div className='form-group'>
                                     <label htmlFor='exampleInputEmail1'>Email address</label>
@@ -128,7 +119,6 @@ const SignUp = props => {
                                         <p className='customErrors text-danger mt-2'>{errors.full_name.message}</p>
                                     )}
                                 </div>
-
                                 <div className='form-group'>
                                     <label htmlFor='meeter_phone'>Phone</label>
                                     <PhoneInput
@@ -144,10 +134,10 @@ const SignUp = props => {
                                             color: '#495057',
                                             backgroundColor: '#fff',
                                             backgroundClip: 'padding-box',
-                                            border: '1px solid #ced4da',
+                                            border: '1px solid #CED4DA',
                                             borderRadius: '.25rem',
                                             padding: '0.7rem 0.75rem',
-                                            borderColor: '#eeeeee',
+                                            borderColor: '#EEEEEE',
                                             fontSize: '0.86rem',
                                             minHeight: '41px',
                                             paddingLeft: '50px'
@@ -155,48 +145,48 @@ const SignUp = props => {
                                         onChange={phone => setPhoneNumber(phone)}
                                     />
                                 </div>
-                                <div className='form-group password-input'>
+                                <div className='form-group '>
                                     <label htmlFor='exampleInputPassword1'>Password</label>
-                                    <input
-                                        type='password'
-                                        id='passInput'
-                                        className='form-control'
-                                        id='exampleInputPassword1'
-                                        placeholder='Password'
-                                        name='password'
-                                        type={passwordVisible}
-                                        ref={register({
-                                            required: {
-                                                value: true,
-                                                message: 'You must specify a password'
-                                            },
-                                            minLength: {
-                                                value: 8,
-                                                message: 'Password must have at least 8 characters'
-                                            },
-                                            maxLength: {
-                                                value: 32,
-                                                message: 'Password max length 32 characters'
-                                            }
-                                        })}
-                                    />
-
-                                    <span
-                                        toggle='#input-pwd'
-                                        onClick={togglePasswordVisibility}
-                                        className={
-                                            passwordVisible === 'password' ? 'fa fa-eye-slash' : 'fa fa-eye'
-                                        }></span>
+                                    <div class='password-input'>
+                                        <input
+                                            type='password'
+                                            id='passInput'
+                                            className={errors.password ? 'form-control mt-2' : 'form-control'}
+                                            className='form-control'
+                                            id='exampleInputPassword1'
+                                            placeholder='Password'
+                                            name='password'
+                                            type={passwordVisible}
+                                            ref={register({
+                                                required: {
+                                                    value: true,
+                                                    message: 'You must specify a password'
+                                                },
+                                                minLength: {
+                                                    value: 8,
+                                                    message: 'Password must have at least 8 characters'
+                                                },
+                                                maxLength: {
+                                                    value: 32,
+                                                    message: 'Password max length 32 characters'
+                                                }
+                                            })}
+                                        />
+                                        <span
+                                            toggle='#input-pwd'
+                                            onClick={togglePasswordVisibility}
+                                            className={
+                                                passwordVisible === 'password' ? 'fa fa-eye-slash' : 'fa fa-eye'
+                                            }></span>
+                                    </div>
                                     {errors.password && (
-                                        <p className='customErrors text-danger mt-2'>{errors.password.message}</p>
+                                        <p className='customErrors text-danger'>{errors.password.message}</p>
                                     )}
                                 </div>
-
                                 <button type='submit' className='btn btn-primary w-100'>
                                     {loading ? 'Signing up...' : 'Continue'}
                                 </button>
                             </form>
-
                             <span className='have-account'>
                                 I already have the account. <Link to={'/login'}>Log in</Link>
                             </span>
@@ -207,5 +197,4 @@ const SignUp = props => {
         </>
     );
 };
-
 export default SignUp;

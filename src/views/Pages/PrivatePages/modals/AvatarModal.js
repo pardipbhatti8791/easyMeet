@@ -10,9 +10,10 @@ const Avatar = () => {
     const [loader, setLoader] = useState(false);
     const [previewImage, setPreviewImage] = useState(null);
     const [image, setImage] = useState();
+    const [disabled, setDisabled] = useState(true);
     const [cropData, setCropData] = useState('#');
     const [cropper, setCropper] = useState();
-    const [userProfileImage, setUserProfileImage] = useState();
+    const [userProfileImage, setUserProfileImage] = useState('');
     const [userProfileImageName, setUserProfileImageName] = useState();
     const dispatch = useDispatch();
 
@@ -31,6 +32,7 @@ const Avatar = () => {
         setPreviewImage(URL.createObjectURL(image[0]));
         setUserProfileImage(image[0]);
         setUserProfileImageName(image[0].name);
+        userProfileImage == 'undefined' || '' ? setDisabled(true) : setDisabled(false);
     };
 
     const uploadProfileImage = () => {
@@ -157,6 +159,7 @@ const Avatar = () => {
                     </button>
                     <button
                         content='Update'
+                        disabled={disabled}
                         className='btn primary-btn ml-auto medium-size updatePhoto'
                         onClick={() => uploadProfileImage()}
                         positive>

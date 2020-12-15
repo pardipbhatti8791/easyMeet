@@ -7,7 +7,7 @@ import ProtectedRoute from './routing/ProtectedRoute';
 import PublicRoute from './routing/PublicRoute';
 import { loadUser } from './redux/auth/actions';
 import ModalManager from './redux/global_modal/manager';
-
+import HostWaiting from './views/Pages/PrivatePages/Dashboard/VideoChat/HostWaiting';
 // Containers
 const Login = React.lazy(() => import('./views/Pages/PublicPages/Login/Login'));
 const SignUp = React.lazy(() => import('./views/Pages/PublicPages/Register/SignUp'));
@@ -16,6 +16,9 @@ const VideoChat = React.lazy(() => import('./views/Pages/PrivatePages/Dashboard/
 const DefaultLayout = React.lazy(() => import('./containers/PrivateLayouts/TheLayout'));
 const ForgetPassword = React.lazy(() => import('./views/Pages/PublicPages/ForgetPassword/ForgetPassword'));
 const ResetPassword = React.lazy(() => import('./views/Pages/PublicPages/ResetPassword/ResetPassword'));
+const MeetingRequestSend = React.lazy(() => import('./views/Pages/PublicPages/MeetingLink/MeetingRequestSend'));
+const HomePage = React.lazy(() => import('./views/Pages/PublicPages/HomePage/HomePage'));
+
 const loading = () => (
     <div className='animated fadeIn pt-3 text-center'>
         <div className='sk-spinner sk-spinner-pulse'></div>
@@ -36,12 +39,16 @@ const App = () => {
                 <ModalManager />
                 <React.Suspense fallback={loading()}>
                     <Switch>
-                        <Route path='/video-chat/:signature' component={VideoChat} />
+                        <Route path='/video-chat/:signature/:requester_id?' component={VideoChat} />
                         <Route path='/meet/:slug' component={MeetingLink} />
+                        <Route path='/request-send-sucess' component={MeetingRequestSend} />
                         <Route exact path='/login' component={Login} />
                         <Route exact path='/sign-up' component={SignUp} />
                         <Route exact path='/forget-password' component={ForgetPassword} />
-                        <PublicRoute exact path='/reset-password/:token?' component={ResetPassword} />
+                        <Route exact path='/home' component={HomePage} />
+                        <Route exact path='/HostWaiting' component={HostWaiting} />
+                        <Route exact path='/reset-password/:token?' component={ResetPassword} />
+
                         <ProtectedRoute path='/' component={DefaultLayout} />
                     </Switch>
                 </React.Suspense>

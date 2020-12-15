@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getMeetingList } from '~/redux/meetings/action';
 import MeeterList from './children/MeeterList';
@@ -7,11 +7,17 @@ import { CustomLoader } from '../../../../../utils/Loader';
 
 function MeetingList() {
     const dispatch = useDispatch();
+
     useEffect(() => {
-        dispatch(getMeetingList());
+        const page = {
+            page: 1,
+            load: true
+        };
+        dispatch(getMeetingList(page));
     }, []);
 
     const meeting = useSelector(state => state.meeting);
+
     const { meeting_spinner, meeting_list } = meeting;
 
     return (
@@ -22,6 +28,7 @@ function MeetingList() {
                 data={meeting_list}
                 customSpinner={<CustomLoader active />}
             />
+            {/* <MeeterList data={meeting_list} /> */}
         </>
     );
 }
