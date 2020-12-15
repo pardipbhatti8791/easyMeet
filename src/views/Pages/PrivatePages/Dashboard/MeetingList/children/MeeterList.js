@@ -85,7 +85,7 @@ const MeeterList = props => {
         notified_requester = JSON.parse(localStorage.getItem('notify'));
     }
 
-    console.log('notified_requester', notified_requester);
+    // console.log('notified_requester', notified_requester);
     // const onClickRejectAll = () => {
     //     const data = {
     //         status_category: 'multiple',
@@ -95,17 +95,15 @@ const MeeterList = props => {
     // };
 
     const getMoreData = () => {
-        console.log('get more called');
         if (next_page == 0) {
             setHasMore(false);
-            console.log('set has to 0');
         }
         if (next_page != undefined && next_page != 0) {
             const page = {
                 page: next_page,
                 load: true
             };
-            console.log('calling api');
+
             dispatch(getMeetingList(page));
         }
     };

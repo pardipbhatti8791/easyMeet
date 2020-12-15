@@ -53,6 +53,7 @@ export default (state = initialState, action) => {
             localStorage.removeItem('token');
             localStorage.removeItem('userInfo');
             localStorage.removeItem('room');
+            localStorage.removeItem('notify');
             return {
                 ...state,
                 token: null,

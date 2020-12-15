@@ -5,6 +5,7 @@ import { updateUserBio } from '~/redux/boarding/action';
 import Modal from 'react-bootstrap/Modal';
 import { updateAvailability } from '~/redux/boarding/action';
 import { checkAvailability } from '~/redux/boarding/action';
+import moment from 'moment';
 
 import { closeModal, openModal } from '../../../../../redux/global_modal/actions';
 
@@ -19,6 +20,9 @@ function UserInfo() {
     const [loader, setLoader] = useState(false);
     const [editBio, setEditBio] = useState({ value: '' });
     const [showMore, setShowMore] = useState(true);
+    const [time, setTime] = useState(null);
+    const date1 = moment().format();
+    console.log('date 1 is', date1);
     let meetingRoomDisabled = true;
 
     const room = useSelector(state => state.rooms.room);
@@ -30,11 +34,19 @@ function UserInfo() {
     const {
         availibility: { meeter_availibility, available_for }
     } = userInfo;
+    const date2 = userInfo.availibility.time_availibity_till;
+
+    console.log('date 2 is', userInfo.availibility.time_availibity_till);
     let gravatarImage = md5(userInfo.meeter_email.toLowerCase().trim());
     useEffect(() => {
         dispatch(checkAvailability(userInfo.id));
         setEditBio({ value: userInfo.meeter_bio });
     }, []);
+
+    // setInterval(() => {
+    //     //console.log(moment().format('MMMM Do YYYY, h:mm:ss a'));
+    //     setTime(moment().format('MMMM Do YYYY, h:mm:ss a'));
+    // }, 1000);
 
     const updateBio = () => {
         const data = {
@@ -218,6 +230,7 @@ function UserInfo() {
                                     <>
                                         Available for <span>{available_for && available_for.hours}</span> hours{' '}
                                         <span>{available_for && available_for.minutes}</span> minutes.
+                                        {time}
                                         {/* <a href='#'>Extend ⯆</a> */}
                                     </>
                                 ) : (

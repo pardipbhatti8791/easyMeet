@@ -1,5 +1,6 @@
 import React from 'react';
 import videoicon from '../../../../../assets/images/video icon.png';
+import bg from '../../../../../assets/images/bg.jpg';
 
 const PublicPage = props => {
     return (

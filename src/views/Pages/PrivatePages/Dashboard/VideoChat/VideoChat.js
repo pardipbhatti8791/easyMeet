@@ -29,7 +29,9 @@ const VideoChat = props => {
     let participants;
     const footerData = {
         room: activeRoom,
-        participants: participants
+        participants: participants,
+        requester_id: props.match.params.requester_id,
+        requester_email: requesterEmail
     };
 
     useEffect(() => {
@@ -50,7 +52,7 @@ const VideoChat = props => {
 
         dispatch(getRoom(roomVerifyData)).then(res => {
             setRequesterEmail(res.data.data.meeting_requester.requester_email);
-            console.log('rsponse of get room', res);
+            //console.log('rsponse of get room', res);
             if (res.data.status === true) {
                 if (isAuth) {
                     dispatch(getAccessToken(signature, userInfo.meeter_email)).then(res => {
@@ -229,7 +231,7 @@ const VideoChat = props => {
         };
         dispatch(getRoom(roomData)).then(res => {
             participants = res.data.data.meeting_participant;
-            console.log(res.data.data.meeting_participant);
+
             dispatch(setParticipants(res.data.data.meeting_participant));
         });
     }, 10000);

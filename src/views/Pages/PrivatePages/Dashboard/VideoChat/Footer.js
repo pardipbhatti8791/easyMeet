@@ -4,13 +4,18 @@ import muteVideo from '../../../../../assets/images/mutevideo.png';
 
 const Footer = props => {
     const { room } = props.data;
+    const requester_id = props.data.requester_id;
+    const requester_email = props.data.requesterEmail;
+
     const userInfo = useSelector(state => state.auth.user);
     const isAuth = useSelector(state => state.auth.isAuthenticated);
     const roomInfo = useSelector(state => state.rooms);
-    console.log('room info is', roomInfo);
+
+    const participants = roomInfo.participants;
+    console.log('participants', participants);
     const [localAudio, setLocalAudio] = useState(true);
     const [localVideo, setLocalVideo] = useState(true);
-
+    const [showNav, setShowNav] = useState(false);
     const localAudioMute = () => {
         room.localParticipant.audioTracks.forEach(publication => {
             if (localAudio == true) {
@@ -36,7 +41,13 @@ const Footer = props => {
     return (
         <>
             <section className='container'>
-                <nav className='navbar-collapse fixed-top p-0 offcanvas-collapse'>
+                <nav
+                    className='navbar-collapse fixed-top p-0 offcanvas-collapse'
+                    className={
+                        showNav == true
+                            ? 'navbar-collapse fixed-top p-0 offcanvas-collapse open'
+                            : 'navbar-collapse fixed-top p-0 offcanvas-collapse'
+                    }>
                     <div className='modal-header bg-white py-4 borderBottomt d-lg-none d-xl-none d-flex'>
                         <button type='button' className='close medium-size fw-500 mr-auto pl-0' aria-label='Close'>
                             <span aria-hidden='true'>
@@ -46,369 +57,146 @@ const Footer = props => {
                     </div>
                     <div className='w-100'>
                         <ul className='text-left list-unstyled small-size roomList w-100 mb-3'>
-                            <li>
-                                <div className='dropdown text-right'>
-                                    <button
-                                        className='btn p-0 dropdown-toggle'
-                                        type='button'
-                                        id='dropdownMenu2'
-                                        data-toggle='dropdown'
-                                        aria-haspopup='true'
-                                        aria-expanded='false'>
-                                        <i className='fa ml-2 gray6 fa-ellipsis-v' aria-hidden='true'></i>
-                                    </button>
-                                    <div className='dropdown-menu' aria-labelledby='dropdownMenu2'>
-                                        <button className='dropdown-item small-size mb-1' type='button'>
-                                            Start meeting now
-                                        </button>
-                                        <button className='dropdown-item small-size mb-1' type='button'>
-                                            Move to top of wait list
-                                        </button>
-                                        <button className='dropdown-item small-size mb-1' type='button'>
-                                            Move to bottom of wait list
-                                        </button>
-                                        <button className='dropdown-item small-size' type='button'>
-                                            Reject user
-                                        </button>
-                                    </div>
-                                </div>
-                                <div className='waiting d-flex align-items-center text-left'>
-                                    <div className='media text-left'>
-                                        <div className='media-body align-self-center'>
-                                            <div className='d-flex align-items-center justify-content-start'>
-                                                <h2 className='my-0 requesterName mr-3'>Cody Fisher</h2>
-                                                <span className='mic'>
-                                                    <button className='btn mr-2'>
-                                                        <i
-                                                            className='fa fa-microphone-slash red'
-                                                            aria-hidden='true'></i>
-                                                        <i className='fa fa-microphone hide' aria-hidden='true'></i>
-                                                    </button>
-                                                    <button className='btn'>
-                                                        <i className='fa fa-video-camera' aria-hidden='true'></i>
-                                                    </button>
-                                                </span>
-                                            </div>
-                                            <span className='url-room gray6 small-size d-block'>
-                                                codyfisher@mail.com
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className='nextMeeting d-flex py-2 align-items-center'>
-                                    <button className='btn blue p-0 blueBorder small-size w-100 py-2'>
-                                        <i className='fa small-size fa-forward' aria-hidden='true'></i> Next Meeting
-                                    </button>
-                                </div>
-                                <div className='breakLine my-2'></div>
-                                <div className='request-summary text-left noMobileMargin noMobilePadding'>
-                                    <h3 className='small-size mb-2'>Request Summary:</h3>
-                                    <span className='small-size' style={{ opacity: '0.6' }}>
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                        incididunt ut labore et dolore magna aliqua. In massa tempor nec feugiat. Vitae
-                                        suscipit tellus mauris a. Cursus metus aliquam eleifend mi in nulla
-                                        posuerenecta.{' '}
-                                    </span>
-                                </div>
-                            </li>
+                            {isAuth
+                                ? // <li>
+                                  //     <div className='dropdown text-right'>
+                                  //         <button
+                                  //             className='btn p-0 dropdown-toggle'
+                                  //             type='button'
+                                  //             id='dropdownMenu2'
+                                  //             data-toggle='dropdown'
+                                  //             aria-haspopup='true'
+                                  //             aria-expanded='false'>
+                                  //             <i className='fa ml-2 gray6 fa-ellipsis-v' aria-hidden='true'></i>
+                                  //         </button>
+                                  //         <div className='dropdown-menu' aria-labelledby='dropdownMenu2'>
+                                  //             <button className='dropdown-item small-size mb-1' type='button'>
+                                  //                 Start meeting now
+                                  //             </button>
+                                  //             <button className='dropdown-item small-size mb-1' type='button'>
+                                  //                 Move to top of wait list
+                                  //             </button>
+                                  //             <button className='dropdown-item small-size mb-1' type='button'>
+                                  //                 Move to bottom of wait list
+                                  //             </button>
+                                  //             <button className='dropdown-item small-size' type='button'>
+                                  //                 Reject user
+                                  //             </button>
+                                  //         </div>
+                                  //     </div>
+                                  //     <div className='waiting d-flex align-items-center text-left'>
+                                  //         <div className='media text-left'>
+                                  //             <div className='media-body align-self-center'>
+                                  //                 <div className='d-flex align-items-center justify-content-start'>
+                                  //                     <h2 className='my-0 requesterName mr-3'>Cody Fisher</h2>
+                                  //                     <span className='mic'>
+                                  //                         <button className='btn mr-2'>
+                                  //                             <i
+                                  //                                 className='fa fa-microphone-slash red'
+                                  //                                 aria-hidden='true'></i>
+                                  //                             <i className='fa fa-microphone hide' aria-hidden='true'></i>
+                                  //                         </button>
+                                  //                         <button className='btn'>
+                                  //                             <i className='fa fa-video-camera' aria-hidden='true'></i>
+                                  //                         </button>
+                                  //                     </span>
+                                  //                 </div>
+                                  //                 <span className='url-room gray6 small-size d-block'>
+                                  //                     codyfisher@mail.com
+                                  //                 </span>
+                                  //             </div>
+                                  //         </div>
+                                  //     </div>
+                                  //     <div className='nextMeeting d-flex py-2 align-items-center'>
+                                  //         <button className='btn blue p-0 blueBorder small-size w-100 py-2'>
+                                  //             <i className='fa small-size fa-forward' aria-hidden='true'></i> Next Meeting
+                                  //         </button>
+                                  //     </div>
+                                  //     <div className='breakLine my-2'></div>
+                                  //     <div className='request-summary text-left noMobileMargin noMobilePadding'>
+                                  //         <h3 className='small-size mb-2'>Request Summary:</h3>
+                                  //         <span className='small-size' style={{ opacity: '0.6' }}>
+                                  //             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                                  //             tempor incididunt ut labore et dolore magna aliqua. In massa tempor nec
+                                  //             feugiat. Vitae suscipit tellus mauris a. Cursus metus aliquam eleifend mi in
+                                  //             nulla posuerenecta.{' '}
+                                  //         </span>
+                                  //     </div>
+                                  // </li>
+                                  ''
+                                : ''}
                         </ul>
                         <h3 className='small-size text-left pl-3 mb-3'>Wait list:</h3>
 
                         <ul className='text-left list-unstyled small-size roomList w-100 waitList'>
-                            <li>
-                                <div className='dropdown text-right'>
-                                    <button
-                                        className='btn p-0 dropdown-toggle'
-                                        type='button'
-                                        id='dropdownMenu2'
-                                        data-toggle='dropdown'
-                                        aria-haspopup='true'
-                                        aria-expanded='false'>
-                                        <i className='fa ml-2 gray6 fa-ellipsis-v' aria-hidden='true'></i>
-                                    </button>
-                                    <div className='dropdown-menu' aria-labelledby='dropdownMenu2'>
-                                        <button className='dropdown-item small-size mb-1' type='button'>
-                                            Start meeting now
-                                        </button>
-                                        <button className='dropdown-item small-size mb-1' type='button'>
-                                            Move to top of wait list
-                                        </button>
-                                        <button className='dropdown-item small-size mb-1' type='button'>
-                                            Move to bottom of wait list
-                                        </button>
-                                        <button className='dropdown-item small-size' type='button'>
-                                            Reject user
-                                        </button>
-                                    </div>
-                                </div>
-                                <div className='waiting d-flex align-items-center text-left'>
-                                    <div
-                                        className='media text-left'
-                                        data-toggle='collapse'
-                                        data-target='#collapse1'
-                                        aria-expanded='true'>
-                                        <div className='align-self-center text-center mr-2 avatar-container bg-white medium-size'>
-                                            <span>CF</span>
-                                        </div>
-                                        <div className='media-body align-self-center'>
-                                            <div className='d-flex align-items-center justify-content-start'>
-                                                <h2 className='my-0 requesterName mr-3'>Cody Fisher</h2>
-                                            </div>
-                                            <span className='url-room gray6 small-size d-block'>
-                                                codyfisher@mail.com
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div
-                                    className='request-summary text-left noMobileMargin mt-3 collapse noMobilePadding'
-                                    id='collapse1'
-                                    aria-labelledby='headingOne'>
-                                    <h3 className='small-size mb-2'>Request Summary:</h3>
-                                    <span className='small-size' style={{ opacity: '0.6' }}>
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                        incididunt ut labore et dolore magna aliqua. In massa tempor nec feugiat. Vitae
-                                        suscipit tellus mauris a. Cursus metus aliquam eleifend mi in nulla
-                                        posuerenecta.{' '}
-                                    </span>
-                                </div>
-                            </li>
-                            <li>
-                                <div className='dropdown text-right'>
-                                    <button
-                                        className='btn p-0 dropdown-toggle'
-                                        type='button'
-                                        id='dropdownMenu2'
-                                        data-toggle='dropdown'
-                                        aria-haspopup='true'
-                                        aria-expanded='false'>
-                                        <i className='fa ml-2 gray6 fa-ellipsis-v' aria-hidden='true'></i>
-                                    </button>
-                                    <div className='dropdown-menu' aria-labelledby='dropdownMenu2'>
-                                        <button className='dropdown-item small-size mb-1' type='button'>
-                                            Start meeting now
-                                        </button>
-                                        <button className='dropdown-item small-size mb-1' type='button'>
-                                            Move to top of wait list
-                                        </button>
-                                        <button className='dropdown-item small-size mb-1' type='button'>
-                                            Move to bottom of wait list
-                                        </button>
-                                        <button className='dropdown-item small-size' type='button'>
-                                            Reject user
-                                        </button>
-                                    </div>
-                                </div>
-                                <div className='waiting d-flex align-items-center text-left'>
-                                    <div
-                                        className='media text-left'
-                                        data-toggle='collapse'
-                                        data-target='#collapse2'
-                                        aria-expanded='true'>
-                                        <div className='align-self-center text-center mr-2 avatar-container bg-white medium-size'>
-                                            <span>CF</span>
-                                        </div>
-                                        <div className='media-body align-self-center'>
-                                            <div className='d-flex align-items-center justify-content-start'>
-                                                <h2 className='my-0 requesterName mr-3'>Cody Fisher</h2>
-                                            </div>
-                                            <span className='url-room gray6 small-size d-block'>
-                                                codyfisher@mail.com
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div
-                                    className='request-summary text-left noMobileMargin mt-3 collapse noMobilePadding'
-                                    id='collapse2'
-                                    aria-labelledby='headingOne'>
-                                    <h3 className='small-size mb-2'>Request Summary:</h3>
-                                    <span className='small-size' style={{ opacity: '0.6' }}>
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                        incididunt ut labore et dolore magna aliqua. In massa tempor nec feugiat. Vitae
-                                        suscipit tellus mauris a. Cursus metus aliquam eleifend mi in nulla
-                                        posuerenecta.{' '}
-                                    </span>
-                                </div>
-                            </li>
-                            <li>
-                                <div className='dropdown text-right'>
-                                    <button
-                                        className='btn p-0 dropdown-toggle'
-                                        type='button'
-                                        id='dropdownMenu2'
-                                        data-toggle='dropdown'
-                                        aria-haspopup='true'
-                                        aria-expanded='false'>
-                                        <i className='fa ml-2 gray6 fa-ellipsis-v' aria-hidden='true'></i>
-                                    </button>
-                                    <div className='dropdown-menu' aria-labelledby='dropdownMenu2'>
-                                        <button className='dropdown-item small-size mb-1' type='button'>
-                                            Start meeting now
-                                        </button>
-                                        <button className='dropdown-item small-size mb-1' type='button'>
-                                            Move to top of wait list
-                                        </button>
-                                        <button className='dropdown-item small-size mb-1' type='button'>
-                                            Move to bottom of wait list
-                                        </button>
-                                        <button className='dropdown-item small-size' type='button'>
-                                            Reject user
-                                        </button>
-                                    </div>
-                                </div>
-                                <div className='waiting d-flex align-items-center text-left'>
-                                    <div
-                                        className='media text-left'
-                                        data-toggle='collapse'
-                                        data-target='#collapse3'
-                                        aria-expanded='true'>
-                                        <div className='align-self-center text-center mr-2 avatar-container bg-white medium-size'>
-                                            <span>CF</span>
-                                        </div>
-                                        <div className='media-body align-self-center'>
-                                            <div className='d-flex align-items-center justify-content-start'>
-                                                <h2 className='my-0 requesterName mr-3'>Cody Fisher</h2>
-                                            </div>
-                                            <span className='url-room gray6 small-size d-block'>
-                                                codyfisher@mail.com
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div
-                                    className='request-summary text-left noMobileMargin mt-3 collapse noMobilePadding'
-                                    id='collapse3'
-                                    aria-labelledby='headingOne'>
-                                    <h3 className='small-size mb-2'>Request Summary:</h3>
-                                    <span className='small-size' style={{ opacity: '0.6' }}>
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                        incididunt ut labore et dolore magna aliqua. In massa tempor nec feugiat. Vitae
-                                        suscipit tellus mauris a. Cursus metus aliquam eleifend mi in nulla
-                                        posuerenecta.{' '}
-                                    </span>
-                                </div>
-                            </li>
-                            <li>
-                                <div className='dropdown text-right'>
-                                    <button
-                                        className='btn p-0 dropdown-toggle'
-                                        type='button'
-                                        id='dropdownMenu2'
-                                        data-toggle='dropdown'
-                                        aria-haspopup='true'
-                                        aria-expanded='false'>
-                                        <i className='fa ml-2 gray6 fa-ellipsis-v' aria-hidden='true'></i>
-                                    </button>
-                                    <div className='dropdown-menu' aria-labelledby='dropdownMenu2'>
-                                        <button className='dropdown-item small-size mb-1' type='button'>
-                                            Start meeting now
-                                        </button>
-                                        <button className='dropdown-item small-size mb-1' type='button'>
-                                            Move to top of wait list
-                                        </button>
-                                        <button className='dropdown-item small-size mb-1' type='button'>
-                                            Move to bottom of wait list
-                                        </button>
-                                        <button className='dropdown-item small-size' type='button'>
-                                            Reject user
-                                        </button>
-                                    </div>
-                                </div>
-                                <div className='waiting d-flex align-items-center text-left'>
-                                    <div
-                                        className='media text-left'
-                                        data-toggle='collapse'
-                                        data-target='#collapse4'
-                                        aria-expanded='true'>
-                                        <div className='align-self-center text-center mr-2 avatar-container bg-white medium-size'>
-                                            <span>CF</span>
-                                        </div>
-                                        <div className='media-body align-self-center'>
-                                            <div className='d-flex align-items-center justify-content-start'>
-                                                <h2 className='my-0 requesterName mr-3'>Cody Fisher</h2>
-                                            </div>
-                                            <span className='url-room gray6 small-size d-block'>
-                                                codyfisher@mail.com
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div
-                                    className='request-summary text-left noMobileMargin mt-3 collapse noMobilePadding'
-                                    id='collapse4'
-                                    aria-labelledby='headingOne'>
-                                    <h3 className='small-size mb-2'>Request Summary:</h3>
-                                    <span className='small-size' style={{ opacity: '0.6' }}>
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                        incididunt ut labore et dolore magna aliqua. In massa tempor nec feugiat. Vitae
-                                        suscipit tellus mauris a. Cursus metus aliquam eleifend mi in nulla
-                                        posuerenecta.{' '}
-                                    </span>
-                                </div>
-                            </li>
-                            <li>
-                                <div className='dropdown text-right'>
-                                    <button
-                                        className='btn p-0 dropdown-toggle'
-                                        type='button'
-                                        id='dropdownMenu2'
-                                        data-toggle='dropdown'
-                                        aria-haspopup='true'
-                                        aria-expanded='false'>
-                                        <i className='fa ml-2 gray6 fa-ellipsis-v' aria-hidden='true'></i>
-                                    </button>
-                                    <div className='dropdown-menu' aria-labelledby='dropdownMenu2'>
-                                        <button className='dropdown-item small-size mb-1' type='button'>
-                                            Start meeting now
-                                        </button>
-                                        <button className='dropdown-item small-size mb-1' type='button'>
-                                            Move to top of wait list
-                                        </button>
-                                        <button className='dropdown-item small-size mb-1' type='button'>
-                                            Move to bottom of wait list
-                                        </button>
-                                        <button className='dropdown-item small-size' type='button'>
-                                            Reject user
-                                        </button>
-                                    </div>
-                                </div>
-                                <div className='waiting d-flex align-items-center text-left'>
-                                    <div
-                                        className='media text-left'
-                                        data-toggle='collapse'
-                                        data-target='#collapse5'
-                                        aria-expanded='true'>
-                                        <div className='align-self-center text-center mr-2 avatar-container bg-white medium-size'>
-                                            <span>CF</span>
-                                        </div>
-                                        <div className='media-body align-self-center'>
-                                            <div className='d-flex align-items-center justify-content-start'>
-                                                <h2 className='my-0 requesterName mr-3'>Cody Fisher</h2>
-                                            </div>
-                                            <span className='url-room gray6 small-size d-block'>
-                                                codyfisher@mail.com
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div
-                                    className='request-summary text-left noMobileMargin mt-3 collapse noMobilePadding'
-                                    id='collapse5'
-                                    aria-labelledby='headingOne'>
-                                    <h3 className='small-size mb-2'>Request Summary:</h3>
-                                    <span className='small-size' style={{ opacity: '0.6' }}>
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                        incididunt ut labore et dolore magna aliqua. In massa tempor nec feugiat. Vitae
-                                        suscipit tellus mauris a. Cursus metus aliquam eleifend mi in nulla
-                                        posuerenecta.{' '}
-                                    </span>
-                                </div>
-                            </li>
+                            {participants == null
+                                ? ''
+                                : participants.map((participant, key) => (
+                                      <li>
+                                          <div className='dropdown text-right'>
+                                              <button
+                                                  className='btn p-0 dropdown-toggle'
+                                                  type='button'
+                                                  id='dropdownMenu2'
+                                                  data-toggle='dropdown'
+                                                  aria-haspopup='true'
+                                                  aria-expanded='false'>
+                                                  <i className='fa ml-2 gray6 fa-ellipsis-v' aria-hidden='true'></i>
+                                              </button>
+                                              <div className='dropdown-menu' aria-labelledby='dropdownMenu2'>
+                                                  <button className='dropdown-item small-size mb-1' type='button'>
+                                                      Start meeting now
+                                                  </button>
+                                                  <button className='dropdown-item small-size mb-1' type='button'>
+                                                      Move to top of wait list
+                                                  </button>
+                                                  <button className='dropdown-item small-size mb-1' type='button'>
+                                                      Move to bottom of wait list
+                                                  </button>
+                                                  <button className='dropdown-item small-size' type='button'>
+                                                      Reject user
+                                                  </button>
+                                              </div>
+                                          </div>
+                                          <div className='waiting d-flex align-items-center text-left'>
+                                              <div
+                                                  className='media text-left'
+                                                  data-toggle='collapse'
+                                                  data-target='#collapse1'
+                                                  aria-expanded='true'>
+                                                  <div className='align-self-center text-center mr-2 avatar-container bg-white medium-size'>
+                                                      <span>
+                                                          {participant.requester_name.substr(0, 1).toUpperCase()}
+                                                      </span>
+                                                  </div>
+                                                  <div className='media-body align-self-center'>
+                                                      <div className='d-flex align-items-center justify-content-start'>
+                                                          <h2 className='my-0 requesterName mr-3'>
+                                                              {participant.requester_name}
+                                                          </h2>
+                                                      </div>
+                                                      <span className='url-room gray6 small-size d-block'>
+                                                          {participant.requester_email}
+                                                      </span>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                          <div
+                                              className='request-summary text-left noMobileMargin mt-3 collapse noMobilePadding'
+                                              id='collapse1'
+                                              aria-labelledby='headingOne'>
+                                              <h3 className='small-size mb-2'>Request Summary:</h3>
+                                              <span className='small-size' style={{ opacity: '0.6' }}>
+                                                  {participant.summary}{' '}
+                                              </span>
+                                          </div>
+                                      </li>
+                                  ))}
                         </ul>
                     </div>
                 </nav>
             </section>
+
             <footer className='bg-white py-3 px-2'>
                 <div className='container-fluid'>
                     <div className='row'>
@@ -431,17 +219,21 @@ const Footer = props => {
                                             </button>
                                         </span> */}
                                         </div>
-                                        <span class='url-room small-size d-block'>
+                                        <span className='url-room small-size d-block'>
                                             {' '}
-                                            <span>6</span> users waiting.{' '}
+                                            <span>{participants == null ? '' : participants.length}</span> users
+                                            waiting.{' '}
                                             <button
                                                 class='navbar-toggler blue collapsed p-0 small-size navToggle'
                                                 type='button'
                                                 data-toggle='collapse'
                                                 data-target='#navbarNav'
                                                 aria-expanded='false'
-                                                aria-label='Toggle navigation'>
-                                                Show details
+                                                aria-label='Toggle navigation'
+                                                onClick={() => {
+                                                    setShowNav(!showNav);
+                                                }}>
+                                                {showNav ? 'Hide Details' : 'Show details'}
                                             </button>
                                         </span>
                                         <span className='url-room small-size d-block'>
