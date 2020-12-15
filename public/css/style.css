@@ -2085,4 +2085,10 @@ element.style {
   .navbar-collapse{
     margin-top: .50rem;
   }
+ 
+}
+
+.pending-requestWrapper {
+  max-height: 40vh;
+  overflow-y: auto;
 }

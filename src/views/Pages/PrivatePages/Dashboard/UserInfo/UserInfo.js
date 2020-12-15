@@ -34,9 +34,15 @@ function UserInfo() {
     const {
         availibility: { meeter_availibility, available_for }
     } = userInfo;
-    const date2 = userInfo.availibility.time_availibity_till;
+    //const date2 = userInfo.availibility.time_availibity_till;
+    const date2 = moment(userInfo.availibility.time_availibity_till);
+    console.log('date from api is', userInfo.availibility.time_availibity_till);
+    console.log('date 2 is', date2);
+    const date3 = new Date();
+    console.log('date with new Date is', date3.getMonth() + 1, '-', date3.getFullYear());
 
-    console.log('date 2 is', userInfo.availibility.time_availibity_till);
+    console.log('playing with moment', moment().format());
+
     let gravatarImage = md5(userInfo.meeter_email.toLowerCase().trim());
     useEffect(() => {
         dispatch(checkAvailability(userInfo.id));

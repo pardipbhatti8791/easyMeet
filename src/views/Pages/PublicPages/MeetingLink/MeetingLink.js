@@ -199,9 +199,7 @@ function MeetingLink(props) {
                                         Use EasyMeet <br />
                                         to host meetings yourself!
                                     </h2>
-                                    <p className='opacity-6 mb-0'>
-                                        dolor sit amet, consectetur adipiscing elit,sed do eiusmod
-                                    </p>
+                                    <p className='opacity-6 mb-0'>Not having to schedule meetings is a superpower</p>
 
                                     <button
                                         type='button'
